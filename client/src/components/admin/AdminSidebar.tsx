@@ -8,13 +8,13 @@ const AdminSidebar = ({ showSidebar }: { showSidebar: boolean }) => {
   return (
     <aside
       className={cn(
-        " shadow-md max-h-frame flex flex-col p-4 md:sticky top-0 left-0 transition-all duration-300",
-        showSidebar ? "w-20 md:w-64" : "w-0  md:w-64", // Toggling width
-        showSidebar ? "opacity-100" : "opacity-0 md:opacity-100", // Toggling visibility
-        "overflow-hidden"
+        "shadow-md flex flex-col sticky top-0 left-0 transition-all duration-300 pt-2",
+        showSidebar ? "w-20 md:w-40 lg:w-64 min-w-20" : "w-0 md:w-40 lg:w-64",
+        showSidebar ? "opacity-100" : "opacity-0 md:opacity-100",
+        "h-screen" 
       )}
     >
-      <nav className="space-y-2">
+      <nav className="space-y-2 px-4 ">
         <Link
           href="/admin"
           className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded"
@@ -43,7 +43,7 @@ const AdminSidebar = ({ showSidebar }: { showSidebar: boolean }) => {
         </Link>
       </nav>
 
-      <Separator className="hidden md:block my-4" />
+      <Separator className="hidden md:block my-4 mx-4" />
     </aside>
   );
 };

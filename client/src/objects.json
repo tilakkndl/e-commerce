@@ -1,0 +1,202 @@
+[
+  {
+    "product_id": 2,
+    "name": "Eco-friendly Canvas Tote",
+    "description": "A durable and stylish tote bag made from recycled materials.",
+    "gallery": ["/images/tote1.png", "/images/tote2.png"],
+    "price": 19.99,
+    "discount": {
+      "amount": 2,
+      "percentage": 10
+    },
+    "rating": 4.7,
+    "brand": "EcoStyle",
+    "sex": "female",
+    "age": "adult",
+    "stock": [{ "size": "one-size", "quantity": "150" }],
+    "category": "bag",
+    "available_colors": ["beige", "black"],
+    "style": "casual",
+    "created_at": "2024-02-01;12:15:20"
+  },
+  {
+    "product_id": 3,
+    "name": "Classic Leather Wallet",
+    "description": "Premium leather wallet with multiple compartments.",
+    "gallery": ["/images/wallet1.png", "/images/wallet2.png"],
+    "price": 39.99,
+    "discount": {
+      "amount": 5,
+      "percentage": 12
+    },
+    "rating": 4.8,
+    "brand": "LeatherCraft",
+    "sex": "male",
+    "age": "adult",
+    "stock": [{ "size": "one-size", "quantity": "250" }],
+    "category": "wallet",
+    "available_colors": ["brown", "black"],
+    "style": "formal",
+    "created_at": "2024-02-05;10:45:30"
+  },
+  {
+    "product_id": 4,
+    "name": "Hiking Waterproof Jacket",
+    "description": "All-weather jacket perfect for hiking and outdoor adventures.",
+    "gallery": ["/images/jacket1.png", "/images/jacket2.png"],
+    "price": 79.99,
+    "discount": {
+      "amount": 10,
+      "percentage": 13
+    },
+    "rating": 4.6,
+    "brand": "OutdoorPro",
+    "sex": "unisex",
+    "age": "adult",
+    "stock": [
+      { "size": "sm", "quantity": "100" },
+      { "size": "md", "quantity": "150" },
+      { "size": "lg", "quantity": "120" }
+    ],
+    "category": "jacket",
+    "available_colors": ["red", "black", "blue"],
+    "style": "sport",
+    "created_at": "2024-01-28;08:20:10"
+  },
+  {
+    "product_id": 5,
+    "name": "Casual Denim Jeans",
+    "description": "Comfortable and stylish denim jeans for everyday wear.",
+    "gallery": ["/images/jeans1.png", "/images/jeans2.png"],
+    "price": 49.99,
+    "discount": {
+      "amount": 5,
+      "percentage": 10
+    },
+    "rating": 4.4,
+    "brand": "DenimX",
+    "sex": "male",
+    "age": "adult",
+    "stock": [
+      { "size": "sm", "quantity": "80" },
+      { "size": "md", "quantity": "120" },
+      { "size": "lg", "quantity": "90" }
+    ],
+    "category": "pant",
+    "available_colors": ["blue", "black"],
+    "style": "casual",
+    "created_at": "2024-01-15;14:10:05"
+  },
+  {
+    "product_id": 6,
+    "name": "Sport Running Shoes",
+    "description": "Lightweight running shoes for maximum comfort.",
+    "gallery": ["/images/shoes1.png", "/images/shoes2.png"],
+    "price": 69.99,
+    "discount": {
+      "amount": 7,
+      "percentage": 10
+    },
+    "rating": 4.5,
+    "brand": "SpeedFlex",
+    "sex": "unisex",
+    "age": "adult",
+    "stock": [
+      { "size": "7", "quantity": "90" },
+      { "size": "8", "quantity": "110" },
+      { "size": "9", "quantity": "100" }
+    ],
+    "category": "shoes",
+    "available_colors": ["white", "black", "gray"],
+    "style": "sport",
+    "created_at": "2024-02-02;09:55:40"
+  },
+  {
+    "product_id": 7,
+    "name": "Luxury Silk Scarf",
+    "description": "Elegant silk scarf with artistic patterns.",
+    "gallery": ["/images/scarf1.png", "/images/scarf2.png"],
+    "price": 34.99,
+    "discount": {
+      "amount": 3,
+      "percentage": 8
+    },
+    "rating": 4.9,
+    "brand": "SilkStyle",
+    "sex": "female",
+    "age": "adult",
+    "stock": [{ "size": "one-size", "quantity": "200" }],
+    "category": "accessories",
+    "available_colors": ["red", "gold", "blue"],
+    "style": "elegant",
+    "created_at": "2024-01-30;18:25:50"
+  },
+  {
+    "product_id": 8,
+    "name": "Woolen Winter Gloves",
+    "description": "Warm and cozy gloves perfect for winter.",
+    "gallery": ["/images/gloves1.png", "/images/gloves2.png"],
+    "price": 19.99,
+    "discount": {
+      "amount": 2,
+      "percentage": 10
+    },
+    "rating": 4.6,
+    "brand": "CozyHands",
+    "sex": "unisex",
+    "age": "adult",
+    "stock": [
+      { "size": "sm", "quantity": "90" },
+      { "size": "md", "quantity": "110" },
+      { "size": "lg", "quantity": "80" }
+    ],
+    "category": "accessories",
+    "available_colors": ["black", "gray", "blue"],
+    "style": "casual",
+    "created_at": "2024-02-03;07:40:10"
+  },
+  {
+    "product_id": 9,
+    "name": "Vintage Leather Backpack",
+    "description": "Classic leather backpack with spacious compartments.",
+    "gallery": ["/images/backpack1.png", "/images/backpack2.png"],
+    "price": 89.99,
+    "discount": {
+      "amount": 10,
+      "percentage": 11
+    },
+    "rating": 4.7,
+    "brand": "VintageCraft",
+    "sex": "unisex",
+    "age": "adult",
+    "stock": [{ "size": "one-size", "quantity": "100" }],
+    "category": "bag",
+    "available_colors": ["brown", "black"],
+    "style": "casual",
+    "created_at": "2024-01-27;16:30:15"
+  },
+  {
+    "product_id": 10,
+    "name": "Casual Summer T-Shirt",
+    "description": "Soft cotton T-shirt perfect for summer.",
+    "gallery": ["/images/tshirt1.png", "/images/tshirt2.png"],
+    "price": 24.99,
+    "discount": {
+      "amount": 3,
+      "percentage": 12
+    },
+    "rating": 4.5,
+    "brand": "SummerWear",
+    "sex": "male",
+    "age": "adult",
+    "stock": [
+      { "size": "sm", "quantity": "120" },
+      { "size": "md", "quantity": "140" },
+      { "size": "lg", "quantity": "110" }
+    ],
+    "category": "t-shirt",
+    "available_colors": ["white", "black", "yellow"],
+    "style": "casual",
+    "created_at": "2024-01-20;11:05:00"
+  }
+]

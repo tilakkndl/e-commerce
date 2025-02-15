@@ -148,7 +148,7 @@ export const relatedProductData: Product[] = [
     rating: 4.5,
   },
   {
-    id: 4,
+    product_id: 4,
     title: "Hemp Tote Bag",
     srcUrl: "/images/pic4.png",
     gallery: ["/images/pic4.png", "/images/pic10.png", "/images/pic11.png"],
@@ -260,3 +260,5 @@ export default function Home() {
     </>
   );
 }
+
+
