@@ -5,6 +5,7 @@ import Header from "@/components/homepage/Header";
 import Reviews from "@/components/homepage/Reviews";
 import { Product } from "@/types/product.types";
 import { Review } from "@/types/review.types";
+import { useEffect } from "react";
 
 export const newArrivalsData: Product[] = [
   {
@@ -79,7 +80,7 @@ export const newArrivalsData: Product[] = [
       percentage: 30,
     },
     rating: 4.5,
-  }
+  },
 ];
 
 export const topSellingData: Product[] = [
@@ -106,92 +107,90 @@ export const topSellingData: Product[] = [
       percentage: 0,
     },
     rating: 4.0,
-  }
- 
+  },
 ];
 
 export const relatedProductData: Product[] = [
-    {
-        id: 1,
-        title: "Crossbody Hemp Round Bag",
-        srcUrl: "/images/pic1.png",
-        gallery: ["/images/pic1.png", "/images/pic10.png", "/images/pic11.png"],
-        price: 29.55,
-        discount: {
-          amount: 0,
-          percentage: 0,
-        },
-        rating: 4.5,
-      },
-      {
-        id: 2,
-        title: "Crossbody Hemp Multipocketed Bag",
-        srcUrl: "/images/pic2.png",
-        gallery: ["/images/pic2.png"],
-        price: 33.55,
-        discount: {
-          amount: 0,
-          percentage: 20,
-        },
-        rating: 3.5,
-      },
-      {
-        id: 3,
-        title: "Crossbody Hemp Ladies purse",
-        srcUrl: "/images/pic3.png",
-        gallery: ["/images/pic3.png"],
-        price: 40.55,
-        discount: {
-          amount: 0,
-          percentage: 0,
-        },
-        rating: 4.5,
-      },
-      {
-        id: 4,
-        title: "Hemp Tote Bag",
-        srcUrl: "/images/pic4.png",
-        gallery: ["/images/pic4.png", "/images/pic10.png", "/images/pic11.png"],
-        price: 25.55,
-        discount: {
-          amount: 0,
-          percentage: 30,
-        },
-        rating: 4.5,
-      },
-      {
-        id: 5,
-        title: "Hemp Wallet",
-        srcUrl: "/images/pic1.png",
-        gallery: ["/images/pic1.png", "/images/pic10.png", "/images/pic11.png"],
-        price: 15.55,
-        discount: {
-          amount: 0,
-          percentage: 0,
-        },
-        rating: 4.5,
-      },
-    
-      {
-        id: 6,
-        title: "Hemp Socks",
-        srcUrl: "/images/pic4.png",
-        gallery: ["/images/pic4.png", "/images/pic10.png", "/images/pic11.png"],
-        price: 7.55,
-        discount: {
-          amount: 0,
-          percentage: 30,
-        },
-        rating: 4.5,
-      }
+  {
+    id: 1,
+    title: "Crossbody Hemp Round Bag",
+    srcUrl: "/images/pic1.png",
+    gallery: ["/images/pic1.png", "/images/pic10.png", "/images/pic11.png"],
+    price: 29.55,
+    discount: {
+      amount: 0,
+      percentage: 0,
+    },
+    rating: 4.5,
+  },
+  {
+    id: 2,
+    title: "Crossbody Hemp Multipocketed Bag",
+    srcUrl: "/images/pic2.png",
+    gallery: ["/images/pic2.png"],
+    price: 33.55,
+    discount: {
+      amount: 0,
+      percentage: 20,
+    },
+    rating: 3.5,
+  },
+  {
+    id: 3,
+    title: "Crossbody Hemp Ladies purse",
+    srcUrl: "/images/pic3.png",
+    gallery: ["/images/pic3.png"],
+    price: 40.55,
+    discount: {
+      amount: 0,
+      percentage: 0,
+    },
+    rating: 4.5,
+  },
+  {
+    id: 4,
+    title: "Hemp Tote Bag",
+    srcUrl: "/images/pic4.png",
+    gallery: ["/images/pic4.png", "/images/pic10.png", "/images/pic11.png"],
+    price: 25.55,
+    discount: {
+      amount: 0,
+      percentage: 30,
+    },
+    rating: 4.5,
+  },
+  {
+    id: 5,
+    title: "Hemp Wallet",
+    srcUrl: "/images/pic1.png",
+    gallery: ["/images/pic1.png", "/images/pic10.png", "/images/pic11.png"],
+    price: 15.55,
+    discount: {
+      amount: 0,
+      percentage: 0,
+    },
+    rating: 4.5,
+  },
+
+  {
+    id: 6,
+    title: "Hemp Socks",
+    srcUrl: "/images/pic4.png",
+    gallery: ["/images/pic4.png", "/images/pic10.png", "/images/pic11.png"],
+    price: 7.55,
+    discount: {
+      amount: 0,
+      percentage: 30,
+    },
+    rating: 4.5,
+  },
 ];
 
 export const reviewsData: Review[] = [
   {
     id: 1,
     user: "Alex K.",
-    content:
-      'Absolutely love this bag! Perfect size and so durable!',
+    content: "Absolutely love this bag! Perfect size and so durable!",
     rating: 5,
     date: "August 14, 2024",
   },
@@ -203,35 +202,33 @@ export const reviewsData: Review[] = [
     date: "September 15, 2024",
   },
   {
-    id: 1,
+    id: 3,
     user: "Alex K.",
-    content:
-      'Absolutely love this bag! Perfect size and so durable!',
+    content: "Absolutely love this bag! Perfect size and so durable!",
     rating: 5,
     date: "August 14, 2024",
   },
   {
-    id: 2,
+    id: 4,
     user: "Sarah M.",
     content: `Great quality, and I feel good knowing its eco-friendly.`,
     rating: 5,
     date: "September 15, 2024",
   },
   {
-    id: 1,
+    id: 5,
     user: "Alex K.",
-    content:
-      'Absolutely love this bag! Perfect size and so durable!',
+    content: "Absolutely love this bag! Perfect size and so durable!",
     rating: 5,
     date: "August 14, 2024",
   },
   {
-    id: 2,
+    id: 6,
     user: "Sarah M.",
     content: `Great quality, and I feel good knowing its eco-friendly.`,
     rating: 5,
     date: "September 15, 2024",
-  }
+  },
 ];
 
 export default function Home() {
