@@ -1,7 +1,7 @@
-import { IsEmail } from 'class-validator';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BaseEntity, Index, 
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BaseEntity, Index, UpdateDateColumn, 
  } from 'typeorm';
  import { IsUnique } from '@shares/validation/isUniqueConstraint';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 @Entity()
 export class User extends BaseEntity {
@@ -11,6 +11,16 @@ export class User extends BaseEntity {
     @Column()
     name!: string;
 
+    @Column()
+    address!: string;
+
+    @Column()
+    @IsNotEmpty()
+    // @IsPhoneNumber("NP") // Adjust country code as needed
+    phoneNumber!: string;
+
+    @Column({ nullable: true })
+    profileUrl?: string;
     
     @Column()  // Assuming username should be unique like email
     @Index({ unique: true })
@@ -21,11 +31,15 @@ export class User extends BaseEntity {
     @Column({ nullable: true })  // Optional password
     password?: string;
 
-    @CreateDateColumn()
-    createdDate!: Date
 
     @Column({ default: "customer"})
     role!: string;
+
+    @CreateDateColumn()
+    createdDate!: Date
+
+    @UpdateDateColumn()
+    updatedDate!: Date
 
     @Column({ default: false })
     isOAuth!: boolean;
