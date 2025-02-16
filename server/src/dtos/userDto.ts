@@ -1,13 +1,22 @@
 import { IsUnique } from '@shares/validation/isUniqueConstraint';
 import { Match } from '@shares/validation/isMatchConstraint';
 
-import { IsEmail, IsString, MinLength, MaxLength, IsNotEmpty, IsOptional, IsIn} from 'class-validator';
+import { IsEmail, IsString, MinLength, MaxLength, IsNotEmpty, IsOptional, IsIn, IsPhoneNumber} from 'class-validator';
 
 export class CreateUserDto{
     @IsNotEmpty({message: "Name is required"})
     @MinLength(3, {message: "Name must be at least 3 characters"})
     @MaxLength(20, {message: "Name must be at most 20 characters"})
+    @IsString({message: "Name must be a string"})
     name!: string;
+
+    @IsNotEmpty()
+    @IsString()
+    address!: string;
+
+    @IsNotEmpty({message: "Phone number is required"})
+    @IsPhoneNumber()
+    phoneNumber!: string;
 
     @IsEmail({}, {message: "Invalid email"})
     @IsUnique({table: 'user', column: 'username'}, )
@@ -27,6 +36,9 @@ export class CreateUserDto{
 
     @IsOptional()
     isOAuth?: boolean;
+
+    @IsOptional()
+    profileUrl?: string;
 }
 
 export class LoginUserDto{

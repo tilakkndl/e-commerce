@@ -13,7 +13,7 @@ export const configPassport = (passport: PassportStatic) => {
 passport.use(new LocalStrategy(async (username, password, done)=>{
 
     const user: User = await userRepository.findByUsername(username);
-    if(!user) return done(null, false, {message: "Invalid username or password"});
+    if(!user) return done(null, false, {message: "The username does not exist"});
     const isMatch = await EncryptDecrypt.comparePassword(password, user.password as string);
     if(!isMatch) return done(null, false, {message: "Invalid username or password"});
     return done(null, user);

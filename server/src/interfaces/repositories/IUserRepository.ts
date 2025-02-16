@@ -1,8 +1,7 @@
-import {CreateUserDto} from "@dtos/userDto";
 import {User} from "@entities/User.entity";
 
 export interface IUserRepository<T=User> {
-    create: (entity: CreateUserDto)=> Promise<T>;
+    create: (entity: User)=> Promise<T>;
     findOne: (id: number) => Promise<T>;
     findByUsername: (username: string) => Promise<T>;
     findAll: () => Promise<T[]>;
