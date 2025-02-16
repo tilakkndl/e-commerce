@@ -51,3 +51,19 @@ export class LoginUserDto{
     password!: string;
 }
 
+export class UpdateUserDto{
+    @IsOptional()
+    @IsString()
+    name?: string;
+
+    @IsOptional()
+    @IsString()
+    address?: string;
+
+    @IsOptional()
+    @IsPhoneNumber()
+    phoneNumber?: string;
+
+    @IsOptional()
+    profileUrl?: string;
+}

@@ -1,11 +1,17 @@
 import { NextFunction, Request, Response } from 'express'
 import {IUserService} from "@interfaces/services/IUserService"
 import UserService from '@services/userService';
-import { CreateUserDto } from '@dtos/userDto';
+import { CreateUserDto, UpdateUserDto } from '@dtos/userDto';
 import { RequestValidator } from '@utils/requestValidation';
 import { AppError } from '@utils/appError';
 import {catchAsync} from '@utils/catchAsync';
 import passport from 'passport';
+
+export interface AuthRequest extends Request {
+  user: {
+    id: string;
+  };
+}
 
 export class UserController {
     private userService: IUserService;
@@ -57,6 +63,22 @@ protect = catchAsync(async (req: Request, res: Response, _next: NextFunction) =>
   console.log(req.user);
   res.status(200).json({ success: true, message: "Protected route" });
 
+})
+
+updateUser = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
+const {errors} = await RequestValidator(UpdateUserDto, {...req.body, profileUrl: req.file?.path});
+const authId = (req.user as { id: string }).id;
+const paramId = req.params.id as string;  
+if(errors) {
+  return next(new AppError(errors as string, 400));
+}
+
+const user = await this.userService.updateUser({...req.body, profileUrl: req.file?.path} satisfies UpdateUserDto, authId, paramId);
+res.status(200).json({
+  success: true,
+  message: 'User updated successfully',
+  data: user,
+});
 })
 }
 
