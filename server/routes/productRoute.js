@@ -9,7 +9,8 @@ import {
   deleteReview,
   addVariant,
   updateVariant,
-  deleteVariant
+  deleteVariant,
+  variantImageUpload
 } from "../controllers/productController.js";
 
 import upload  from "../middleware/upload.js";  
@@ -33,6 +34,7 @@ router.route("/:id/reviews")
   .delete(protect, deleteReview);
 
 // ✅ Variant Routes
+router.route("/variant/image").post(upload.array("gallery", 5), variantImageUpload)
 router.route("/:id/variants")
   .post(protect, restrictTo("admin"), addVariant);
 
