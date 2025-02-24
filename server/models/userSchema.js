@@ -44,6 +44,7 @@ const userSchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
     required: [true, 'Phone number is required'],
+    unique: [true, "Phone number already exists"],
     validate: {
       validator: function (value) {
         return validator.isMobilePhone(value, ['ne-NP', 'en-CA']); // Nepal & Canada

@@ -29,7 +29,12 @@ export const signup = catchAsync(async (req, res, next) => {
     success: true,
     message: "Registration successful",
     data: {
-    ...newUser
+    name: newUser.name,
+    username: newUser.username,
+    role: newUser.role,
+    address: newUser.address,
+    phoneNumber: newUser.phoneNumber
+
     }
   });
 });
@@ -54,7 +59,13 @@ export const login = catchAsync(async (req, res, next) => {
     message: 'Login successful',
     data: {
       token,
-      ...user
+      user: {
+        name: user.name,
+        username: user.username,
+        role: user.role,
+        address: user.address,
+        phoneNumber: user.phoneNumber
+      }
     }
   });
 });
