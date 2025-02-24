@@ -1,5 +1,6 @@
 import { UserState } from "@/types/user.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 const getUserFromLocalStorage = (): UserState => {
   if (typeof window !== "undefined") {
     const storedUser = localStorage.getItem("user");
@@ -25,6 +26,7 @@ export const userSlice = createSlice({
         console.log(state.id, state.name, state.username, state.role);
       }
       localStorage.setItem("user", JSON.stringify(state));
+      Cookies.set("user", JSON.stringify(state), { expires: 1, path: "/" });
     },
     removeUser: (state) => {
       state.id = null;
@@ -33,6 +35,7 @@ export const userSlice = createSlice({
       state.role = null;
 
       localStorage.removeItem("user");
+      Cookies.remove("user");
     },
   },
 });

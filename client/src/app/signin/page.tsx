@@ -42,18 +42,18 @@ const SignInPage = () => {
     try {
       const response = await axios.post<{
         success: boolean;
-        token?: string;
-        data: UserState;
+
+        data: { user: UserState; token?: string };
       }>(
         "http://localhost:5000/api/v1/user/login",
         { username, password },
         { withCredentials: true }
       );
 
-      console.log(response);
+      console.log("signin", response);
 
       if (response.data.success) {
-        const token = response.data.token as string;
+        const token = response.data.data.token as string;
 
         Cookies.set("authToken", token, {
           expires: 1,
@@ -62,8 +62,7 @@ const SignInPage = () => {
           path: "/",
         });
 
-        const data = response.data.data;
-        const {id,name,username,role}=data._doc;
+        const { id, name, username, role } = response.data.data.user;
         dispatch(setUser({ id, name, username, role }));
         console.log(user);
         router.replace("/");

@@ -4,3 +4,4 @@ export interface UserState {
   username: string;
   role: "admin" | "customer" | null;
 }
+

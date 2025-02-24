@@ -90,7 +90,9 @@ export default function ProfileButton() {
                 </Button>
                 {user.role === "admin" && (
                   <Link
-                    href="http://localhost:3000/admin"
+                    href={
+                      user.role != "admin" ? "/" : "http://localhost:3000/admin"
+                    }
                     className="flex text-nowrap items-end  w-fit"
                   >
                     <LayoutDashboard size={16} className="mr-2" />
