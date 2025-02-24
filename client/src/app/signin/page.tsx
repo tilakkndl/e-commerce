@@ -11,6 +11,7 @@ import { UserState } from "@/types/user.types";
 import { integralCF } from "@/styles/fonts";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Cookies, { CookieAttributes } from "js-cookie";
 
 const SignInPage = () => {
   const router = useRouter();
@@ -37,6 +38,7 @@ const SignInPage = () => {
   ): Promise<void> => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const response = await axios.post<{
         success: boolean;
@@ -48,22 +50,35 @@ const SignInPage = () => {
         { withCredentials: true }
       );
 
+      console.log(response);
+
       if (response.data.success) {
-        const { id, name, username, role } = response.data.data;
+        const token = response.data.token as string;
+
+        Cookies.set("authToken", token, {
+          expires: 1,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "Strict",
+          path: "/",
+        });
+
+        const data = response.data.data;
+        const {id,name,username,role}=data._doc;
         dispatch(setUser({ id, name, username, role }));
+        console.log(user);
         router.replace("/");
-        setLoading(false);
       }
     } catch (error) {
-      setLoading(false);
       console.error("Login failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <main className="max-w-frame mx-auto flex justify-center items-center py-auto my-5">
       <div className="p-10">
-        <section >
+        <section>
           <div className="flex flex-col space-y-2">
             <h2
               className={`${integralCF.className} text-4xl font-bold text-center`}

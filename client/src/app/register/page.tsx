@@ -15,6 +15,7 @@ import Link from "next/link";
 const registerPage = () => {
   const router = useRouter();
   const [name, setName] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
   const [phNo, setPhNo] = useState<number | "" | undefined>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -43,6 +44,12 @@ const registerPage = () => {
       placeholder: "Email",
     },
     {
+      value: address,
+      name: "address",
+      type: "text",
+      placeholder: "Enter your address",
+    },
+    {
       value: password,
       name: "password",
       type: "password",
@@ -59,7 +66,7 @@ const registerPage = () => {
   // Handle input changes
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
-    console.log(e.target);
+    console.log(phNo);
 
     if (name === "name") {
       setName(value);
@@ -67,6 +74,8 @@ const registerPage = () => {
       setPhNo(value ? Number(value) : "");
     } else if (name === "email") {
       setEmail(value);
+    } else if (name === "address") {
+      setAddress(value);
     } else if (name === "password") {
       setPassword(value);
     } else if (name === "confirmPassword") {
@@ -78,6 +87,7 @@ const registerPage = () => {
     e: MouseEvent<HTMLButtonElement>
   ): Promise<void> => {
     e.preventDefault();
+
     setLoading(true);
     try {
       const response = await axios.post<{
@@ -86,10 +96,17 @@ const registerPage = () => {
         data: UserState;
       }>(
         "http://localhost:5000/api/v1/user/register",
-        { name, username: email, password },
+        {
+          name,
+          phoneNumber: phNo,
+          username: email,
+          address,
+          password,
+          passwordConfirm: confirmPassword,
+        },
         { withCredentials: true }
       );
-
+      console.log(response.data);
       if (response.data.success) {
         console.log("registered successfully");
         router.replace("/signin");
