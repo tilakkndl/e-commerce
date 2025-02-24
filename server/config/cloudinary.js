@@ -10,5 +10,4 @@ cloudinary.config({
   });
 
 
-  // exproting
   export default cloudinary;

@@ -4,6 +4,7 @@ import AppError from "../utils/appError.js";
 import Category from '../models/categorySchema.js'
 import Brand from '../models/brandSchema.js'
 import cloudinary from '../config/cloudinary.js'
+import Review from "../models/reviewSchema.js";
 
 const cloudinaryUpload = async (files, name) => {
     try {
@@ -35,6 +36,40 @@ const cloudinaryUpload = async (files, name) => {
         console.error("Cloudinary upload error:", error);
         throw new AppError("Failed to upload images to Cloudinary", 500);
     }
+};
+
+const getPublicIdsFromProduct = (product) => {
+  if (!product || !product.variants) return [];
+
+  return product.variants.flatMap(variant => 
+      variant.gallery ? variant.gallery.map(image => image.public_id) : []
+  );
+};
+
+const cloudinaryDelete = async (publicIds) => {
+  try {
+      if (!publicIds || publicIds.length === 0) {
+          throw new AppError("No public IDs provided for deletion", 400);
+      }
+
+      const deleteResults = await Promise.all(
+          publicIds.map((publicId) => {
+              return new Promise((resolve, reject) => {
+                  cloudinary.uploader.destroy(publicId, (error, result) => {
+                      if (error) {
+                          reject({ publicId, status: "error", error: error.message });
+                      } else {
+                          resolve({ publicId, status: result.result || "failed" });
+                      }
+                  });
+              });
+          })
+      );
+
+      return deleteResults;
+  } catch (error) {
+      throw new AppError("Failed to delete images from Cloudinary", 500);
+  }
 };
 
 
@@ -110,9 +145,8 @@ export const createProduct = catchAsync(async (req, res, next) => {
 });
 
 
-// ✅ Get All Products
 export const getAllProducts = catchAsync(async (req, res, next) => {
-  const products = await Product.find().populate("brand category reviews.user");
+  const products = await Product.find().populate("brand category reviews");
   res.status(200).json({
     success: true,
     message: "Products retrieved successfully",
@@ -120,7 +154,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
   });
 });
 
-// ✅ Get Single Product by ID
 export const getProductById = catchAsync(async (req, res, next) => {
   const product = await Product.findById(req.params.id).populate("brand category reviews.user");
   if (!product) {
@@ -133,9 +166,52 @@ export const getProductById = catchAsync(async (req, res, next) => {
   });
 });
 
-// ✅ Update a Product
 export const updateProduct = catchAsync(async (req, res, next) => {
-  const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+ const {
+    name,
+    brand,
+    category,
+    price,
+    style,
+    age,
+    sex,
+    discount,
+    description,
+    status,
+} = req.body;
+let updateFields = {};
+if (name)  updateFields.name = name;
+if (price)  updateFields.price = price;
+if (style)  updateFields.style = style;
+if (age)  updateFields.age = age;
+if (sex) updateFields.sex = sex;
+if (discount)  updateFields.discount = discount;
+if (description)  updateFields.description = description;
+if (status)  updateFields.status = status;
+
+ // Ensure brand exists
+ if(brand){
+  const brandExists = await Brand.findOne({brand});
+  if (!brandExists) {
+      return next(new AppError("Brand does not exist", 404));
+  }
+  updateFields.brand = brandExists._id;
+ }
+
+
+ // Ensure category exists
+ if(category){
+  const categoryExists = await Category.findOne({category});
+  if (!categoryExists) {
+      return next(new AppError("Category does not exist", 404));
+  }
+  updateFields.category = categoryExists._id;
+ }
+
+
+  const product = await Product.findByIdAndUpdate(req.params.id,
+    updateFields,
+      {
     new: true,
     runValidators: true,
   });
@@ -149,12 +225,19 @@ export const updateProduct = catchAsync(async (req, res, next) => {
   });
 });
 
-// ✅ Delete a Product
 export const deleteProduct = catchAsync(async (req, res, next) => {
-  const product = await Product.findByIdAndDelete(req.params.id);
+  const product = await Product.findById(req.params.id);
   if (!product) {
     return next(new AppError("Product not found", 404));
   }
+
+  const publicIds = getPublicIdsFromProduct(product);
+  // console.log(publicIds);
+  const deleteResults = await cloudinaryDelete(publicIds);
+  // console.log(deleteResults);
+
+  await Product.findByIdAndDelete(req.params.id);
+ 
   res.status(200).json({
     success: true,
     message: "Product deleted successfully",
@@ -198,6 +281,44 @@ export const deleteReview = catchAsync(async (req, res, next) => {
 
 
 // ========================== VARIANT CRUD OPERATIONS ==========================
+export const variantImageUpload = catchAsync(async (req, res, next) => {
+  const files = req.files;
+  const productId = req.body.productId;
+
+  const product = await Product.findById(productId);
+  if (!product) {
+      return next(new AppError("Product not found", 404));
+  }
+
+  if (!files || files.length === 0) {
+      return next(new AppError("No files uploaded", 400));
+  }
+
+  // Upload images to Cloudinary
+  const gallery = await cloudinaryUpload(files, product.name);
+
+  // Check if at least one variant exists
+  if (product.variants.length === 0) {
+      return next(new AppError("No existing variants found. Add a variant first before uploading images.", 400));
+  }
+
+  // Find the last variant (or modify logic to select a specific one)
+  const lastVariant = product.variants[product.variants.length - 1];
+
+  // Append the new images to the existing gallery
+  const newVariant = lastVariant.gallery.push(...gallery);
+
+  // Save the updated product
+  await product.save({ validateBeforeSave: false }); // Bypass validation
+
+  return res.status(201).json({
+      success: true,
+      message: "Images uploaded successfully",
+      data: gallery,
+      product: product,
+      newVariant: newVariant,
+  });
+});
 
 // ✅ Add Variant to a Product
 export const addVariant = catchAsync(async (req, res, next) => {
