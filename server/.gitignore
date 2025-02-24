@@ -142,3 +142,5 @@ dist
 
 *.env
 /config/config.env
+
+server/config/config.env
