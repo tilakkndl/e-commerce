@@ -22,7 +22,7 @@ const Header = ({ data }: { data: Product }) => {
               "text-2xl md:text-[40px] md:leading-[40px] mb-3 md:mb-3.5 capitalize",
             ])}
           >
-            {data.title}
+            {data.name}
           </h1>
           <div className="flex items-center mb-3 sm:mb-3.5">
             <Rating

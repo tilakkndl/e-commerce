@@ -30,3 +30,10 @@ export type Product = {
 export type ProductList = {
   products: Product[];
 };
+export type Variant = {
+  color: string;
+  size: string[];
+  gallery: string[];
+  hexColor: string;
+  stock: number;
+};

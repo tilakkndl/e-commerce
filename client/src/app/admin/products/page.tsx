@@ -2,12 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { Trash, Edit } from "lucide-react";
 import Link from "next/link";
-import UpdateProduct from "./updateProduct/page";
 import { FaMicrosoft } from "react-icons/fa";
-
-// Import UpdateProduct Component
-
 import { Product } from "@/types/product.types";
+import { IoEllipsisVerticalSharp } from "react-icons/io5";
 
 // Mock API functions
 const fetchProducts = async (): Promise<Product[]> => {
@@ -213,8 +210,8 @@ const deleteProduct = async (productId: number): Promise<number> => {
 };
 
 const AdminProductsPage = () => {
+  const [ellipsisToggle, setEllipsisToggle] = useState<boolean>(false);
   const [products, setProducts] = useState<Product[]>([]);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -224,10 +221,6 @@ const AdminProductsPage = () => {
     loadProducts();
   }, []);
 
-  const handleEditProduct = (product: Product) => {
-    setEditingProduct(product);
-  };
-
   const handleDeleteProduct = async (productId: number) => {
     await deleteProduct(productId);
     setProducts((prevProducts) =>
@@ -236,75 +229,110 @@ const AdminProductsPage = () => {
   };
 
   return (
-    <div className="space-y-6  ">
-      <div className="flex justify-between items-center  px-2 ">
-        <div className="  flex items-center h-full">
-          <h1 className=" text-4xl font-semibold">Products</h1>
-        </div>
-        <Link
-          href="./products/addProduct"
-          className="border border-black/40 p-2 "
+    <div className="space-y-6">
+      <div className="flex justify-between items-center px-2">
+        <h1 className="text-4xl font-semibold">Products</h1>
+        <div
+          className={`flex md:hidden space-y-2 relative
+           
+        `}
         >
-          Add Products
-        </Link>
+          <IoEllipsisVerticalSharp
+            size={24}
+            onClick={() => setEllipsisToggle((prev) => !prev)}
+          />
+          <div
+            className={`absolute top-full right-full bg-white border-2 border-black/80 w-fit h-fit flex flex-col space-y-2 p-2 rounded-lg  ${
+              ellipsisToggle ? "" : "hidden"
+            }`}
+          >
+            <Link
+              href="./products/addProduct"
+              className="border border-black/40 p-2 text-nowrap rounded-sm"
+            >
+              Add Categories
+            </Link>
+            <Link
+              href="./products/addProduct"
+              className="border border-black/40 p-2 text-nowrap rounded-sm"
+            >
+              Add Brands
+            </Link>
+            <Link
+              href="./products/addProduct"
+              className="border border-black/40 p-2 text-nowrap rounded-sm"
+            >
+              Add Products
+            </Link>
+          </div>
+        </div>
+        <div className=" space-x-3 hidden md:flex">
+          <Link
+            href="./products/addProduct"
+            className="border border-black/40 p-2 hover:text-white hover:bg-black"
+          >
+            Add Categories
+          </Link>
+          <Link
+            href="./products/addProduct"
+            className="border border-black/40 p-2 hover:text-white hover:bg-black"
+          >
+            Add Brands
+          </Link>
+          <Link
+            href="./products/addProduct"
+            className="border border-black/40 p-2 hover:text-white hover:bg-black"
+          >
+            Add Products
+          </Link>
+        </div>
       </div>
 
       {/* Product List */}
-      <div className="bg-white shadow-md ">
+      <div className="bg-white shadow-md">
         <table className="min-w-full table-auto">
           <thead>
-            <tr className="border-2 border-black/80 grid grid-cols-12 space-x-1 ">
-              <th className="p-2 text-left col-start-1 col-span-1">Status</th>
-              <th className="p-2 text-left col-start-2 col-span-1">Image</th>
-              <th className="p-2 text-left col-start-3 col-span-2">Product</th>
-              <th className="p-2 text-left col-start-5 col-span-1">Price</th>
-              <th className="p-2 text-left col-start-6 col-span-3">
-                Description
-              </th>
-              <th className="p-2 text-left col-start-9 col-span-2">
-                Stock<span className="hidden md:block ">(size/quantity)</span>
-              </th>
-              <th className="p-2 text-left col-start-11 col-span-2">Actions</th>
+            <tr className="border-2 border-black/80 grid grid-cols-12 space-x-1">
+              <th className="p-2 text-left col-span-1">Status</th>
+              <th className="p-2 text-left col-span-1">Image</th>
+              <th className="p-2 text-left col-span-2">Product</th>
+              <th className="p-2 text-left col-span-1">Price</th>
+              <th className="p-2 text-left col-span-3">Description</th>
+              <th className="p-2 text-left col-span-2">Stock</th>
+              <th className="p-2 text-left col-span-2">Actions</th>
             </tr>
           </thead>
-          <tbody >
+          <tbody>
             {products.map((product) => (
               <tr
                 key={product.product_id}
                 className="border border-black/40 grid grid-cols-12 space-x-1"
               >
-                <td className="py-2  px-6 col-start-1 col-span-1">
+                <td className="py-2 px-6 col-span-1">
                   <input
                     type="checkbox"
-                    name="status"
-                    value={product.status}
-                    checked={product.status === "active" ? true : false}
-                    className="checked:bg-white checked: "
+                    checked={product.status === "active"}
                   />
                 </td>
-
-                <td className="py-2 px-6 col-start-2 col-span-1">
+                <td className="py-2 px-6 col-span-1">
                   <FaMicrosoft />
                 </td>
-                <td className="p-2 col-start-3 col-span-2">{product.name}</td>
-                <td className="p-2 col-start-5 col-span-1">
-                  Rs. {product.price}
-                </td>
-                <td className="p-2 col-start-6 col-span-3">
-                  {product.description}
-                </td>
-                <td className="p-2 col-start-9 col-span-2 ">
+                <td className="p-2 col-span-2">{product.name}</td>
+                <td className="p-2 col-span-1">Rs. {product.price}</td>
+                <td className="p-2 col-span-3">{product.description}</td>
+                <td className="p-2 col-span-2">
                   {product.stock[0].size}/{product.stock[0].quantity}
                 </td>
-                <td className="p-2 flex space-x-2 col-start-11 col-span-2">
-                  <button
-                    onClick={() => handleEditProduct(product)}
+                <td className="p-2 flex items-center space-x-2 col-span-2 it">
+                  <Link
+                    href={`/admin/products/editProduct/${product.product_id}`}
                     className="text-blue-500 hover:underline"
                   >
                     <Edit size={20} />
-                  </button>
+                  </Link>
+
                   <button
-                    onClick={() => handleDeleteProduct(product.id)}
+                    onClick={() => handleDeleteProduct(product.product_id)}
                     className="text-red-500 hover:underline"
                   >
                     <Trash size={20} />
@@ -315,13 +343,6 @@ const AdminProductsPage = () => {
           </tbody>
         </table>
       </div>
-
-      {/* Edit Product Form (Using the Component) */}
-      <UpdateProduct
-        editingProduct={editingProduct}
-        setEditingProduct={setEditingProduct}
-        setProducts={setProducts}
-      />
     </div>
   );
 };

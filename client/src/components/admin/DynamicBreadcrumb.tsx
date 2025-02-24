@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -13,11 +13,17 @@ import React from "react";
 
 const DynamicBreadcrumb = () => {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const productId = searchParams.get("id"); // Get the product ID from query params
 
   // Split the pathname into segments
   const pathSegments = pathname ? pathname.split("/").filter(Boolean) : [];
+
+  // Remove last segment if it's a number (Product ID)
+  const lastSegmentIsNumber =
+    pathSegments.length > 0 &&
+    /^\d+$/.test(pathSegments[pathSegments.length - 1]);
+  if (lastSegmentIsNumber) {
+    pathSegments.pop(); // Remove the product ID from the breadcrumb list
+  }
 
   return (
     <Breadcrumb className="py-3">
@@ -36,6 +42,12 @@ const DynamicBreadcrumb = () => {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 {isLast ? (
+                  // Last breadcrumb should be bold
+                  <BreadcrumbPage className="capitalize">
+                    {decodeURIComponent(segment)}
+                  </BreadcrumbPage>
+                ) : // Disable navigation for "updateProduct" to prevent errors
+                segment === "updateProduct" ? (
                   <BreadcrumbPage className="capitalize">
                     {decodeURIComponent(segment)}
                   </BreadcrumbPage>
@@ -48,16 +60,6 @@ const DynamicBreadcrumb = () => {
             </React.Fragment>
           );
         })}
-
-        {/* Product ID (if available) */}
-        {productId && (
-          <>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="capitalize">{productId}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </>
-        )}
       </BreadcrumbList>
     </Breadcrumb>
   );

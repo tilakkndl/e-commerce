@@ -11,20 +11,20 @@ type ProductCardProps = {
 const ProductCard = ({ data }: ProductCardProps) => {
   return (
     <Link
-      href={`/shop/product/${data.id}/${data.title.split(" ").join("-")}`}
+      href={`/shop/product/${data.product_id}/${data.name.split(" ").join("-")}`}
       className="flex flex-col items-start aspect-auto"
     >
       <div className="bg-[#F0EEED] rounded-[13px] lg:rounded-[20px] w-full lg:max-w-[295px] aspect-square mb-2.5 xl:mb-4 overflow-hidden">
         <Image
-          src={data.srcUrl}
+          src={data.gallery[0]}
           width={295}
           height={298}
           className="rounded-md w-full h-full object-contain hover:scale-110 transition-all duration-500"
-          alt={data.title}
+          alt={data.name}
           priority
         />
       </div>
-      <strong className="text-black xl:text-xl">{data.title}</strong>
+      <strong className="text-black xl:text-xl">{data.name}</strong>
       <div className="flex items-end mb-1 xl:mb-2">
         <Rating
           initialValue={data.rating}
