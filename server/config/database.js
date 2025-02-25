@@ -17,3 +17,5 @@ const connectDatabase = ()=>{
 }
 
 export default connectDatabase
+
+//checking the connection
