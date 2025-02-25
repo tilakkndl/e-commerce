@@ -18,7 +18,7 @@ const SizeSelection = () => {
         Choose Size
       </span>
       <div className="flex items-center flex-wrap lg:space-x-3">
-        {["Small", "Medium", "Large", "X-Large"].map((size, index) => (
+        {["XS", "SM", "MD", "LG", "XL", "2XL", "3XL"].map((size, index) => (
           <button
             key={index}
             type="button"

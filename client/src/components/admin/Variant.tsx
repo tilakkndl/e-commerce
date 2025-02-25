@@ -17,12 +17,19 @@ const VariantCard: React.FC<VariantCardProps> = ({ variant }) => {
   const [selectedSizes, setSelectedSizes] = useState<string[]>(variant.size);
 
   const handleSizeChange = (size: string) => {
-    setSelectedSizes(
-      (prevSizes) =>
-        prevSizes.includes(size)
-          ? prevSizes.filter((s) => s !== size) // Remove size if already selected
-          : [...prevSizes, size] // Add size if not selected
+    setSelectedSizes((prevSizes) =>
+      prevSizes.includes(size)
+        ? prevSizes.filter((s) => s !== size)
+        : [...prevSizes, size]
     );
+  };
+
+  const handleStockChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      // Allow only numbers
+      // setStock(value);
+    }
   };
 
   return (
@@ -65,6 +72,7 @@ const VariantCard: React.FC<VariantCardProps> = ({ variant }) => {
             <div className="h-fit font-semibold">Stock:</div>
             <input
               value={variant.stock}
+              onChange={handleStockChange}
               placeholder="Enter Available Stock"
               className=" border rounded-md px-2 overflow-hidden  w-20 h-15"
             />
@@ -79,8 +87,8 @@ const VariantCard: React.FC<VariantCardProps> = ({ variant }) => {
                     type="checkbox"
                     id={size}
                     value={size}
-                    checked={selectedSizes.includes(size.toLowerCase())} // Ensure case-insensitive check
-                    onChange={() => handleSizeChange(size.toLowerCase())} // Update state on toggle with lowercase size
+                    checked={selectedSizes.includes(size)} // Ensure case-insensitive check
+                    onChange={() => handleSizeChange(size)} // Update state on toggle with lowercase size
                     className="mr-2"
                   />
                   <label htmlFor={size}>{size}</label>

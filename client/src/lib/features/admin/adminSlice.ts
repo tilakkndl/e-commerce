@@ -54,7 +54,7 @@ export const deleteProductById = createAsyncThunk<
   string, // Takes the product ID as an argument
   { rejectValue: string }
 >("admin/deleteProductById", async (id: string, { rejectWithValue }) => {
-  console.log("yeha aayo");
+  
   try {
     const token = Cookies.get("authToken");
     await axios.delete(`${process.env.NEXT_PUBLIC_ROOT_API}/product/${id}`,{

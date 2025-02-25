@@ -10,8 +10,6 @@ import Product from "@/types/product.types";
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const data: Product[] = [...topSellingData, ...relatedProductData];
-
 export default function ProductPage({
   params,
 }: {
@@ -19,24 +17,14 @@ export default function ProductPage({
 }) {
   const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.admin.products);
-  const [newArrivalsData, setNewArrivalsData] = useState<Product[]>([]);
+
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (products.length > 0) {
-      // Sort products by `created_at` in descending order and take the top 4
-      const sortedProducts = [...products]
-        .sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
-        .slice(0, 4);
-      setNewArrivalsData(sortedProducts);
-    }
-  }, [products]);
-  const productData = data.find((product) => product._id === params.slug[0]);
+  const productData = products.find(
+    (product) => product._id === params.slug[0]
+  );
 
   if (!productData?.name) {
     notFound();

@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import Product from "@/types/product.types";
 import { Review } from "@/types/review.types";
 import { useEffect, useState } from "react";
+import { setRelatedProductData } from "@/lib/features/products/productsSlice";
 
 export const topSellingData: Product[] = [
   {
@@ -411,8 +412,10 @@ export default function Home() {
   const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.admin.products);
   const [newArrivalsData, setNewArrivalsData] = useState<Product[]>([]);
+
   useEffect(() => {
     dispatch(fetchAllProducts());
+    dispatch(setRelatedProductData([...products]));
   }, [dispatch]);
 
   useEffect(() => {

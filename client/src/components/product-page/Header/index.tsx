@@ -7,8 +7,18 @@ import Rating from "@/components/ui/Rating";
 import ColorSelection from "./ColorSelection";
 import SizeSelection from "./SizeSelection";
 import AddToCardSection from "./AddToCardSection";
+import { Color } from "@/lib/features/products/productsSlice";
 
 const Header = ({ data }: { data: Product }) => {
+  const colorsData: Color[] = [];
+
+  data.variants.map((variant) => {
+    colorsData.push({
+      name: `${variant.color}`,
+      code: `bg-[${variant.hexColor}]`,
+    });
+  });
+  console.log("colorsData", colorsData);
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -75,11 +85,10 @@ const Header = ({ data }: { data: Product }) => {
             )}
           </div>
           <p className="text-sm sm:text-base text-black/60 mb-5">
-            This graphic t-shirt which is perfect for any occasion. Crafted from
-            a soft and breathable fabric, it offers superior comfort and style.
+            {data.description}
           </p>
           <hr className="h-[1px] border-t-black/10 mb-5" />
-          <ColorSelection />
+          <ColorSelection colorsData={colorsData} />
           <hr className="h-[1px] border-t-black/10 my-5" />
           <SizeSelection />
           <hr className="hidden md:block h-[1px] border-t-black/10 my-5" />

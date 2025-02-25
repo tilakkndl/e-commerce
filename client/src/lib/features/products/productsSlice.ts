@@ -1,3 +1,4 @@
+import Product from "@/types/product.types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -10,6 +11,7 @@ export type Color = {
 interface ProductsState {
   colorSelection: Color;
   sizeSelection: string;
+  relatedProductData: Product[];
 }
 
 // Define the initial state using that type
@@ -19,6 +21,7 @@ const initialState: ProductsState = {
     code: "bg-[#4F4631]",
   },
   sizeSelection: "Large",
+  relatedProductData: [],
 };
 
 export const productsSlice = createSlice({
@@ -32,9 +35,14 @@ export const productsSlice = createSlice({
     setSizeSelection: (state, action: PayloadAction<string>) => {
       state.sizeSelection = action.payload;
     },
+    setRelatedProductData: (state, action: PayloadAction<Product[]>) => {
+      console.log(action.payload);
+      state.relatedProductData = action.payload;
+    },
   },
 });
 
-export const { setColorSelection, setSizeSelection } = productsSlice.actions;
+export const { setColorSelection, setSizeSelection, setRelatedProductData } =
+  productsSlice.actions;
 
 export default productsSlice.reducer;

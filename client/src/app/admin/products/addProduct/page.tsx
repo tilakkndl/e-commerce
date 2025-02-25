@@ -26,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils"; // For Tailwind class merging
 
-interface Variants {
+interface Variant {
   size: string[];
   color: string;
   hexColor: string;
@@ -34,7 +34,7 @@ interface Variants {
 }
 
 const AddProduct = () => {
-  const [variants, setVariants] = useState<Variants>({
+  const [variant, setVariant] = useState<Variant>({
     color: "",
     size: [],
     hexColor: "#000000",
@@ -53,23 +53,23 @@ const AddProduct = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const sizes = ["XS", "SM", "MD", "LG", "XL", "2XL", "3XL"];
-  const [selectedSizes, setSelectedSizes] = useState<string[]>(
-    variants.size || []
-  );
+  const [selectedSizes, setSelectedSizes] = useState<string[]>(variant.size);
 
   const handleSizeChange = (size: string) => {
-    setSelectedSizes((prev) => {
-      const newSizes = prev.includes(size)
-        ? prev.filter((s) => s !== size) // Remove if already selected
-        : [...prev, size]; // Add if not selected
+    setVariant((prevVariant) => {
+      const updatedSizes = prevVariant.size.includes(size)
+        ? prevVariant.size.filter((s) => s !== size) // Remove if already selected
+        : [...prevVariant.size, size]; // Add if not selected
 
-      setVariants((prevVariants) => ({
-        ...prevVariants,
-        size: newSizes, // Update variants.size
-      }));
-
-      return newSizes;
+      return {
+        ...prevVariant,
+        size: updatedSizes,
+      };
     });
+
+    setSelectedSizes((prev) =>
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
+    );
   };
 
   const handleCreateProduct = async () => {
@@ -81,17 +81,16 @@ const AddProduct = () => {
       alert("Price must be a positive number.");
       return;
     }
-    if (variants.stock === null || variants.stock <= 0) {
+    if (variant.stock === null || variant.stock <= 0) {
       setLoading(false);
       alert("Stock must be a positive integer.");
       return;
     }
-    if (discount === null || discount <= 0) {
+    if (discount === null || discount < 0) {
       setLoading(false);
       setDiscount(0);
       return;
     }
-
     if (!name || !description) {
       setLoading(false);
       alert("Please fill out all required fields.");
@@ -101,31 +100,27 @@ const AddProduct = () => {
     // Create FormData object
     const formData = new FormData();
 
-    // Append product details
     formData.append("name", name);
     formData.append("price", price.toString());
     formData.append("discount", discount.toString());
     formData.append("description", description);
 
-    // Append optional fields if they exist
     if (category) formData.append("category", category);
     if (brand) formData.append("brand", brand);
     if (age) formData.append("age", age);
     if (sex) formData.append("sex", sex);
     if (style) formData.append("style", style);
 
-    formData.append("variants", JSON.stringify(variants));
+    // Send only one variant
+    formData.append("variants", JSON.stringify([variant]));
 
-    // Append images
-    images.forEach((image, index) => {
-      formData.append("gallery", image); // Use "gallery" for multiple images
+    images.forEach((image) => {
+      formData.append("gallery", image);
     });
 
     try {
-      console.log("formData", formData);
-
       const response = await axios.post(
-        "http://localhost:5000/api/v1/product",
+        "http://localhost:5000/api/v1/product/",
         formData,
         {
           headers: {
@@ -135,9 +130,7 @@ const AddProduct = () => {
         }
       );
 
-      // Check if the request was successful
       if (response.status >= 200 && response.status < 300) {
-        console.log("Product created successfully:", response.data);
         setLoading(false);
         router.back();
         alert("Product created successfully!");
@@ -147,17 +140,8 @@ const AddProduct = () => {
       }
     } catch (error) {
       setLoading(false);
-
       alert("Failed to create product. Please try again.");
     }
-  };
-
-  const setColor = (hexColor: string) => {
-    setVariants((prev) => ({ ...prev, hexColor }));
-  };
-
-  const setSize = (size: string) => {
-    setVariants((prev) => ({ ...prev, size: [...prev.size, size] }));
   };
 
   return (
@@ -195,11 +179,11 @@ const AddProduct = () => {
               <input
                 type="number"
                 placeholder="Stock"
-                value={variants.stock ?? ""}
+                value={variant.stock ?? ""}
                 onChange={(e) =>
-                  setVariants({
-                    ...variants,
-                    stock: parseInt(e.target.value),
+                  setVariant({
+                    ...variant,
+                    stock: parseInt(e.target.value) || null,
                   })
                 }
                 className="w-full p-2 border rounded-md placeholder:text-black focus-visible:ring-transparent"
@@ -209,10 +193,13 @@ const AddProduct = () => {
               <input
                 type="number"
                 placeholder="Discount"
-                value={discount}
-                onChange={(e) => setDiscount(parseFloat(e.target.value))}
-                className="w-full p-2 h-10 border rounded-md placeholder:text-black focus-visible:ring-transparent"
+                value={discount !== null ? discount : ''}
+                onChange={(e) =>
+                  setDiscount(e.target.value ? parseFloat(e.target.value) : 0)
+                }
+                className="w-full p-2 border rounded-md placeholder:text-black focus-visible:ring-transparent"
               />
+
               {/* multiple select button */}
               <div className="flex-1">
                 <Popover>
@@ -310,7 +297,7 @@ const AddProduct = () => {
                       <SelectLabel>Sex</SelectLabel>
                       <SelectItem value="male">Male</SelectItem>
                       <SelectItem value="female">Female</SelectItem>
-                      <SelectItem value="others">Female</SelectItem>
+                      <SelectItem value="unisex">Unisex</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -326,7 +313,8 @@ const AddProduct = () => {
                     <SelectLabel>Styles</SelectLabel>
                     <SelectItem value="casual">Casual</SelectItem>
                     <SelectItem value="formal">Formal</SelectItem>
-                    <SelectItem value="sports">Sports</SelectItem>
+                    <SelectItem value="gym">Gym</SelectItem>
+                    <SelectItem value="party">Party</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -334,13 +322,15 @@ const AddProduct = () => {
             <input
               type="text"
               placeholder="Color Name"
-              value={variants.color}
+              value={variant.color}
               onChange={(e) =>
-                setVariants({ ...variants, color: e.target.value })
+                setVariant({ ...variant, color: e.target.value })
               }
               className="w-full p-2 border rounded-md placeholder:text-black focus-visible:ring-transparent"
             />
-            <ColorPicker setColor={setColor} />
+            <ColorPicker
+              setColor={(hexColor) => setVariant({ ...variant, hexColor })}
+            />
           </div>
         </div>
 

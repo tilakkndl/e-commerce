@@ -11,7 +11,7 @@ import {
 import MobileFilters from "@/components/shop-page/filters/MobileFilters";
 import Filters from "@/components/shop-page/filters";
 import { FiSliders } from "react-icons/fi";
-import { relatedProductData, topSellingData } from "../page";
+import { topSellingData } from "../page";
 import ProductCard from "@/components/common/ProductCard";
 import {
   Pagination,
@@ -26,13 +26,18 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useEffect, useState } from "react";
 import { fetchAllProducts } from "@/lib/features/admin/adminSlice";
 import Product from "@/types/product.types";
+import { setRelatedProductData } from "@/lib/features/products/productsSlice";
 
 export default function ShopPage() {
   const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.admin.products);
   const [newArrivalsData, setNewArrivalsData] = useState<Product[]>([]);
+  const relatedProductData = useAppSelector(
+    (state) => state.products.relatedProductData
+  );
   useEffect(() => {
     dispatch(fetchAllProducts());
+    dispatch(setRelatedProductData([...products]));
   }, [dispatch]);
 
   useEffect(() => {
@@ -47,6 +52,7 @@ export default function ShopPage() {
       setNewArrivalsData(sortedProducts);
     }
   }, [products]);
+
   return (
     <main className="pb-20">
       <div className="max-w-frame mx-auto px-4 xl:px-0">
@@ -85,9 +91,9 @@ export default function ShopPage() {
                 </div>
               </div>
             </div>
-            <div className="w-full grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
+            <div className="w-full grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5 ">
               {[
-                ...relatedProductData.slice(1, 4),
+                ...relatedProductData,
                 ...newArrivalsData.slice(1, 4),
                 ...topSellingData.slice(1, 4),
               ].map((product) => (
