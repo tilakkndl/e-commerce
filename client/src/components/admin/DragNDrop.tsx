@@ -62,8 +62,8 @@ const DragNDrop: React.FC<DragNDropProps> = ({ images, setImages }) => {
       />
       <label
         htmlFor="file-input"
-        className={`block w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer text-center  hover:bg-gray-50 ${
-          images.length >= 1 ? "h-28" : "h-60"
+        className={`flex items-center justify-center  w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer text-center hover:bg-gray-50 ${
+          images.length >= 1 ? "h-56" : "h-96"
         }`}
       >
         <span className="text-gray-600">
