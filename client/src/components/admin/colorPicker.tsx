@@ -15,8 +15,8 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ setColor }) => {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4">
-      <h2 className="text-xl font-bold">Color Picker</h2>
+    <div className="flex  items-center space-x-3">
+      <h2 className="text-xl font-bold">Color Picker:</h2>
       <div className="flex items-center space-x-4">
         <input
           type="color"

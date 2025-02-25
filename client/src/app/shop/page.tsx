@@ -1,3 +1,4 @@
+"use client";
 import BreadcrumbShop from "@/components/shop-page/BreadcrumbShop";
 
 import {
@@ -10,7 +11,7 @@ import {
 import MobileFilters from "@/components/shop-page/filters/MobileFilters";
 import Filters from "@/components/shop-page/filters";
 import { FiSliders } from "react-icons/fi";
-import { newArrivalsData, relatedProductData, topSellingData } from "../page";
+import { relatedProductData, topSellingData } from "../page";
 import ProductCard from "@/components/common/ProductCard";
 import {
   Pagination,
@@ -21,8 +22,31 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
+import { useEffect, useState } from "react";
+import { fetchAllProducts } from "@/lib/features/admin/adminSlice";
+import Product from "@/types/product.types";
 
 export default function ShopPage() {
+  const dispatch = useAppDispatch();
+  const products = useAppSelector((state) => state.admin.products);
+  const [newArrivalsData, setNewArrivalsData] = useState<Product[]>([]);
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (products.length > 0) {
+      // Sort products by `created_at` in descending order and take the top 4
+      const sortedProducts = [...products]
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+        .slice(0, 4);
+      setNewArrivalsData(sortedProducts);
+    }
+  }, [products]);
   return (
     <main className="pb-20">
       <div className="max-w-frame mx-auto px-4 xl:px-0">
@@ -67,7 +91,7 @@ export default function ShopPage() {
                 ...newArrivalsData.slice(1, 4),
                 ...topSellingData.slice(1, 4),
               ].map((product) => (
-                <ProductCard key={product.id} data={product} />
+                <ProductCard key={product._id} data={product} />
               ))}
             </div>
             <hr className="border-t-black/10" />

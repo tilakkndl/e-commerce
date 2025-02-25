@@ -1,334 +1,364 @@
+"use client";
 import ProductListSec from "@/components/common/ProductListSec";
 import Brands from "@/components/homepage/Brands";
 import DressStyle from "@/components/homepage/DressStyle";
 import Header from "@/components/homepage/Header";
 import Reviews from "@/components/homepage/Reviews";
-import { Product } from "@/types/product.types";
+import { fetchAllProducts } from "@/lib/features/admin/adminSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
+import Product from "@/types/product.types";
 import { Review } from "@/types/review.types";
-import { useEffect } from "react";
-
-export const newArrivalsData: Product[] = [
-  {
-    product_id: 1,
-    name: "Crossbody Hemp Round Bag",
-    description: "A stylish round hemp bag perfect for daily use.",
-    gallery: ["/images/pic1.png", "/images/pic10.png", "/images/pic11.png"],
-    price: 29.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 0,
-    },
-    rating: 4.5,
-    brand: "HempWear",
-    sex: "unisex",
-    age: "adult",
-    stock: [
-      { size: "M", quantity: "15" },
-      { size: "L", quantity: "10" },
-    ],
-    category: "accessories",
-    available_colors: ["natural", "brown"],
-    style: "casual",
-    created_at: "2025-02-16;10:00:00",
-  },
-  {
-    product_id: 2,
-    name: "Crossbody Hemp Multipocketed Bag",
-    description:
-      "Multipocketed hemp bag with ample storage for your essentials.",
-    gallery: ["/images/pic2.png"],
-    price: 33.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 20,
-    },
-    rating: 3.5,
-    brand: "HempWear",
-    sex: "unisex",
-    age: "adult",
-    stock: [{ size: "M", quantity: "20" }],
-    category: "accessories",
-    available_colors: ["green", "beige"],
-    style: "casual",
-    created_at: "2025-02-16;10:15:00",
-  },
-  {
-    product_id: 3,
-    name: "Crossbody Hemp Ladies Purse",
-    description: "Chic and eco-friendly purse made from hemp material.",
-    gallery: ["/images/pic3.png"],
-    price: 40.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 0,
-    },
-    rating: 4.5,
-    brand: "HempWear",
-    sex: "female",
-    age: "adult",
-    stock: [{ size: "S", quantity: "30" }],
-    category: "accessories",
-    available_colors: ["black", "brown"],
-    style: "casual",
-    created_at: "2025-02-16;10:30:00",
-  },
-  {
-    product_id: 4,
-    name: "Hemp Tote Bag",
-    description:
-      "Eco-friendly tote bag made from hemp fabric for everyday use.",
-    gallery: ["/images/pic4.png", "/images/pic10.png", "/images/pic11.png"],
-    price: 25.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 30,
-    },
-    rating: 4.5,
-    brand: "HempWear",
-    sex: "unisex",
-    age: "adult",
-    stock: [{ size: "L", quantity: "25" }],
-    category: "accessories",
-    available_colors: ["gray", "beige"],
-    style: "casual",
-    created_at: "2025-02-16;10:45:00",
-  },
-  {
-    product_id: 5,
-    name: "Hemp Wallet",
-    description: "Compact and durable hemp wallet for daily use.",
-    gallery: ["/images/pic1.png", "/images/pic10.png", "/images/pic11.png"],
-    price: 15.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 0,
-    },
-    rating: 4.5,
-    brand: "HempWear",
-    sex: "unisex",
-    age: "adult",
-    stock: [{ size: "One Size", quantity: "50" }],
-    category: "accessories",
-    available_colors: ["black", "brown"],
-    style: "casual",
-    created_at: "2025-02-16;11:00:00",
-  },
-  {
-    product_id: 6,
-    name: "Hemp Socks",
-    description: "Comfortable hemp socks with a soft texture.",
-    gallery: ["/images/pic4.png", "/images/pic10.png", "/images/pic11.png"],
-    price: 7.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 30,
-    },
-    rating: 4.5,
-    brand: "HempWear",
-    sex: "unisex",
-    age: "adult",
-    stock: [
-      { size: "M", quantity: "40" },
-      { size: "L", quantity: "30" },
-    ],
-    category: "accessories",
-    available_colors: ["gray", "beige"],
-    style: "casual",
-    created_at: "2025-02-16;11:15:00",
-  },
-];
+import { useEffect, useState } from "react";
 
 export const topSellingData: Product[] = [
   {
-    product_id: 5,
-    name: "Tibetan Mandala Jacket + Trouser Set",
-    description: "Beautiful Tibetan mandala jacket and trouser set.",
-    gallery: ["/images/pic5.png", "/images/pic10.png", "/images/pic11.png"],
-    price: 55.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 20,
+    _id: "67bcd3cfe01f59980a9eff51",
+    name: "dfa",
+    brand: {
+      _id: "67b85febc0ad5eb6786982d5",
+      brand: "Nike",
+      __v: 0,
     },
-    rating: 5.0,
-    brand: "TibetWear",
-    sex: "unisex",
+    category: {
+      _id: "67bc8c6910042b46ed451b3d",
+      category: "bag",
+      __v: 0,
+    },
+    price: 500,
+    style: "casual",
     age: "adult",
-    stock: [
-      { size: "M", quantity: "20" },
-      { size: "L", quantity: "15" },
+    sex: "male",
+    status: "active",
+    discount: 10,
+    description: "adfadf",
+    avgRating: 0,
+    reviews: [],
+    variants: [
+      {
+        color: "red",
+        hexColor: "#e85e5e",
+        size: ["small"],
+        gallery: [
+          {
+            public_id: "uploads/products/dfa/fqikmkt7tgidub1nug5u",
+            url: "https://res.cloudinary.com/dgmf8dtub/image/upload/v1740428239/uploads/products/dfa/fqikmkt7tgidub1nug5u.jpg",
+            _id: "67bcd3cfe01f59980a9eff53",
+          },
+          {
+            public_id: "uploads/products/dfa/lorrkdakl0crz5qdon03",
+            url: "https://res.cloudinary.com/dgmf8dtub/image/upload/v1740428239/uploads/products/dfa/lorrkdakl0crz5qdon03.png",
+            _id: "67bcd3cfe01f59980a9eff54",
+          },
+        ],
+        stock: 1,
+        _id: "67bcd3cfe01f59980a9eff52",
+      },
     ],
-    category: "clothing",
-    available_colors: ["blue", "red"],
-    style: "ethnic",
-    created_at: "2024-02-06;09:50:15",
+    createdAt: "2025-02-24T20:17:19.589Z",
+    updatedAt: "2025-02-24T20:17:19.589Z",
+    __v: 0,
   },
   {
-    product_id: 6,
-    name: "Patchwork Fleece Jacket",
-    description: "Warm and stylish patchwork fleece jacket.",
-    gallery: ["/images/pic6.png", "/images/pic10.png", "/images/pic11.png"],
-    price: 45.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 0,
+    _id: "67bd4579fae9a48f5c1e559d",
+    name: "Sante MUg",
+    brand: {
+      _id: "67b85febc0ad5eb6786982d5",
+      brand: "Nike",
+      __v: 0,
     },
-    rating: 4.0,
-    brand: "TibetWear",
-    sex: "unisex",
-    age: "adult",
-    stock: [
-      { size: "S", quantity: "25" },
-      { size: "XL", quantity: "10" },
-    ],
-    category: "clothing",
-    available_colors: ["gray", "brown"],
+    category: {
+      _id: "67bc8c6910042b46ed451b3d",
+      category: "bag",
+      __v: 0,
+    },
+    price: 200,
     style: "casual",
-    created_at: "2024-02-06;09:50:15",
+    age: "adult",
+    sex: "male",
+    status: "active",
+    discount: 10,
+    description: "Chakka sante",
+    avgRating: 0,
+    reviews: [],
+    variants: [
+      {
+        color: "Pink",
+        hexColor: "#da16c0",
+        size: ["small"],
+        gallery: [
+          {
+            public_id: "uploads/products/Sante MUg/pkiwiseuyquyn0lfzaa5",
+            url: "https://res.cloudinary.com/dgmf8dtub/image/upload/v1740457336/uploads/products/Sante%20MUg/pkiwiseuyquyn0lfzaa5.jpg",
+            _id: "67bd4579fae9a48f5c1e559f",
+          },
+        ],
+        stock: 1,
+        _id: "67bd4579fae9a48f5c1e559e",
+      },
+    ],
+    createdAt: "2025-02-25T04:22:17.585Z",
+    updatedAt: "2025-02-25T04:22:17.585Z",
+    __v: 0,
+  },
+  {
+    _id: "67bd64defae9a48f5c1e6fc6",
+    name: "shoes",
+    brand: {
+      _id: "67b85febc0ad5eb6786982d5",
+      brand: "Nike",
+      __v: 0,
+    },
+    category: {
+      _id: "67bc8c6910042b46ed451b3d",
+      category: "bag",
+      __v: 0,
+    },
+    price: 5000,
+    style: "casual",
+    age: "adult",
+    sex: "male",
+    status: "active",
+    discount: 0,
+    description: "dlfja",
+    avgRating: 0,
+    reviews: [],
+    variants: [
+      {
+        color: "black",
+        hexColor: "#0a0a0a",
+        size: ["small"],
+        gallery: [
+          {
+            public_id: "uploads/products/shoes/fdula1afpsoezucjxyzw",
+            url: "https://res.cloudinary.com/dgmf8dtub/image/upload/v1740465373/uploads/products/shoes/fdula1afpsoezucjxyzw.jpg",
+            _id: "67bd64defae9a48f5c1e6fc8",
+          },
+        ],
+        stock: 1,
+        _id: "67bd64defae9a48f5c1e6fc7",
+      },
+    ],
+    createdAt: "2025-02-25T06:36:14.210Z",
+    updatedAt: "2025-02-25T06:36:14.210Z",
+    __v: 0,
+  },
+  {
+    _id: "67bd65e6fae9a48f5c1e6fcd",
+    name: "kale",
+    brand: {
+      _id: "67b85febc0ad5eb6786982d5",
+      brand: "Nike",
+      __v: 0,
+    },
+    category: {
+      _id: "67bc8c6910042b46ed451b3d",
+      category: "bag",
+      __v: 0,
+    },
+    price: 100,
+    style: "casual",
+    age: "adult",
+    sex: "male",
+    status: "active",
+    discount: 0,
+    description: "he is black",
+    avgRating: 0,
+    reviews: [],
+    variants: [
+      {
+        color: "Black",
+        hexColor: "#000000",
+        size: ["small"],
+        gallery: [
+          {
+            public_id: "uploads/products/kale/utfixe3pvestz2cxic9n",
+            url: "https://res.cloudinary.com/dgmf8dtub/image/upload/v1740465637/uploads/products/kale/utfixe3pvestz2cxic9n.jpg",
+            _id: "67bd65e6fae9a48f5c1e6fcf",
+          },
+        ],
+        stock: 1,
+        _id: "67bd65e6fae9a48f5c1e6fce",
+      },
+    ],
+    createdAt: "2025-02-25T06:40:38.418Z",
+    updatedAt: "2025-02-25T06:40:38.418Z",
+    __v: 0,
   },
 ];
 
 export const relatedProductData: Product[] = [
   {
-    product_id: 1,
-    name: "Crossbody Hemp Round Bag",
-    description: "A stylish round hemp bag perfect for daily use.",
-    gallery: ["/images/pic1.png", "/images/pic10.png", "/images/pic11.png"],
-    price: 29.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 0,
+    _id: "67bcd3cfe01f59980a9eff51",
+    name: "dfa",
+    brand: {
+      _id: "67b85febc0ad5eb6786982d5",
+      brand: "Nike",
+      __v: 0,
     },
-    rating: 4.5,
-    brand: "HempWear",
-    sex: "unisex",
+    category: {
+      _id: "67bc8c6910042b46ed451b3d",
+      category: "bag",
+      __v: 0,
+    },
+    price: 500,
+    style: "casual",
     age: "adult",
-    stock: [
-      { size: "M", quantity: "15" },
-      { size: "L", quantity: "10" },
+    sex: "male",
+    status: "active",
+    discount: 10,
+    description: "adfadf",
+    avgRating: 0,
+    reviews: [],
+    variants: [
+      {
+        color: "red",
+        hexColor: "#e85e5e",
+        size: ["small"],
+        gallery: [
+          {
+            public_id: "uploads/products/dfa/fqikmkt7tgidub1nug5u",
+            url: "https://res.cloudinary.com/dgmf8dtub/image/upload/v1740428239/uploads/products/dfa/fqikmkt7tgidub1nug5u.jpg",
+            _id: "67bcd3cfe01f59980a9eff53",
+          },
+          {
+            public_id: "uploads/products/dfa/lorrkdakl0crz5qdon03",
+            url: "https://res.cloudinary.com/dgmf8dtub/image/upload/v1740428239/uploads/products/dfa/lorrkdakl0crz5qdon03.png",
+            _id: "67bcd3cfe01f59980a9eff54",
+          },
+        ],
+        stock: 1,
+        _id: "67bcd3cfe01f59980a9eff52",
+      },
     ],
-    category: "accessories",
-    available_colors: ["natural", "brown"],
-    style: "casual",
-    created_at: "2025-02-16;10:00:00",
+    createdAt: "2025-02-24T20:17:19.589Z",
+    updatedAt: "2025-02-24T20:17:19.589Z",
+    __v: 0,
   },
   {
-    product_id: 2,
-    name: "Crossbody Hemp Multipocketed Bag",
-    description:
-      "Multipocketed hemp bag with ample storage for your essentials.",
-    gallery: ["/images/pic2.png"],
-    price: 33.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 20,
+    _id: "67bd4579fae9a48f5c1e559d",
+    name: "Sante MUg",
+    brand: {
+      _id: "67b85febc0ad5eb6786982d5",
+      brand: "Nike",
+      __v: 0,
     },
-    rating: 3.5,
-    brand: "HempWear",
-    sex: "unisex",
-    age: "adult",
-    stock: [{ size: "M", quantity: "20" }],
-    category: "accessories",
-    available_colors: ["green", "beige"],
+    category: {
+      _id: "67bc8c6910042b46ed451b3d",
+      category: "bag",
+      __v: 0,
+    },
+    price: 200,
     style: "casual",
-    created_at: "2025-02-16;10:15:00",
-  },
-  {
-    product_id: 3,
-    name: "Crossbody Hemp Ladies Purse",
-    description: "Chic and eco-friendly purse made from hemp material.",
-    gallery: ["/images/pic3.png"],
-    price: 40.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 0,
-    },
-    rating: 4.5,
-    brand: "HempWear",
-    sex: "female",
     age: "adult",
-    stock: [{ size: "S", quantity: "30" }],
-    category: "accessories",
-    available_colors: ["black", "brown"],
-    style: "casual",
-    created_at: "2025-02-16;10:30:00",
-  },
-  {
-    product_id: 4,
-    name: "Hemp Tote Bag",
-    description:
-      "Eco-friendly tote bag made from hemp fabric for everyday use.",
-    gallery: ["/images/pic4.png", "/images/pic10.png", "/images/pic11.png"],
-    price: 25.55,
+    sex: "male",
     status: "active",
-    discount: {
-      amount: 0,
-      percentage: 30,
-    },
-    rating: 4.5,
-    brand: "HempWear",
-    sex: "unisex",
-    age: "adult",
-    stock: [{ size: "L", quantity: "25" }],
-    category: "accessories",
-    available_colors: ["gray", "beige"],
-    style: "casual",
-    created_at: "2025-02-16;10:45:00",
-  },
-  {
-    product_id: 5,
-    name: "Hemp Wallet",
-    description: "Compact and durable hemp wallet for daily use.",
-    gallery: ["/images/pic1.png", "/images/pic10.png", "/images/pic11.png"],
-    price: 15.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 0,
-    },
-    rating: 4.5,
-    brand: "HempWear",
-    sex: "unisex",
-    age: "adult",
-    stock: [{ size: "One Size", quantity: "50" }],
-    category: "accessories",
-    available_colors: ["black", "brown"],
-    style: "casual",
-    created_at: "2025-02-16;11:00:00",
-  },
-  {
-    product_id: 6,
-    name: "Hemp Socks",
-    description: "Comfortable hemp socks with a soft texture.",
-    gallery: ["/images/pic4.png", "/images/pic10.png", "/images/pic11.png"],
-    price: 7.55,
-    status: "active",
-    discount: {
-      amount: 0,
-      percentage: 30,
-    },
-    rating: 4.5,
-    brand: "HempWear",
-    sex: "unisex",
-    age: "adult",
-    stock: [
-      { size: "M", quantity: "40" },
-      { size: "L", quantity: "30" },
+    discount: 10,
+    description: "Chakka sante",
+    avgRating: 0,
+    reviews: [],
+    variants: [
+      {
+        color: "Pink",
+        hexColor: "#da16c0",
+        size: ["small"],
+        gallery: [
+          {
+            public_id: "uploads/products/Sante MUg/pkiwiseuyquyn0lfzaa5",
+            url: "https://res.cloudinary.com/dgmf8dtub/image/upload/v1740457336/uploads/products/Sante%20MUg/pkiwiseuyquyn0lfzaa5.jpg",
+            _id: "67bd4579fae9a48f5c1e559f",
+          },
+        ],
+        stock: 1,
+        _id: "67bd4579fae9a48f5c1e559e",
+      },
     ],
-    category: "accessories",
-    available_colors: ["gray", "beige"],
+    createdAt: "2025-02-25T04:22:17.585Z",
+    updatedAt: "2025-02-25T04:22:17.585Z",
+    __v: 0,
+  },
+  {
+    _id: "67bd64defae9a48f5c1e6fc6",
+    name: "shoes",
+    brand: {
+      _id: "67b85febc0ad5eb6786982d5",
+      brand: "Nike",
+      __v: 0,
+    },
+    category: {
+      _id: "67bc8c6910042b46ed451b3d",
+      category: "bag",
+      __v: 0,
+    },
+    price: 5000,
     style: "casual",
-    created_at: "2025-02-16;11:15:00",
+    age: "adult",
+    sex: "male",
+    status: "active",
+    discount: 0,
+    description: "dlfja",
+    avgRating: 0,
+    reviews: [],
+    variants: [
+      {
+        color: "black",
+        hexColor: "#0a0a0a",
+        size: ["small"],
+        gallery: [
+          {
+            public_id: "uploads/products/shoes/fdula1afpsoezucjxyzw",
+            url: "https://res.cloudinary.com/dgmf8dtub/image/upload/v1740465373/uploads/products/shoes/fdula1afpsoezucjxyzw.jpg",
+            _id: "67bd64defae9a48f5c1e6fc8",
+          },
+        ],
+        stock: 1,
+        _id: "67bd64defae9a48f5c1e6fc7",
+      },
+    ],
+    createdAt: "2025-02-25T06:36:14.210Z",
+    updatedAt: "2025-02-25T06:36:14.210Z",
+    __v: 0,
+  },
+  {
+    _id: "67bd65e6fae9a48f5c1e6fcd",
+    name: "kale",
+    brand: {
+      _id: "67b85febc0ad5eb6786982d5",
+      brand: "Nike",
+      __v: 0,
+    },
+    category: {
+      _id: "67bc8c6910042b46ed451b3d",
+      category: "bag",
+      __v: 0,
+    },
+    price: 100,
+    style: "casual",
+    age: "adult",
+    sex: "male",
+    status: "active",
+    discount: 0,
+    description: "he is black",
+    avgRating: 0,
+    reviews: [],
+    variants: [
+      {
+        color: "Black",
+        hexColor: "#000000",
+        size: ["small"],
+        gallery: [
+          {
+            public_id: "uploads/products/kale/utfixe3pvestz2cxic9n",
+            url: "https://res.cloudinary.com/dgmf8dtub/image/upload/v1740465637/uploads/products/kale/utfixe3pvestz2cxic9n.jpg",
+            _id: "67bd65e6fae9a48f5c1e6fcf",
+          },
+        ],
+        stock: 1,
+        _id: "67bd65e6fae9a48f5c1e6fce",
+      },
+    ],
+    createdAt: "2025-02-25T06:40:38.418Z",
+    updatedAt: "2025-02-25T06:40:38.418Z",
+    __v: 0,
   },
 ];
 
@@ -378,6 +408,26 @@ export const reviewsData: Review[] = [
 ];
 
 export default function Home() {
+  const dispatch = useAppDispatch();
+  const products = useAppSelector((state) => state.admin.products);
+  const [newArrivalsData, setNewArrivalsData] = useState<Product[]>([]);
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (products.length > 0) {
+      // Sort products by `created_at` in descending order and take the top 4
+      const sortedProducts = [...products]
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+        .slice(0, 4);
+      setNewArrivalsData(sortedProducts);
+    }
+  }, [products]);
+
   return (
     <>
       <Header />

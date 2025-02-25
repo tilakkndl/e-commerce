@@ -51,6 +51,11 @@ const DynamicBreadcrumb = () => {
                   <BreadcrumbPage className="capitalize">
                     {decodeURIComponent(segment)}
                   </BreadcrumbPage>
+                ) : // Disable navigation for "updateProduct" to prevent errors
+                segment === "editProduct" ? (
+                  <BreadcrumbPage className="capitalize">
+                    {decodeURIComponent(segment)}
+                  </BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink href={href} className="capitalize">
                     {decodeURIComponent(segment)}

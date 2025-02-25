@@ -33,9 +33,9 @@ const VariantCard: React.FC<VariantCardProps> = ({ variant }) => {
             {variant.gallery.map((image, index) => (
               <CarouselItem key={index}>
                 <img
-                  src={image}
+                  src={image.url}
                   alt={`Variant Image ${index + 1}`}
-                  className="w-40 h-40 object-contain bg-blue-500"
+                  className="w-40 h-40 object-contain "
                 />
               </CarouselItem>
             ))}
@@ -69,10 +69,10 @@ const VariantCard: React.FC<VariantCardProps> = ({ variant }) => {
               className=" border rounded-md px-2 overflow-hidden  w-20 h-15"
             />
           </div>
-          <div className="w-auto bg-blue-700">
+          <div className="w-auto  flex max-w-[300px]">
             <div className="font-semibold mr-3">Sizes:</div>
 
-            <div className="flex items-center justify-start bg-red-500 space-x-3 w-[50%] max-h-[100px] flex-wrap">
+            <div className="flex items-center justify-start  space-x-3  max-h-[100px] flex-wrap">
               {["XS", "SM", "MD", "LG", "XL", "2XL", "3XL"].map((size) => (
                 <div key={size} className="flex items-center">
                   <input
@@ -89,7 +89,7 @@ const VariantCard: React.FC<VariantCardProps> = ({ variant }) => {
             </div>
           </div>
 
-          <div className="flex items-center mt-2 bg-orange-600 w-fit">
+          <div className="flex items-center mt-2  w-fit">
             <div className="h-fit font-semibold mr-3 ">Selected Sizes:</div>
             <div>{selectedSizes.join(", ").toUpperCase()}</div>
           </div>

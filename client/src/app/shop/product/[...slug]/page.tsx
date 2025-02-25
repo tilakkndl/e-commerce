@@ -1,29 +1,42 @@
-import {
-  newArrivalsData,
-  relatedProductData,
-  topSellingData,
-} from "@/app/page";
+"use client";
+import { relatedProductData, topSellingData } from "@/app/page";
 import ProductListSec from "@/components/common/ProductListSec";
 import BreadcrumbProduct from "@/components/product-page/BreadcrumbProduct";
 import Header from "@/components/product-page/Header";
 import Tabs from "@/components/product-page/Tabs";
-import { Product } from "@/types/product.types";
+import { fetchAllProducts } from "@/lib/features/admin/adminSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
+import Product from "@/types/product.types";
 import { notFound } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const data: Product[] = [
-  ...newArrivalsData,
-  ...topSellingData,
-  ...relatedProductData,
-];
+const data: Product[] = [...topSellingData, ...relatedProductData];
 
 export default function ProductPage({
   params,
 }: {
   params: { slug: string[] };
 }) {
-  const productData = data.find(
-    (product) => product.product_id === Number(params.slug[0])
-  );
+  const dispatch = useAppDispatch();
+  const products = useAppSelector((state) => state.admin.products);
+  const [newArrivalsData, setNewArrivalsData] = useState<Product[]>([]);
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (products.length > 0) {
+      // Sort products by `created_at` in descending order and take the top 4
+      const sortedProducts = [...products]
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+        .slice(0, 4);
+      setNewArrivalsData(sortedProducts);
+    }
+  }, [products]);
+  const productData = data.find((product) => product._id === params.slug[0]);
 
   if (!productData?.name) {
     notFound();

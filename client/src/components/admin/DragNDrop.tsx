@@ -49,7 +49,9 @@ const DragNDrop: React.FC<DragNDropProps> = ({ images, setImages }) => {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <h1 className="text-2xl font-bold mb-4">Drag & Drop Image Uploader</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">
+        Add Product Images
+      </h1>
       <input
         type="file"
         id="file-input"
@@ -60,7 +62,9 @@ const DragNDrop: React.FC<DragNDropProps> = ({ images, setImages }) => {
       />
       <label
         htmlFor="file-input"
-        className="block w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer text-center hover:bg-gray-50"
+        className={`block w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer text-center  hover:bg-gray-50 ${
+          images.length >= 1 ? "h-28" : "h-60"
+        }`}
       >
         <span className="text-gray-600">
           Drag & drop images here or click to upload
@@ -74,7 +78,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ images, setImages }) => {
             <img
               src={URL.createObjectURL(image)}
               alt={`Preview ${index}`}
-              className="w-full h-32 object-cover rounded-lg"
+              className="w-full h-32 object-contain rounded-lg"
             />
             <button
               onClick={() => removeImage(index)}

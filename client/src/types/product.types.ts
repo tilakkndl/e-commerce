@@ -1,39 +1,53 @@
-export type Discount = {
-  amount: number;
-  percentage: number;
-};
+// Type definition for a single gallery image
+interface GalleryImage {
+  public_id: string;
+  url: string;
+  _id: string;
+}
 
-export type Stock = {
-  size: string;
-  quantity: string;
-};
-
-export type Product = {
-  product_id: number;
-  name: string;
-  description: string;
-  gallery: string[];
-  price: number;
-  status: "active" | "inactive";
-  discount: Discount;
-  rating: number;
-  brand: string;
-  sex: string;
-  age: string;
-  stock: Stock[];
-  category: string;
-  available_colors: string[];
-  style: string;
-  created_at: string;
-};
-
-export type ProductList = {
-  products: Product[];
-};
-export type Variant = {
+// Type definition for a product variant
+export interface Variant {
   color: string;
-  size: string[];
-  gallery: string[];
   hexColor: string;
+  size: string[];
+  gallery: GalleryImage[];
   stock: number;
-};
+  _id: string;
+}
+
+// Type definition for brand
+interface Brand {
+  _id: string;
+  brand: string;
+  __v: number;
+}
+
+// Type definition for category
+interface Category {
+  _id: string;
+  category: string;
+  __v: number;
+}
+interface Discount {}
+
+// Type definition for the entire product
+interface Product {
+  _id: string;
+  name: string;
+  brand: Brand;
+  category: Category;
+  price: number;
+  style: string;
+  age: string;
+  sex: string;
+  status: string;
+  discount: number;
+  description: string;
+  avgRating: number;
+  reviews: any[]; // Adjust type if needed (e.g., `Review[]` if there's a review structure)
+  variants: Variant[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+export default Product;
