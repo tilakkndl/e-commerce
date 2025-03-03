@@ -18,7 +18,7 @@ export const signup = catchAsync(async (req, res, next) => {
     username: req.body.username,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-    role: req.body.role,
+    // role: req.body.role,
     address: req.body.address,
     phoneNumber: req.body.phoneNumber
   });
