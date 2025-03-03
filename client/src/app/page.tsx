@@ -11,6 +11,7 @@ import { Review } from "@/types/review.types";
 import { useEffect, useState } from "react";
 import { setRelatedProductData } from "@/lib/features/products/productsSlice";
 
+import About from "@/components/homepage/About/About";
 export const topSellingData: Product[] = [
   {
     _id: "67bcd3cfe01f59980a9eff51",
@@ -434,7 +435,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <Brands />
+      {/* <Brands /> */}
       <main className="my-[50px] sm:my-[72px]">
         <ProductListSec
           title="NEW ARRIVALS"
@@ -444,13 +445,14 @@ export default function Home() {
         <div className="max-w-frame mx-auto px-4 xl:px-0">
           <hr className="h-[1px] border-t-black/10 my-10 sm:my-16" />
         </div>
-        <div className="mb-[50px] sm:mb-20">
+        {/* <div className="mb-[50px] sm:mb-20">
           <ProductListSec
             title="top selling"
             data={topSellingData}
             viewAllLink="/shop#top-selling"
           />
-        </div>
+        </div> */}
+        <About />
         <div className="mb-[50px] sm:mb-20">
           <DressStyle />
         </div>

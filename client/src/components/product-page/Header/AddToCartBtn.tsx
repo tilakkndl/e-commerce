@@ -3,10 +3,16 @@
 import { addToCart } from "@/lib/features/carts/cartsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { RootState } from "@/lib/store";
-import { Product } from "@/types/product.types";
+import Product, { Variant } from "@/types/product.types";
 import React from "react";
+interface AddToCartBtnProps {
+  data:Product;
+  quantity:number;
+  selectedVariant: Variant;
+  selectedSize: string;
+}
 
-const AddToCartBtn = ({ data }: { data: Product & { quantity: number } }) => {
+const AddToCartBtn = ({ data,quantity,selectedVariant,selectedSize }: AddToCartBtnProps) => {
   const dispatch = useAppDispatch();
   const { sizeSelection, colorSelection } = useAppSelector(
     (state: RootState) => state.products
@@ -19,13 +25,11 @@ const AddToCartBtn = ({ data }: { data: Product & { quantity: number } }) => {
       onClick={() =>
         dispatch(
           addToCart({
-            id: data.id,
-            name: data.title,
-            srcUrl: data.srcUrl,
-            price: data.price,
-            attributes: [sizeSelection, colorSelection.name],
-            discount: data.discount,
-            quantity: data.quantity,
+            data: data,
+            quantity: quantity,
+            selectedVariant: selectedVariant,
+            selectedSize: selectedSize,
+
           })
         )
       }

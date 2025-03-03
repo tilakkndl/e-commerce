@@ -62,20 +62,20 @@ const data: NavMenu = [
     url: "/shop#new-arrivals",
     children: [],
   },
-  {
-    id: 4,
-    type: "MenuItem",
-    label: "Brands",
-    url: "/shop#brands",
-    children: [],
-  },
+  // {
+  //   id: 4,
+  //   type: "MenuItem",
+  //   label: "Brands",
+  //   url: "/shop#brands",
+  //   children: [],
+  // },
 ];
 
 const TopNavbar = () => {
   return (
     <nav className="sticky top-0 bg-white z-20">
       <div className="flex relative max-w-frame mx-auto items-center justify-between md:justify-start py-5 md:py-6 px-4 xl:px-0">
-        <div className="flex items-center">
+        <div className="flex items-center ">
           <div className="block md:hidden mr-4">
             <ResTopNavbar data={data} />
           </div>
@@ -83,10 +83,10 @@ const TopNavbar = () => {
             href="/"
             className={cn([
               integralCF.className,
-              "text-2xl lg:text-[32px] mb-2 mr-3 lg:mr-10",
+              "text-2xl lg:text-[32px]  mr-3 lg:mr-10",
             ])}
           >
-            NEPHEMP
+            <Image src="/images/logo.jpg" height={200} width={200} alt="logo" />
           </Link>
         </div>
         <NavigationMenu className="hidden md:flex mr-2 lg:mr-7">

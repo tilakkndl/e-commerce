@@ -26,6 +26,8 @@ export default function ProductPage({
     (product) => product._id === params.slug[0]
   );
 
+  console.log("productdata:", productData);
+
   if (!productData?.name) {
     notFound();
   }

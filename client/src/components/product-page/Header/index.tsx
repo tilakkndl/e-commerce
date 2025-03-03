@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import PhotoSection from "./PhotoSection";
-import Product from "@/types/product.types";
+import Product, { Variant } from "@/types/product.types";
 import { integralCF } from "@/styles/fonts";
 import { cn } from "@/lib/utils";
 import Rating from "@/components/ui/Rating";
@@ -10,6 +10,10 @@ import AddToCardSection from "./AddToCardSection";
 import { Color } from "@/lib/features/products/productsSlice";
 
 const Header = ({ data }: { data: Product }) => {
+  const [selectedVariant, setSelectedVariant] = useState<Variant>(
+    data.variants[0]
+  );
+  const [selectedSize, setSelectedSize] = useState<string>(selectedVariant.size[0]);
   const colorsData: Color[] = [];
 
   data.variants.map((variant) => {
@@ -18,7 +22,6 @@ const Header = ({ data }: { data: Product }) => {
       code: `bg-[${variant.hexColor}]`,
     });
   });
-  console.log("colorsData", colorsData);
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -88,11 +91,19 @@ const Header = ({ data }: { data: Product }) => {
             {data.description}
           </p>
           <hr className="h-[1px] border-t-black/10 mb-5" />
-          <ColorSelection colorsData={colorsData} />
+          <ColorSelection
+            variants={data.variants}
+            setSelectedVariant={setSelectedVariant}
+            selectedVariant={selectedVariant}
+          />
           <hr className="h-[1px] border-t-black/10 my-5" />
-          <SizeSelection />
+          <SizeSelection
+            availableSizes={data.variants[0].size}
+            setSelectedSize={setSelectedSize}
+            selectedSize={selectedSize}
+          />
           <hr className="hidden md:block h-[1px] border-t-black/10 my-5" />
-          <AddToCardSection data={data} />
+          <AddToCardSection data={data} selectedVariant={selectedVariant} selectedSize={selectedSize} />
         </div>
       </div>
     </>

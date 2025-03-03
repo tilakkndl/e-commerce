@@ -9,6 +9,7 @@ type ProductCardProps = {
 };
 
 const ProductCard = ({ data }: ProductCardProps) => {
+  console.log("product Card", data);
   return (
     <Link
       href={`/shop/product/${data._id}/${data.name.split(" ").join("-")}`}
@@ -53,7 +54,7 @@ const ProductCard = ({ data }: ProductCardProps) => {
             ${data.price}
           </span>
         )}
-        
+
         {data.discount > 0 && (
           <span className="font-bold text-black/40 line-through text-xl xl:text-2xl">
             ${data.price}

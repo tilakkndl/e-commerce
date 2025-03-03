@@ -23,7 +23,7 @@ const tabBtnData: TabBtn[] = [
   },
   {
     id: 3,
-    label: "FAQs",
+    label: "Why Nephemp?",
   },
 ];
 

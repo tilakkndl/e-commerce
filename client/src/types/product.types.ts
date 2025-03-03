@@ -28,7 +28,10 @@ interface Category {
   category: string;
   __v: number;
 }
-interface Discount {}
+export interface Discount {
+  amount: number;
+  percentage: number;
+}
 
 // Type definition for the entire product
 interface Product {

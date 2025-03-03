@@ -13,11 +13,15 @@ import { RootState } from "@/lib/store";
 import { useAppSelector } from "@/lib/hooks/redux";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const { cart, totalPrice, adjustedTotalPrice } = useAppSelector(
     (state: RootState) => state.carts
   );
+  const router = useRouter();
+
+  console.log("cart", cart);
 
   return (
     <main className="pb-20">
@@ -101,6 +105,9 @@ export default function CartPage() {
                 <Button
                   type="button"
                   className="text-sm md:text-base font-medium bg-black rounded-full w-full py-4 h-[54px] md:h-[60px] group"
+                  onClick={() => {
+                    router.push("./checkout");
+                  }}
                 >
                   Go to Checkout{" "}
                   <FaArrowRight className="text-xl ml-2 group-hover:translate-x-1 transition-all" />
