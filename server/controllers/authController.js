@@ -60,6 +60,7 @@ export const login = catchAsync(async (req, res, next) => {
     data: {
       token,
       user: {
+        _id: user._id,
         name: user.name,
         username: user.username,
         role: user.role,

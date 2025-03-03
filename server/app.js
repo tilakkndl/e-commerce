@@ -1,5 +1,6 @@
 import express, { urlencoded } from "express"
 import morgan from "morgan"
+import cors from "cors";
 
 import userRoute from './routes/userRoute.js'
 import errorMiddleware from "./middleware/errorMiddleware.js"
@@ -15,6 +16,12 @@ const app = express()
 app.use(express.json())
 app.use(morgan("dev"))
 app.use(urlencoded({extended: true}))
+app.use(
+    cors({
+      origin: "http://localhost:3000", // Allow frontend URL
+      credentials: true,
+    })
+  );
 
 
 app.use("/api/v1/user", userRoute)

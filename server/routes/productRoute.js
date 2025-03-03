@@ -10,7 +10,9 @@ import {
   addVariant,
   updateVariant,
   deleteVariant,
-  variantImageUpload
+  variantImageUpload,
+  getAllVariants,
+  getVariantById
 } from "../controllers/productController.js";
 
 import upload  from "../middleware/upload.js";  
@@ -18,7 +20,6 @@ import { protect, restrictTo } from "../controllers/authController.js";
 
 const router = express.Router();
 
-// ✅ CRUD for Products
 router.route("/")
   .post(protect, restrictTo("admin"), upload.array("gallery", 5), createProduct)
   .get(getAllProducts);
@@ -36,10 +37,12 @@ router.route("/:id/reviews")
 // ✅ Variant Routes
 router.route("/variant/image").post(upload.array("gallery", 5), variantImageUpload)
 router.route("/:id/variants")
-  .post(protect, restrictTo("admin"), addVariant);
+  .post(protect, restrictTo("admin"),upload.array("gallery", 5), addVariant)
+  .get(protect, restrictTo("admin"),upload.array("gallery", 5), getAllVariants )
 
 router.route("/:id/variants/:variantId")
-  .put(protect, restrictTo("admin"), updateVariant)
+  .put(protect, restrictTo("admin"),upload.array("gallery", 5), updateVariant)
+  .get(protect, restrictTo("admin"),upload.array("gallery", 5), getVariantById)
   .delete(protect, restrictTo("admin"), deleteVariant);
 
 export default router;
