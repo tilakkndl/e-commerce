@@ -1,13 +1,14 @@
 // const express = require('express');
 import express from 'express';
-import { createOrder, getAllOrder, getOrder, updateOrderStatus } from '../controllers/orderController.js';
-import {protect} from '../controllers/authController.js'
+import { createOrder, getAllOrder, getOrder, getUserOrder, updateOrderStatus } from '../controllers/orderController.js';
+import {protect, restrictTo} from '../controllers/authController.js'
 
 const router = express.Router();
 
 router.post('/',protect, createOrder);
 router.patch('/status/:id',protect, updateOrderStatus);
-router.get("/", getAllOrder)
+router.get("/",protect, restrictTo("admin"), getAllOrder)
 router.get("/:id", getOrder);
+router.route("/user/:id").get(protect, restrictTo("admin"), getUserOrder);
 
 export default router;

@@ -5,8 +5,6 @@ import {
   getProductById,
   updateProduct,
   deleteProduct,
-  addReview,
-  deleteReview,
   addVariant,
   updateVariant,
   deleteVariant,
@@ -29,12 +27,9 @@ router.route("/:id")
   .put(protect, restrictTo("admin"), updateProduct)
   .delete(protect, restrictTo("admin"), deleteProduct);
 
-// ✅ Review Routes
-router.route("/:id/reviews")
-  .post(protect, addReview)
-  .delete(protect, deleteReview);
 
-// ✅ Variant Routes
+
+//  Variant Routes
 router.route("/variant/image").post(upload.array("gallery", 5), variantImageUpload)
 router.route("/:id/variants")
   .post(protect, restrictTo("admin"),upload.array("gallery", 5), addVariant)
