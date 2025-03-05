@@ -1,25 +1,86 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
+import { integralCF } from "@/styles/fonts";
+import { useDispatch } from "react-redux";
+import { removeAll } from "@/lib/features/carts/cartsSlice";
+import axios, { AxiosResponse } from "axios";
+import Cookies from "js-cookie";
+
+// Import the OrderResponse type
+import { OrderResponse, OrderItem, OrderData, OrderRequest } from "@/types/order.types";
 
 export default function CheckoutPage() {
+  // State for payment confirmation
   const [confirmed, setConfirmed] = useState(false);
-  const interacEmail = "sangampoudelb@gmail.com"; // Replace with your actual email
+  const [confirmedChecked, setConfirmedChecked] = useState(false);
+  const token = Cookies.get("authToken") as string | undefined;
 
-  const handlePaymentConfirmation = () => {
-    setConfirmed(true);
-    // Optionally, send a notification to your backend or log the confirmation
+  
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get("order") || undefined;
+
+
+  const interacEmail = "sangampoudelb@gmail.com";
+
+  
+  const dispatch = useDispatch();
+
+  
+  useEffect(() => {
+    if (!orderId) {
+      console.warn("No order ID found in URL. Using default behavior.");
+    }
+  }, [orderId]);
+
+  const handlePaymentConfirmation = async () => {
+    if (!confirmedChecked) return; // Prevent execution if not checked
+
+    try {
+      const response: AxiosResponse<OrderResponse> = await axios.patch(
+        `http://localhost:5000/api/v1/orders/status/${orderId}`,
+        { status: "confirmed" },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const { data } = response; 
+      if (data.success) {
+        setConfirmed(true);
+        setConfirmedChecked(false);
+        dispatch(removeAll());
+      } else {
+        throw new Error(data.message || "Payment confirmation failed.");
+      }
+    } catch (error) {
+      console.error("Payment confirmation error:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "An error occurred during payment confirmation. Please try again."
+      );
+    }
+
+    console.log(`Payment confirmed for order ${orderId}`);
     alert("Thank you! Please allow 24-48 hours for payment verification.");
   };
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Complete Your Order</h2>
-      <p className="text-gray-600 mb-4">
+      <h2
+        className={`text-4xl font-bold mb-4 text-center ${integralCF.className}`}
+      >
+        Complete Your Order
+      </h2>
+      <p className="text-gray-600 mb-4 p-4">
         Please send your payment via Interac e-Transfer to complete your
-        purchase.
+        purchase for order {orderId || "N/A"}.
       </p>
 
       {/* Payment Instructions */}
@@ -31,8 +92,8 @@ export default function CheckoutPage() {
           </li>
           <li>Use your banking app to initiate an Interac e-Transfer.</li>
           <li>
-            Include the order number <strong>#orderno</strong> in the message
-            field.
+            Include the order number <strong>{orderId || "N/A"}</strong> in the
+            message field.
           </li>
           <li>
             Once sent, confirm below to notify us. We’ll verify your payment
@@ -47,7 +108,7 @@ export default function CheckoutPage() {
           <input
             type="checkbox"
             id="paymentConfirmed"
-            onChange={(e) => setConfirmed(e.target.checked)}
+            onChange={(e) => setConfirmedChecked(e.target.checked)}
             className="h-4 w-4 text-black focus:ring-black"
           />
           <label htmlFor="paymentConfirmed" className="text-gray-700">
@@ -58,10 +119,10 @@ export default function CheckoutPage() {
 
       <Button
         onClick={handlePaymentConfirmation}
-        disabled={!confirmed}
+        disabled={!confirmedChecked}
         className={cn(
           "w-full bg-black text-white py-2 rounded-md hover:bg-gray-800",
-          !confirmed && "opacity-50 cursor-not-allowed"
+          !confirmedChecked && "opacity-50 cursor-not-allowed"
         )}
       >
         Confirm Payment
@@ -69,8 +130,9 @@ export default function CheckoutPage() {
 
       {confirmed && (
         <p className="text-green-600 mt-4">
-          Thank you! We’ve been notified. Please allow 24-48 hours for payment
-          verification and order processing.
+          Thank you! We’ve been notified for order{" "}
+          <strong>{orderId || "N/A"}</strong>. Please allow 24-48 hours for
+          payment verification and order processing.
         </p>
       )}
     </div>

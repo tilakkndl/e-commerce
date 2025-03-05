@@ -12,6 +12,7 @@ const getUserFromLocalStorage = (): UserState => {
 };
 
 const initialState: UserState = getUserFromLocalStorage();
+console.log("initialState",initialState);
 export const userSlice = createSlice({
   name: "user",
   initialState,

@@ -1,5 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import { fetchAllOrders } from "@/lib/features/admin/adminSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
+import React, { useEffect, useState } from "react";
 
 const AdminOrdersPage = () => {
   const initialOrders = [
@@ -186,6 +188,14 @@ const AdminOrdersPage = () => {
   ];
 
   const [orders, setOrders] = useState(initialOrders);
+  const dispatch = useAppDispatch();
+  const newOrders = useAppSelector((state) => state.admin.orders);
+
+  console.log("newOrderss", newOrders);
+
+  useEffect(() => {
+    dispatch(fetchAllOrders());
+  }, []);
 
   const handleStatusChange = (orderId: number, status: string) => {
     const updatedOrders = orders.map((order) =>

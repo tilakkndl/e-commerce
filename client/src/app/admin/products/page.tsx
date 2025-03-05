@@ -10,9 +10,7 @@ import {
   fetchAllProducts,
 } from "@/lib/features/admin/adminSlice";
 
-const deleteProduct = async (productId: string): Promise<void> => {
-  console.log("Deleted product ID:", productId);
-};
+
 
 const AdminProductsPage = () => {
   const [ellipsisToggle, setEllipsisToggle] = useState(false);
@@ -22,8 +20,6 @@ const AdminProductsPage = () => {
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
-
-  
 
   return (
     <div className="space-y-6">

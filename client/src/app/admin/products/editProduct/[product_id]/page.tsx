@@ -5,10 +5,13 @@ import Product, { Variant } from "@/types/product.types";
 import VariantCard from "@/components/admin/Variant";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { findProductById } from "@/lib/features/admin/adminSlice";
+import { Button } from "@/components/ui/button";
+import { openModal } from "@/lib/features/modal/modalSlice";
+import AddVariant from "@/components/admin/AddVariant";
 
 const EditProduct = () => {
   const router = useRouter();
-  const { product_id } = useParams(); // Corrected type for params
+  const { product_id } = useParams();
   const dispatch = useAppDispatch();
 
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -25,14 +28,14 @@ const EditProduct = () => {
     if (editableProduct && editableProduct._id === product_id) {
       setEditingProduct(editableProduct);
     }
-  }, [editableProduct?._id, product_id, dispatch]); // Depend on both editableProduct and product_id
+  }, [editableProduct?._id, product_id, dispatch]);
 
   // If the product is still loading
   if (!editingProduct) return <p>Loading product...</p>;
 
   const handleUpdateProduct = () => {
     console.log("Updated Product:", editingProduct);
-    router.push("/admin/products"); // Redirect back after update (you can replace this with an actual API call)
+    router.push("/admin/products");
   };
 
   return (
@@ -94,7 +97,19 @@ const EditProduct = () => {
 
         {/* Product Variants */}
         <section>
-          <h2 className="font-semibold text-xl">Variants</h2>
+          <div className="flex justify-between items-center">
+            <h2 className="font-semibold text-xl">Variants</h2>
+            <Button
+              className="rounded-none bg-black/90"
+              onClick={() =>
+                dispatch(
+                  openModal(<AddVariant product={product_id.toString()} />)
+                )
+              }
+            >
+              Add Variant
+            </Button>
+          </div>
           <div className="flex flex-col lg:flex-row lg:flex-wrap gap-2 lg:justify-center lg:items-center items-center justify-start">
             {editingProduct.variants?.map((variant: Variant, index: number) => (
               <VariantCard key={index} variant={variant} />

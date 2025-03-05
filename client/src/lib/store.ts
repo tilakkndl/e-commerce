@@ -5,12 +5,13 @@ import productsReducer from "./features/products/productsSlice";
 import cartsReducer from "./features/carts/cartsSlice";
 import userReducer from "./features/user/userSlice";
 import adminReducer from "./features/admin/adminSlice";
+import modalReducer from "./features/modal/modalSlice";
 
 const persistConfig = {
   key: "root",
   storage,
   version: 1,
-  whitelist: ["carts", "products"],
+  whitelist: ["carts", "products", "user"],
 };
 
 const rootReducer = combineReducers({
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   carts: cartsReducer,
   user: userReducer,
   admin: adminReducer,
+  modal: modalReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
