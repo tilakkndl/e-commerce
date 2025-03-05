@@ -320,15 +320,31 @@ export const variantImageUpload = catchAsync(async (req, res, next) => {
   });
 });
 
-// ✅ Add Variant to a Product
 export const addVariant = catchAsync(async (req, res, next) => {
-  const product = await Product.findById(req.params.id);
+  
+  const id = req.params.id;
+  const product = await Product.findById(id);
 
   if (!product) {
     return next(new AppError("Product not found", 404));
   }
+  
+  const files = req.files;
+  if (files.length === 0) {
+    return next(new AppError("No files uploaded", 400));
+  }
+  const gallery = await cloudinaryUpload(files, product.name);
+  let {color, hexColor, stock, size} = req.body;
+  size = JSON.parse(size);
+  stock = parseInt(stock);
 
-  product.variants.push(req.body);
+  product.variants.push({
+    color,
+    hexColor,
+    stock,
+    size,
+    gallery
+  });
   await product.save();
 
   res.status(201).json({
@@ -338,11 +354,10 @@ export const addVariant = catchAsync(async (req, res, next) => {
   });
 });
 
-// ✅ Update a Variant
 export const updateVariant = catchAsync(async (req, res, next) => {
-  const { variantId } = req.params;
-  const product = await Product.findById(req.params.id);
-
+  const { variantId, id } = req.params;
+  let product = await Product.findById(id);
+  
   if (!product) {
     return next(new AppError("Product not found", 404));
   }
@@ -352,31 +367,92 @@ export const updateVariant = catchAsync(async (req, res, next) => {
     return next(new AppError("Variant not found", 404));
   }
 
-  product.variants[variantIndex] = { ...product.variants[variantIndex], ...req.body };
-  await product.save();
+  let gallery = [];
+  if (req.files && req.files.length > 0) {
+    gallery = await cloudinaryUpload(req.files, product.name);
+    product.variants[variantIndex].gallery = [
+      ...product.variants[variantIndex].gallery,
+      ...gallery
+    ];
+  }
+
+  // Update variant fields if provided
+  if (req.body.color) product.variants[variantIndex].color = req.body.color;
+  if (req.body.hexColor) product.variants[variantIndex].hexColor = req.body.hexColor;
+  if (req.body.stock) product.variants[variantIndex].stock = parseInt(req.body.stock);
+  if (req.body.size) {
+    product.variants[variantIndex].size = Array.isArray(req.body.size)
+    ? req.body.size
+    : JSON.parse(req.body.size);
+  }
+
+await product.save();
+
+const updatedVariant = product.variants[variantIndex]
 
   res.status(200).json({
     success: true,
     message: "Variant updated successfully",
-    data: product,
+    data: updatedVariant,
   });
 });
 
-// ✅ Delete a Variant
-export const deleteVariant = catchAsync(async (req, res, next) => {
-  const { variantId } = req.params;
-  const product = await Product.findById(req.params.id);
+export const getAllVariants = catchAsync(async(req, res, next)=>{
+  const {id} = req.params;
+  const product = await Product.findById(id);
+  if(!product){
+    return next(new AppError("Product not found", 404));
+  }
+  const variants = product.variants;
+  res.status(200).json({
+    success: true,
+    message: "Fetched all variants",
+    data: variants
+  })
+})
 
+export const getVariantById = catchAsync(async (req, res, next) => {
+  const { id, variantId } = req.params;
+
+  const product = await Product.findById(id);
   if (!product) {
     return next(new AppError("Product not found", 404));
   }
 
-  product.variants = product.variants.filter((v) => v._id.toString() !== variantId);
+  const variant = product.variants.find((v) => v._id.toString() === variantId);
+  if (!variant) {
+    return next(new AppError("Variant not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Fetched variant successfully",
+    data: variant,
+  });
+});
+
+
+
+export const deleteVariant = catchAsync(async (req, res, next) => {
+  const { id, variantId } = req.params;
+
+  const product = await Product.findById(id);
+  if (!product) {
+    return next(new AppError("Product not found", 404));
+  }
+
+  const variantIndex = product.variants.findIndex((v) => v._id.toString() === variantId);
+  if (variantIndex === -1) {
+    return next(new AppError("Variant not found", 404));
+  }
+
+  // Remove the variant from the array
+  product.variants.splice(variantIndex, 1);
   await product.save();
 
   res.status(200).json({
     success: true,
     message: "Variant deleted successfully",
-    data: product,
   });
 });
+
