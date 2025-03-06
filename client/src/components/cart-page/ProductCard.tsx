@@ -22,7 +22,7 @@ const ProductCard = ({ data }: ProductCardProps) => {
   const dispatch = useAppDispatch();
 
   const product = data.data;
-  console.log("product", data.data);
+
   const discountedPrice =
     product.discount > 0
       ? Math.round(product.price - (product.price * product.discount) / 100)

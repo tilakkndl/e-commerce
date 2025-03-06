@@ -36,13 +36,9 @@ export default function ProfileButton() {
     };
   }, [profileButtonToggle]);
 
-  const adminHandler = () => {
-    router.replace("http://localhost:5000/admin");
-  };
-
   return (
     <div className={`relative ${satoshi.className}`} ref={dropdownRef}>
-      {user.id === null ? (
+      {user._id === null ? (
         <Link href="/signin">
           <div className="flex items-center space-x-2 max-w-[100px] px-1 cursor-pointer select-none">
             <Image

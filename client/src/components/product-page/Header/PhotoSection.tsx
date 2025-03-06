@@ -1,38 +1,38 @@
 "use client";
 
-import Product from "@/types/product.types";
+import Product, { Variant } from "@/types/product.types";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const PhotoSection = ({ data }: { data: Product }) => {
+const PhotoSection = ({ data }: { data: Variant }) => {
   // Get first image of the first variant, fallback to null
-  const [selected, setSelected] = useState(
-    data.variants[0]?.gallery[0] || null
-  );
+  const [selected, setSelected] = useState(data.gallery[0] || null);
+
+  useEffect(() => {
+    setSelected(data.gallery[0] || null);
+  }, [data]);
 
   return (
     <div className="flex flex-col-reverse lg:flex-row lg:space-x-3.5">
-      {data?.variants.length > 0 && (
+      {data?.gallery.length > 0 && (
         <div className="flex lg:flex-col space-x-3 lg:space-x-0 lg:space-y-3.5 w-full lg:w-fit items-center lg:justify-start justify-center">
-          {data.variants
-            .flatMap((variant) => variant.gallery)
-            .map((photo, index) => (
-              <button
-                key={index}
-                type="button"
-                className="bg-[#F0EEED] rounded-[13px] xl:rounded-[20px] w-full max-w-[111px] xl:max-w-[152px] max-h-[106px] xl:max-h-[167px] xl:min-h-[167px] aspect-square overflow-hidden"
-                onClick={() => setSelected(photo)}
-              >
-                <Image
-                  src={photo.url} // Fix: Access 'url' property
-                  width={152}
-                  height={167}
-                  className="rounded-md w-full h-full object-cover hover:scale-110 transition-all duration-500"
-                  alt={data.name}
-                  priority
-                />
-              </button>
-            ))}
+          {data.gallery.map((photo, index) => (
+            <button
+              key={index}
+              type="button"
+              className="bg-[#F0EEED] rounded-[13px] xl:rounded-[20px] w-full max-w-[111px] xl:max-w-[152px] max-h-[106px] xl:max-h-[167px] xl:min-h-[167px] aspect-square overflow-hidden"
+              onClick={() => setSelected(photo)}
+            >
+              <Image
+                src={photo.url} // Fix: Access 'url' property
+                width={152}
+                height={167}
+                className="rounded-md w-full h-full object-cover hover:scale-110 transition-all duration-500"
+                alt={data._id}
+                priority
+              />
+            </button>
+          ))}
         </div>
       )}
 
@@ -43,7 +43,7 @@ const PhotoSection = ({ data }: { data: Product }) => {
             width={444}
             height={530}
             className="rounded-md w-full h-full object-cover hover:scale-110 transition-all duration-500"
-            alt={data.name}
+            alt={data._id}
             priority
             unoptimized
           />

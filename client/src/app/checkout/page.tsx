@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { integralCF } from "@/styles/fonts";
 import { useDispatch } from "react-redux";
 import { removeAll } from "@/lib/features/carts/cartsSlice";
@@ -11,7 +11,12 @@ import axios, { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 
 // Import the OrderResponse type
-import { OrderResponse, OrderItem, OrderData, OrderRequest } from "@/types/order.types";
+import {
+  OrderResponse,
+  OrderItem,
+  OrderData,
+  OrderRequest,
+} from "@/types/order.types";
 
 export default function CheckoutPage() {
   // State for payment confirmation
@@ -19,17 +24,14 @@ export default function CheckoutPage() {
   const [confirmedChecked, setConfirmedChecked] = useState(false);
   const token = Cookies.get("authToken") as string | undefined;
 
-  
   const searchParams = useSearchParams();
   const orderId = searchParams.get("order") || undefined;
-
+  const router = useRouter();
 
   const interacEmail = "sangampoudelb@gmail.com";
 
-  
   const dispatch = useDispatch();
 
-  
   useEffect(() => {
     if (!orderId) {
       console.warn("No order ID found in URL. Using default behavior.");
@@ -37,7 +39,7 @@ export default function CheckoutPage() {
   }, [orderId]);
 
   const handlePaymentConfirmation = async () => {
-    if (!confirmedChecked) return; // Prevent execution if not checked
+    if (!confirmedChecked) return;
 
     try {
       const response: AxiosResponse<OrderResponse> = await axios.patch(
@@ -50,11 +52,12 @@ export default function CheckoutPage() {
         }
       );
 
-      const { data } = response; 
+      const { data } = response;
       if (data.success) {
         setConfirmed(true);
         setConfirmedChecked(false);
         dispatch(removeAll());
+        router.push(`checkout/orderComplete/${orderId}`);
       } else {
         throw new Error(data.message || "Payment confirmation failed.");
       }
@@ -127,14 +130,6 @@ export default function CheckoutPage() {
       >
         Confirm Payment
       </Button>
-
-      {confirmed && (
-        <p className="text-green-600 mt-4">
-          Thank you! We’ve been notified for order{" "}
-          <strong>{orderId || "N/A"}</strong>. Please allow 24-48 hours for
-          payment verification and order processing.
-        </p>
-      )}
     </div>
   );
 }

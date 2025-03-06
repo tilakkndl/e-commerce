@@ -28,13 +28,13 @@ const EditProduct = () => {
     if (editableProduct && editableProduct._id === product_id) {
       setEditingProduct(editableProduct);
     }
-  }, [editableProduct?._id, product_id, dispatch]);
+  }, [editableProduct, product_id, dispatch]);
 
   // If the product is still loading
   if (!editingProduct) return <p>Loading product...</p>;
 
   const handleUpdateProduct = () => {
-    console.log("Updated Product:", editingProduct);
+    
     router.push("/admin/products");
   };
 
@@ -97,7 +97,7 @@ const EditProduct = () => {
 
         {/* Product Variants */}
         <section>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center pb-2">
             <h2 className="font-semibold text-xl">Variants</h2>
             <Button
               className="rounded-none bg-black/90"
@@ -110,7 +110,7 @@ const EditProduct = () => {
               Add Variant
             </Button>
           </div>
-          <div className="flex flex-col lg:flex-row lg:flex-wrap gap-2 lg:justify-center lg:items-center items-center justify-start">
+          <div className="flex flex-col lg:flex-row lg:flex-wrap gap-2 lg:justify-start lg:items-center items-center justify-start">
             {editingProduct.variants?.map((variant: Variant, index: number) => (
               <VariantCard key={index} variant={variant} />
             ))}

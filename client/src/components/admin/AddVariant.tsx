@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, FormEvent } from "react";
 import {
   Popover,
@@ -8,22 +6,23 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, Loader2 } from "lucide-react";
 import ColorPicker from "./colorPicker";
 import axios from "axios";
-import Cookies from "js-cookie"; // Added for authentication token
+import Cookies from "js-cookie";
+import { useAppDispatch } from "@/lib/hooks/redux";
+import { findProductById } from "@/lib/features/admin/adminSlice";
 
-// Define interfaces for form data
 interface VariantFormData {
   color: string;
   hexColor: string;
-  stock: string; // Stored as string from input, converted if needed
+  stock: string;
   size: string[];
   gallery: FileList | null;
 }
 
 const AddVariant = ({ product }: { product: string }) => {
-  // State with proper typing
+  const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<VariantFormData>({
     color: "",
     hexColor: "",
@@ -32,10 +31,10 @@ const AddVariant = ({ product }: { product: string }) => {
     gallery: null,
   });
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const sizes = ["XS", "SM", "MD", "LG", "XL", "2XL", "3XL"] as const;
   type SizeType = (typeof sizes)[number];
 
-  // Handle size selection
   const handleSizeChange = (size: SizeType) => {
     const updatedSizes = selectedSizes.includes(size)
       ? selectedSizes.filter((s) => s !== size)
@@ -47,7 +46,6 @@ const AddVariant = ({ product }: { product: string }) => {
     }));
   };
 
-  // Handle file input change
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFormData((prev) => ({
@@ -57,18 +55,19 @@ const AddVariant = ({ product }: { product: string }) => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     const { color, hexColor, stock, size, gallery } = formData;
 
-    // Basic validation
     if (!color || !hexColor || !stock || size.length === 0) {
+      setLoading(false);
       alert("Please fill all fields and select at least one size.");
       return;
     }
     if (gallery && gallery.length === 0) {
+      setLoading(false);
       alert("Please upload at least one image.");
       return;
     }
@@ -104,6 +103,7 @@ const AddVariant = ({ product }: { product: string }) => {
 
       alert(response.data.message || "Variant added successfully!");
 
+      // Reset form
       setFormData({
         color: "",
         hexColor: "",
@@ -112,8 +112,13 @@ const AddVariant = ({ product }: { product: string }) => {
         gallery: null,
       });
       setSelectedSizes([]);
+      setLoading(false);
+
+      // Re-fetch the product to get the updated variants
+      dispatch(findProductById(product));
     } catch (error) {
       console.error("Error uploading variant:", error);
+      setLoading(false);
       alert(
         error instanceof Error
           ? error.message
@@ -198,9 +203,9 @@ const AddVariant = ({ product }: { product: string }) => {
         />
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-center"
         >
-          Submit
+          {loading ? <Loader2 className="animate-spin" /> : "Submit"}
         </button>
       </form>
     </div>

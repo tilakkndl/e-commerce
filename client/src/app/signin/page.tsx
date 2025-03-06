@@ -21,7 +21,6 @@ const SignInPage = () => {
 
   const user = useAppSelector((state: RootState) => state.user);
   const dispatch = useAppDispatch();
-  console.log(user);
 
   // Handle input changes
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -50,8 +49,6 @@ const SignInPage = () => {
         { withCredentials: true }
       );
 
-      console.log("signin", response);
-
       if (response.data.success) {
         const token = response.data.data.token as string;
 
@@ -61,10 +58,11 @@ const SignInPage = () => {
           sameSite: "Strict",
           path: "/",
         });
+        console.log("response", response);
 
-        const { id, name, username, role } = response.data.data.user;
-        dispatch(setUser({ id, name, username, role }));
-        console.log(user);
+        const { _id, name, username, role } = response.data.data.user;
+        dispatch(setUser({ _id, name, username, role }));
+        console.log("siging in:", _id);
         router.replace("/");
       }
     } catch (error) {

@@ -19,10 +19,6 @@ import Cookies from "js-cookie";
 import { CartItem, CartsState } from "@/lib/features/carts/cartsSlice";
 import { OrderRequest, OrderResponse } from "@/types/order.types";
 
-
-
-
-
 export default function CartPage() {
   // Type the Redux state correctly with fallback for undefined
   const { cart, totalPrice, adjustedTotalPrice }: CartsState = useAppSelector(
@@ -33,7 +29,7 @@ export default function CartPage() {
   const router = useRouter();
 
   // Type the user ID from Redux with fallback for undefined
-  const userId = useAppSelector((state: RootState) => state.user?.id) as
+  const userId = useAppSelector((state: RootState) => state.user?._id) as
     | string
     | number
     | undefined;
@@ -50,7 +46,6 @@ export default function CartPage() {
         size: item.selectedSize,
       })) || [],
   };
-  console.log("Request:", request);
 
   const checkoutHandler = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,5 +1,5 @@
 "use client";
-import { relatedProductData, topSellingData } from "@/app/page";
+
 import ProductListSec from "@/components/common/ProductListSec";
 import BreadcrumbProduct from "@/components/product-page/BreadcrumbProduct";
 import Header from "@/components/product-page/Header";
@@ -43,7 +43,7 @@ export default function ProductPage({
         <Tabs />
       </div>
       <div className="mb-[50px] sm:mb-20">
-        <ProductListSec title="You might also like" data={relatedProductData} />
+        {/* <ProductListSec title="You might also like" data={relatedProductData} /> */}
       </div>
     </main>
   );

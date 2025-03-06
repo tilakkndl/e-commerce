@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PhotoSection from "./PhotoSection";
 import Product, { Variant } from "@/types/product.types";
 import { integralCF } from "@/styles/fonts";
@@ -13,7 +13,12 @@ const Header = ({ data }: { data: Product }) => {
   const [selectedVariant, setSelectedVariant] = useState<Variant>(
     data.variants[0]
   );
-  const [selectedSize, setSelectedSize] = useState<string>(selectedVariant.size[0]);
+  const [selectedSize, setSelectedSize] = useState<string>(
+    selectedVariant.size[0]
+  );
+  useEffect(() => {
+    setSelectedSize(selectedVariant.size[0]);
+  }, [selectedVariant]);
   const colorsData: Color[] = [];
 
   data.variants.map((variant) => {
@@ -26,7 +31,7 @@ const Header = ({ data }: { data: Product }) => {
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
-          <PhotoSection data={data} />
+          <PhotoSection data={selectedVariant} />
         </div>
         <div>
           <h1
@@ -98,12 +103,16 @@ const Header = ({ data }: { data: Product }) => {
           />
           <hr className="h-[1px] border-t-black/10 my-5" />
           <SizeSelection
-            availableSizes={data.variants[0].size}
+            availableSizes={selectedVariant.size}
             setSelectedSize={setSelectedSize}
             selectedSize={selectedSize}
           />
           <hr className="hidden md:block h-[1px] border-t-black/10 my-5" />
-          <AddToCardSection data={data} selectedVariant={selectedVariant} selectedSize={selectedSize} />
+          <AddToCardSection
+            data={data}
+            selectedVariant={selectedVariant}
+            selectedSize={selectedSize}
+          />
         </div>
       </div>
     </>

@@ -1,5 +1,5 @@
 export interface UserState {
-  id: number | null;
+  _id: number | null;
   name: string;
   username: string;
   role: "admin" | "customer" | null;
