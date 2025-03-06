@@ -146,7 +146,7 @@ export const createProduct = catchAsync(async (req, res, next) => {
 
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
-  const products = await Product.find().populate("brand category reviews");
+  const products = await Product.find().populate("brand category");
   res.status(200).json({
     success: true,
     message: "Products retrieved successfully",
@@ -155,7 +155,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
 });
 
 export const getProductById = catchAsync(async (req, res, next) => {
-  const product = await Product.findById(req.params.id).populate("brand category reviews.user");
+  const product = await Product.findById(req.params.id).populate("brand category");
   if (!product) {
     return next(new AppError("Product not found", 404));
   }
@@ -245,42 +245,8 @@ export const deleteProduct = catchAsync(async (req, res, next) => {
   });
 });
 
-// ✅ Add a Review to a Product
-export const addReview = catchAsync(async (req, res, next) => {
-  const { rating, review } = req.body;
-  const product = await Product.findById(req.params.id);
-
-  if (!product) {
-    return next(new AppError("Product not found", 404));
-  }
-
-  product.reviews.push({ user: req.user.id, rating, review });
-  await product.calculateAvgRating();
-  res.status(201).json({
-    success: true,
-    message: "Review added successfully",
-    data: product,
-  });
-});
-
-// ✅ Delete a Review
-export const deleteReview = catchAsync(async (req, res, next) => {
-  const product = await Product.findById(req.params.id);
-  if (!product) {
-    return next(new AppError("Product not found", 404));
-  }
-
-  product.reviews = product.reviews.filter((r) => r.user.toString() !== req.user.id);
-  await product.calculateAvgRating();
-  res.status(200).json({
-    success: true,
-    message: "Review deleted successfully",
-    data: product,
-  });
-});
 
 
-// ========================== VARIANT CRUD OPERATIONS ==========================
 export const variantImageUpload = catchAsync(async (req, res, next) => {
   const files = req.files;
   const productId = req.body.productId;

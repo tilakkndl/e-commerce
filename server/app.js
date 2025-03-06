@@ -2,12 +2,14 @@ import express, { urlencoded } from "express"
 import morgan from "morgan"
 import cors from "cors";
 
-import userRoute from "./routes/userRoute.js";
-import errorMiddleware from "./middleware/errorMiddleware.js";
-import categoryRoute from "./routes/categoryRoute.js";
-import brandRoute from "./routes/brandRoute.js";
-import productRoute from "./routes/productRoute.js";
-import orderRoute from "./routes/orderRoute.js";
+import userRoute from './routes/userRoute.js'
+import errorMiddleware from "./middleware/errorMiddleware.js"
+import categoryRoute from './routes/categoryRoute.js'
+import brandRoute from './routes/brandRoute.js'
+import productRoute from './routes/productRoute.js'
+import orderRoute from "./routes/orderRoute.js"
+import ReviewRoute from './routes/reviewRoute.js';
+
 
 const app = express();
 
@@ -28,6 +30,7 @@ app.use("/api/v1/category", categoryRoute)
 app.use("/api/v1/brand", brandRoute)
 app.use("/api/v1/product", productRoute)
 app.use("/api/v1/orders", orderRoute)
+app.use("/api/v1/reviews", ReviewRoute)
 
 
 

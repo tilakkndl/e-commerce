@@ -1,20 +1,56 @@
 
-// import Order from '../models/orderSchema.js';
+import mongoose from 'mongoose';
 import Order from '../models/orderSchema.js'
 import Product from '../models/productSchema.js';
 import User from '../models/userSchema.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 
+export const formatOrders = async (orders) => {
+    return Promise.all(
+      orders.map(async (order) => {
+        const orderObject = order instanceof mongoose.Document ? order.toObject() : order;
+  
+        return {
+          ...orderObject,
+          orders: await Promise.all(
+            orderObject.orders.map(async (orderItem) => {
+              const product = await Product.findById(orderItem.product).lean();
+              if (!product) {
+                return { ...orderItem, product: null, variant: null };
+              }
+  
+              const selectedVariant = product.variants.find(
+                (variant) => variant._id.toString() === orderItem.variant.toString()
+              );
+  
+              return {
+                ...orderItem,
+                product: {
+                  name: product.name,
+                },
+                variant: selectedVariant || null, 
+              };
+            })
+          ),
+        };
+      })
+    );
+  };
 // Create a new order
 export const createOrder = catchAsync(async (req, res, next) => {
     const { user, orders } = req.body;
 
     if (!orders || orders.length === 0) {
-        return res.status(400).json({ message: "At least one order item is required." });
+        // return res.status(400).json({ message: "At least one order item is required." });
+        return next(new AppError("At least one order item is required.", 400));
     }
 
     let totalPrice = 0;
+
+    if(req.user._id.toString() !== user){
+        return next(new AppError("You are not allowed to place order for another user", 403));
+    }
 
     const currentUser = await User.findById(user);
 
@@ -104,24 +140,61 @@ export const updateOrderStatus = catchAsync(async (req, res, next) => {
     });
 });
 
-//get all orders
-export const getAllOrder = catchAsync(async(req, res, next)=>{
-    const orders = await Order.find();
+export const getAllOrder = catchAsync(async (req, res, next) => {
+    const orders = await Order.find().populate("user", "name username address phoneNumber").lean();
+  
+    if (orders.length === 0) {
+    return next(new AppError("No orders found", 404));
+    }
+  
+    const formattedOrders = await formatOrders(orders); // Process all orders
+  
     res.status(200).json({
       success: true,
-      message: "Products retrieved successfully",
-      data: orders,
+      message: "Orders retrieved successfully",
+      data: formattedOrders,
     });
-})
+  });
+  
 
-//Get single Order
-export const getOrder = catchAsync(async(req, res, next)=>{
-    const orders = await Order.findById(req.params.id).populate("orders.product");
-    
+export const getOrder = catchAsync(async (req, res, next) => {
+    let order = await Order.findById(req.params.id)
+      .populate("user", "name username address phoneNumber")
+      .select("-__v")
+      .lean();
+  
+    if (!order) {
+    return next(new AppError("Order not found", 404));
+    }
+  
+    const formattedOrder = await formatOrders([order]); 
+  
     res.status(200).json({
       success: true,
       message: "Order retrieved successfully",
-      data: orders,
+      data: formattedOrder[0], 
     });
-})
+  });
 
+export const getUserOrder = catchAsync(async (req, res, next) => {
+    if(req.user._id.toString() !== req.params.id){
+        return next(new AppError("You are not allowed to view orders of another user", 403));
+    }
+    const orders = await Order.find({ user: req.user._id })
+      .populate("user", "name username address phoneNumber")
+      .lean();
+  
+    if (orders.length === 0) {
+    return next(new AppError("No orders found", 404));
+    }
+  
+    const formattedOrders = await formatOrders(orders); 
+  
+    res.status(200).json({
+      success: true,
+      message: "Orders retrieved successfully",
+      data: formattedOrders,
+    });
+  });
+  
+  
