@@ -112,13 +112,12 @@ export const updateOrderStatus = catchAsync(async (req, res, next) => {
     const validStatuses = [
         "pending",
         "confirmed",
-        "processing",
+        "verified",
         "shipped",
-        "out_for_delivery",
+       
         "delivered",
         "cancelled",
-        "returned",
-        "refunded",
+        
     ];
 
     if (!validStatuses.includes(status)) {

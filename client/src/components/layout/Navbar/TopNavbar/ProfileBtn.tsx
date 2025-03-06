@@ -7,7 +7,7 @@ import { satoshi } from "@/styles/fonts";
 import { removeUser } from "@/lib/features/user/userSlice";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, LogOut } from "lucide-react";
+import { LayoutDashboard, ListOrdered, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function ProfileButton() {
@@ -89,12 +89,20 @@ export default function ProfileButton() {
                     href={
                       user.role != "admin" ? "/" : "http://localhost:3000/admin"
                     }
-                    className="flex text-nowrap items-end  w-fit"
+                    className="flex text-nowrap items-center justify-end py-1 w-fit"
                   >
                     <LayoutDashboard size={16} className="mr-2" />
                     Admin Panel
                   </Link>
                 )}
+
+                <Link
+                  href={"http://localhost:3000/myorders"}
+                  className="flex text-nowrap items-center justify-end py-1 w-fit"
+                >
+                  <ListOrdered size={16} className="mr-2" />
+                  My Orders
+                </Link>
               </div>
             </div>
           )}

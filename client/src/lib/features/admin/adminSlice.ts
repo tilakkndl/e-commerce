@@ -32,7 +32,9 @@ export const fetchAllProducts = createAsyncThunk<
     );
     return response.data.data;
   } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Failed to fetch products");
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to fetch products"
+    );
   }
 });
 
@@ -42,13 +44,22 @@ export const fetchAllOrders = createAsyncThunk<
   void,
   { rejectValue: string }
 >("admin/fetchAllOrders", async (_, { rejectWithValue }) => {
+  const token = Cookies.get("authToken") as string | undefined;
+  
   try {
     const response = await axios.get<{ data: OrderItem[] }>(
-      `${process.env.NEXT_PUBLIC_ROOT_API}/orders`
+      `${process.env.NEXT_PUBLIC_ROOT_API}/orders`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     return response.data.data;
   } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Failed to fetch orders");
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to fetch orders"
+    );
   }
 });
 
@@ -65,7 +76,9 @@ export const findProductById = createAsyncThunk<
     return response.data.data || null;
   } catch (error: any) {
     console.error("Error fetching product by ID:", error);
-    return rejectWithValue(error.response?.data?.message || "Product Not Found");
+    return rejectWithValue(
+      error.response?.data?.message || "Product Not Found"
+    );
   }
 });
 
@@ -84,7 +97,9 @@ export const deleteProductById = createAsyncThunk<
     return id; // Returning the ID so it can be removed from the state
   } catch (error: any) {
     console.error("Error deleting product by ID:", error);
-    return rejectWithValue(error.response?.data?.message || "Failed to delete product");
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to delete product"
+    );
   }
 });
 
@@ -103,58 +118,84 @@ const adminSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAllProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
-        state.loading = false;
-        state.products = action.payload;
-      })
-      .addCase(fetchAllProducts.rejected, (state, action: PayloadAction<string | undefined>) => {
-        state.loading = false;
-        state.error = action.payload || "Something went wrong";
-      })
+      .addCase(
+        fetchAllProducts.fulfilled,
+        (state, action: PayloadAction<Product[]>) => {
+          state.loading = false;
+          state.products = action.payload;
+        }
+      )
+      .addCase(
+        fetchAllProducts.rejected,
+        (state, action: PayloadAction<string | undefined>) => {
+          state.loading = false;
+          state.error = action.payload || "Something went wrong";
+        }
+      )
       // Fetch all orders cases
       .addCase(fetchAllOrders.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAllOrders.fulfilled, (state, action: PayloadAction<OrderItem[]>) => {
-        state.loading = false;
-        state.orders = action.payload;
-      })
-      .addCase(fetchAllOrders.rejected, (state, action: PayloadAction<string | undefined>) => {
-        state.loading = false;
-        state.error = action.payload || "Something went wrong";
-      })
+      .addCase(
+        fetchAllOrders.fulfilled,
+        (state, action: PayloadAction<OrderItem[]>) => {
+          state.loading = false;
+          state.orders = action.payload;
+        }
+      )
+      .addCase(
+        fetchAllOrders.rejected,
+        (state, action: PayloadAction<string | undefined>) => {
+          state.loading = false;
+          state.error = action.payload || "Something went wrong";
+        }
+      )
       // Delete product cases
       .addCase(deleteProductById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteProductById.fulfilled, (state, action: PayloadAction<string>) => {
-        state.loading = false;
-        state.products = state.products.filter((product) => product._id !== action.payload);
-      })
-      .addCase(deleteProductById.rejected, (state, action: PayloadAction<string | undefined>) => {
-        state.loading = false;
-        state.error = action.payload || "Something went wrong";
-      })
+      .addCase(
+        deleteProductById.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.loading = false;
+          state.products = state.products.filter(
+            (product) => product._id !== action.payload
+          );
+        }
+      )
+      .addCase(
+        deleteProductById.rejected,
+        (state, action: PayloadAction<string | undefined>) => {
+          state.loading = false;
+          state.error = action.payload || "Something went wrong";
+        }
+      )
       // Find product by ID cases
       .addCase(findProductById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(findProductById.fulfilled, (state, action: PayloadAction<Product | null>) => {
-        state.loading = false;
-        if (action.payload) {
-          state.editableProduct = action.payload;
-        } else {
-          state.editableProduct = null;
-          alert("Product Not Found");
+      .addCase(
+        findProductById.fulfilled,
+        (state, action: PayloadAction<Product | null>) => {
+          state.loading = false;
+          if (action.payload) {
+            state.editableProduct = action.payload;
+          } else {
+            state.editableProduct = null;
+            alert("Product Not Found");
+          }
         }
-      })
-      .addCase(findProductById.rejected, (state, action: PayloadAction<string | undefined>) => {
-        state.loading = false;
-        state.error = action.payload || "Failed to fetch product";
-      });
+      )
+      .addCase(
+        findProductById.rejected,
+        (state, action: PayloadAction<string | undefined>) => {
+          state.loading = false;
+          state.error = action.payload || "Failed to fetch product";
+        }
+      );
   },
 });
 
