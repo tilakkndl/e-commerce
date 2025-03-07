@@ -1,6 +1,8 @@
-import Product from "@/types/product.types";
-import { createSlice } from "@reduxjs/toolkit";
+import Product, { Category } from "@/types/product.types";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 export type Color = {
   name: string;
@@ -12,6 +14,7 @@ interface ProductsState {
   colorSelection: Color;
   sizeSelection: string;
   relatedProductData: Product[];
+  categories: Category[];
 }
 
 // Define the initial state using that type
@@ -22,7 +25,31 @@ const initialState: ProductsState = {
   },
   sizeSelection: "Large",
   relatedProductData: [],
+  categories: [],
 };
+
+export const fetchCategories = createAsyncThunk<
+  Category[],
+  void,
+  { rejectValue: string }
+>("products/fetchCategories", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_ROOT_API}/category`,
+      {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("authToken")}`,
+        },
+      }
+    );
+    if (response.data.success) {
+      return response.data.data as Category[];
+    }
+    return rejectWithValue("Failed to fetch categories");
+  } catch (error) {
+    return rejectWithValue("Error fetching categories");
+  }
+});
 
 export const productsSlice = createSlice({
   name: "products",
@@ -39,6 +66,14 @@ export const productsSlice = createSlice({
       console.log(action.payload);
       state.relatedProductData = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(
+      fetchCategories.fulfilled,
+      (state, action: PayloadAction<Category[]>) => {
+        state.categories = action.payload;
+      }
+    );
   },
 });
 

@@ -23,7 +23,7 @@ interface Brand {
 }
 
 // Type definition for category
-interface Category {
+export interface Category {
   _id: string;
   category: string;
   __v: number;

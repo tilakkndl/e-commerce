@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -8,6 +8,15 @@ import {
 import { Slider } from "@/components/ui/slider";
 
 const PriceSection = () => {
+  const [priceRange, setPriceRange] = useState<[number, number]>([10, 5000]);
+
+  const handlePriceChange = (value: number[]) => {
+    if (value.length === 2) {
+      setPriceRange([value[0], value[1]]);
+    }
+    console.log(priceRange);
+  };
+
   return (
     <Accordion type="single" collapsible defaultValue="filter-price">
       <AccordionItem value="filter-price" className="border-none">
@@ -16,13 +25,18 @@ const PriceSection = () => {
         </AccordionTrigger>
         <AccordionContent className="pt-4" contentClassName="overflow-visible">
           <Slider
-            defaultValue={[50, 200]}
+            value={priceRange}
             min={0}
-            max={250}
-            step={1}
-            label="$"
+            max={10000}
+            step={100}
+            onValueChange={handlePriceChange}
+            
           />
           <div className="mb-3" />
+          <div className="flex justify-between text-sm text-black/60 mt-2">
+            <span>${priceRange[0]}</span>
+            <span>${priceRange[1]}</span>
+          </div>
         </AccordionContent>
       </AccordionItem>
     </Accordion>

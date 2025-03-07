@@ -27,31 +27,32 @@ import { useEffect, useState } from "react";
 import { fetchAllProducts } from "@/lib/features/admin/adminSlice";
 import Product from "@/types/product.types";
 import { setRelatedProductData } from "@/lib/features/products/productsSlice";
+import { useSearchParams } from "next/navigation";
 
 export default function ShopPage() {
+  // const dispatch = useAppDispatch();
+  // const products = useAppSelector((state) => state.admin.products);
+  // // const [newArrivalsData, setNewArrivalsData] = useState<Product[]>([]);
+  // // const relatedProductData = useAppSelector(
+  // //   (state) => state.products.relatedProductData
+  // // );
+  // useEffect(() => {
+  //   dispatch(fetchAllProducts({}));
+  //   // dispatch(setRelatedProductData([...products]));
+  // }, [dispatch]);
+
+
   const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.admin.products);
-  const [newArrivalsData, setNewArrivalsData] = useState<Product[]>([]);
-  const relatedProductData = useAppSelector(
-    (state) => state.products.relatedProductData
-  );
-  useEffect(() => {
-    dispatch(fetchAllProducts());
-    dispatch(setRelatedProductData([...products]));
-  }, [dispatch]);
+  const searchParams = useSearchParams();
+  const [filters, setFilters] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (products.length > 0) {
-      // Sort products by `created_at` in descending order and take the top 4
-      const sortedProducts = [...products]
-        .sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
-        .slice(0, 4);
-      setNewArrivalsData(sortedProducts);
-    }
-  }, [products]);
+    const params = Object.fromEntries(searchParams.entries()); // Convert search params to object
+    setFilters(params);
+    dispatch(fetchAllProducts(params)); // Pass filters to API call
+  }, [searchParams, dispatch]);
+
 
   return (
     <main className="pb-20">
@@ -92,11 +93,7 @@ export default function ShopPage() {
               </div>
             </div>
             <div className="w-full grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5 ">
-              {[
-                // ...relatedProductData,
-                ...newArrivalsData.slice(1, 4),
-                // ...topSellingData.slice(1, 4),
-              ].map((product) => (
+              {products.map((product) => (
                 <ProductCard key={product._id} data={product} />
               ))}
             </div>

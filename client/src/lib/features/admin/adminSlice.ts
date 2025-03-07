@@ -23,12 +23,13 @@ const initialState: AdminState = {
 // Async function to fetch all products
 export const fetchAllProducts = createAsyncThunk<
   Product[],
-  void,
+  Record<string, string> | void, // Accepts optional query parameters
   { rejectValue: string }
->("admin/fetchAllProducts", async (_, { rejectWithValue }) => {
+>("admin/fetchAllProducts", async (params = {}, { rejectWithValue }) => {
   try {
     const response = await axios.get<{ data: Product[] }>(
-      `${process.env.NEXT_PUBLIC_ROOT_API}/product`
+      `${process.env.NEXT_PUBLIC_ROOT_API}/product`,
+      { params } // Pass query parameters here
     );
     return response.data.data;
   } catch (error: any) {
@@ -37,6 +38,7 @@ export const fetchAllProducts = createAsyncThunk<
     );
   }
 });
+
 
 // Async function to fetch all orders
 export const fetchAllOrders = createAsyncThunk<

@@ -1,5 +1,7 @@
+import { fetchCategories } from "@/lib/features/products/productsSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
 
 type Category = {
@@ -10,7 +12,7 @@ type Category = {
 const categoriesData: Category[] = [
   {
     title: "T-shirts",
-    slug: "/shop?category=t-shirts",
+    slug: "/shop?category=t-shirt",
   },
   {
     title: "Shorts",
@@ -31,15 +33,21 @@ const categoriesData: Category[] = [
 ];
 
 const CategoriesSection = () => {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  const categoriesData = useAppSelector((state) => state.products.categories);
   return (
     <div className="flex flex-col space-y-0.5 text-black/60">
-      {categoriesData.map((category, idx) => (
+      {categoriesData?.map((category, idx) => (
         <Link
           key={idx}
-          href={category.slug}
-          className="flex items-center justify-between py-2"
+          href={`/shop?category=${category._id}`}
+          className="flex items-center justify-between py-2 capitalize"
         >
-          {category.title} <MdKeyboardArrowRight />
+          {category.category} <MdKeyboardArrowRight />
         </Link>
       ))}
     </div>
