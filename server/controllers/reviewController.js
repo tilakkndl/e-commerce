@@ -6,15 +6,15 @@ import AppError from "../utils/appError.js";
 
 const checkDetailsAvailability = catchAsync(async (user, product, userID) => {
   if(user !== userID){
-    throw new AppError("You are not allowed to review this product", 403);
+    return (new AppError("You are not allowed to review this product", 403));
   }
   const currentUser = await User.findById(userID);
   if(!currentUser){
-    throw new AppError("User not found", 404);
+    return (new AppError("User not found", 404));
   }
   const currentProduct = await Product.findById(product)
   if(!currentProduct){
-    throw new AppError("Product not found", 404);
+    return (new AppError("Product not found", 404));
   }
   return true;
 })
@@ -28,7 +28,11 @@ const updateProductRating = async (productId) => {
 
 export const createReview = catchAsync(async (req, res) => {
   const { user, product, rating, review } = req.body;
-await checkDetailsAvailability(user, product, req.user._id.toString());
+const status = await checkDetailsAvailability(user, product, req.user._id.toString());
+
+if(status?.message){
+  return next(status);
+}
  
   const newReview = await Review.create({ user, product, rating, review });
   await updateProductRating(product);
@@ -36,10 +40,13 @@ await checkDetailsAvailability(user, product, req.user._id.toString());
 });
 
 // Update a review
-export const updateReview = catchAsync(async (req, res) => {
+export const updateReview = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const {user, product} = req.body;
-  await checkDetailsAvailability(user, product, req.user._id.toString());
+  const status = await checkDetailsAvailability(user, product, req.user._id.toString());
+  if(status?.message){
+    return next(status);
+  }
   let updateReview = {}
   if(req.body.rating) updateReview.rating = req.body.rating;
   if(req.body.review) updateReview.review = req.body.review;
@@ -54,14 +61,16 @@ if(req.body.rating){
 });
 
 // Delete a review
-export const deleteReview = catchAsync(async (req, res) => {
+export const deleteReview = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const review = await Review.findById(id);
-  if (!review) return res.status(404).json({ success: false, message: "Review not found" });
-
+  if (!review) return next(new AppError("Review not found", 404));
+  console.log(review);
+  if(review.user.toString() !== req.user._id.toString()){
+    return next(new AppError("You are not allowed to delete this review", 403));
+  }
   await Review.findByIdAndDelete(id);
   await updateProductRating(review.product);
-
   res.json({ success: true, message: "Review deleted successfully" });
 });
 
@@ -71,12 +80,19 @@ export const getReview = catchAsync(async (req, res) => {
   const review = await Review.findById(id).populate("user", "name").populate("product", "name");
   if (!review) return res.status(404).json({ success: false, message: "Review not found" });
 
-  res.json({ success: true, review });
+  res.json({ 
+    success: true,
+    message: "Review retrieved successfully",
+     data: review 
+    });
 });
 
 // Get all reviews for a product
 export const getReviewsByProduct = catchAsync(async (req, res) => {
   const { productId } = req.params;
-  const reviews = await Review.find({ product: productId }).populate("user", "name");
+  const reviews = await Review.find({ product: productId }).populate([
+    { path: "user", select: "name" },
+    { path: "product", select: "name" },
+  ]);
   res.json({ success: true, reviews });
 });
