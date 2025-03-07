@@ -5,6 +5,7 @@ import Product from '../models/productSchema.js';
 import User from '../models/userSchema.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
+import APIFeatures from '../utils/apiFeatures.js';
 
 export const formatOrders = async (orders) => {
     return Promise.all(
@@ -114,10 +115,11 @@ export const updateOrderStatus = catchAsync(async (req, res, next) => {
         "confirmed",
         "verified",
         "shipped",
-       
+        // "out_for_delivery",
         "delivered",
         "cancelled",
-        
+        // "returned",
+        // "refunded",
     ];
 
     if (!validStatuses.includes(status)) {
@@ -139,21 +141,44 @@ export const updateOrderStatus = catchAsync(async (req, res, next) => {
     });
 });
 
+// export const getAllOrder = catchAsync(async (req, res, next) => {
+//     const orders = await Order.find().populate("user", "name username address phoneNumber").lean();
+  
+//     if (orders.length === 0) {
+//     return next(new AppError("No orders found", 404));
+//     }
+  
+//     const formattedOrders = await formatOrders(orders); // Process all orders
+  
+//     res.status(200).json({
+//       success: true,
+//       message: "Orders retrieved successfully",
+//       data: formattedOrders,
+//     });
+//   });
+
 export const getAllOrder = catchAsync(async (req, res, next) => {
-    const orders = await Order.find().populate("user", "name username address phoneNumber").lean();
-  
-    if (orders.length === 0) {
-    return next(new AppError("No orders found", 404));
-    }
-  
-    const formattedOrders = await formatOrders(orders); // Process all orders
-  
-    res.status(200).json({
-      success: true,
-      message: "Orders retrieved successfully",
-      data: formattedOrders,
-    });
+  const features = new APIFeatures(Order.find().populate("user", "name username address phoneNumber").lean(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const orders = await features.query;
+
+  // if (orders.length === 0) {
+  //   return next(new AppError("No orders found", 404));
+  // }
+
+  const formattedOrders = await formatOrders(orders);
+
+  res.status(200).json({
+    success: true,
+    message: "Orders retrieved successfully",
+    data: formattedOrders,
   });
+});
+
   
 
 export const getOrder = catchAsync(async (req, res, next) => {

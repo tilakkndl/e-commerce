@@ -10,17 +10,15 @@ import { protect } from "../controllers/authController.js";
 
 const router = express.Router();
 
-// Create a review
-router.post("/", protect, createReview);
+router.route("/")
+.post(protect, createReview)
+// .get(protect, getReview);
 
-// Update a review
-router.put("/:id",protect, updateReview);
+router.route("/:id")
+.put(protect, updateReview)
+.delete(protect, deleteReview)
+.get(protect, getReview);
 
-// Delete a review
-router.delete("/:id",protect, deleteReview);
-
-// Get a single review
-router.get("/:id", getReview);
 
 // Get all reviews for a product
 router.get("/product/:productId", getReviewsByProduct);

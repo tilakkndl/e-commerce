@@ -5,6 +5,7 @@ import Category from '../models/categorySchema.js'
 import Brand from '../models/brandSchema.js'
 import cloudinary from '../config/cloudinary.js'
 import Review from "../models/reviewSchema.js";
+import APIFeatures from "../utils/apiFeatures.js";
 
 const cloudinaryUpload = async (files, name) => {
     try {
@@ -146,7 +147,16 @@ export const createProduct = catchAsync(async (req, res, next) => {
 
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
-  const products = await Product.find().populate("brand category");
+  // const products = await Product.find().populate("brand category");
+  const apiFeatures = new APIFeatures(Product.find().populate("brand category"), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const products = await apiFeatures.query;
+  
+
   res.status(200).json({
     success: true,
     message: "Products retrieved successfully",
