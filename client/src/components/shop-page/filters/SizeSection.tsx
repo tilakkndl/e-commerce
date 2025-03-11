@@ -9,9 +9,12 @@ import {
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 
-const SizeSection = () => {
-  const [selected, setSelected] = useState<string>("Large");
+type SizeSectionProps = {
+  selected: string;
+  setSelected: (size: string) => void;
+};
 
+const SizeSection = ({ selected, setSelected }: SizeSectionProps) => {
   return (
     <Accordion type="single" collapsible defaultValue="filter-size">
       <AccordionItem value="filter-size" className="border-none">
@@ -20,17 +23,7 @@ const SizeSection = () => {
         </AccordionTrigger>
         <AccordionContent className="pt-4 pb-0">
           <div className="flex items-center flex-wrap">
-            {[
-              "XX-Small",
-              "X-Small",
-              "Small",
-              "Medium",
-              "Large",
-              "X-Large",
-              "XX-Large",
-              "3X-Large",
-              "4X-Large",
-            ].map((size, index) => (
+            {["XS", "SM", "MD", "LG", "XL", "2XL", "3XL"].map((size, index) => (
               <button
                 key={index}
                 type="button"

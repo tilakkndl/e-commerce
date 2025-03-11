@@ -16,31 +16,41 @@ export default function ProductPage({
   params: { slug: string[] };
 }) {
   const dispatch = useAppDispatch();
-  const products = useAppSelector((state) => state.admin.products);
+  const { products, loading, error } = useAppSelector((state) => state.admin);
+  const [productData, setProductData] = useState<Product | null>(null);
 
   useEffect(() => {
-    dispatch(fetchAllProducts());
-  }, [dispatch]);
+    // Fetch products only if they haven't been fetched yet
+    if (!products.length) {
+      dispatch(fetchAllProducts());
+    }
+  }, [dispatch, products.length]);
 
-  const productData = products.find(
-    (product) => product._id === params.slug[0]
-  );
+  useEffect(() => {
+    const product = products.find((p) => p._id === params.slug[0]);
+    if (products.length && !product) {
+      notFound();
+    }
+    setProductData(product || null);
+  }, [products, params.slug]);
 
-  console.log("productdata:", productData);
+  if (loading || !productData) {
+    return <div>Loading...</div>;
+  }
 
-  if (!productData?.name) {
-    notFound();
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
   return (
     <main>
       <div className="max-w-frame mx-auto px-4 xl:px-0">
         <hr className="h-[1px] border-t-black/10 mb-5 sm:mb-6" />
-        <BreadcrumbProduct title={productData?.name ?? "product"} />
+        <BreadcrumbProduct title={productData.name ?? "Product"} />
         <section className="mb-11">
           <Header data={productData} />
         </section>
-        <Tabs />
+        <Tabs productId={productData._id} />
       </div>
       <div className="mb-[50px] sm:mb-20">
         {/* <ProductListSec title="You might also like" data={relatedProductData} /> */}

@@ -30,16 +30,7 @@ import { setRelatedProductData } from "@/lib/features/products/productsSlice";
 import { useSearchParams } from "next/navigation";
 
 export default function ShopPage() {
-  // const dispatch = useAppDispatch();
-  // const products = useAppSelector((state) => state.admin.products);
-  // // const [newArrivalsData, setNewArrivalsData] = useState<Product[]>([]);
-  // // const relatedProductData = useAppSelector(
-  // //   (state) => state.products.relatedProductData
-  // // );
-  // useEffect(() => {
-  //   dispatch(fetchAllProducts({}));
-  //   // dispatch(setRelatedProductData([...products]));
-  // }, [dispatch]);
+  
 
 
   const dispatch = useAppDispatch();

@@ -40,7 +40,7 @@ export const fetchAllProducts = createAsyncThunk<
 });
 
 
-// Async function to fetch all orders
+
 export const fetchAllOrders = createAsyncThunk<
   OrderItem[],
   void,

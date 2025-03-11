@@ -11,7 +11,7 @@ import { UserState } from "@/types/user.types";
 import { integralCF } from "@/styles/fonts";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Cookies, { CookieAttributes } from "js-cookie";
+import Cookies from "js-cookie";
 
 const SignInPage = () => {
   const router = useRouter();

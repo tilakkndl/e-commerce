@@ -6,10 +6,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Slider } from "@/components/ui/slider";
+type PriceSectionProps = {
+  priceRange: [number, number];
+  setPriceRange: (range: [number, number]) => void;
+};
 
-const PriceSection = () => {
-  const [priceRange, setPriceRange] = useState<[number, number]>([10, 5000]);
-
+const PriceSection = ({ priceRange, setPriceRange }: PriceSectionProps) => {
   const handlePriceChange = (value: number[]) => {
     if (value.length === 2) {
       setPriceRange([value[0], value[1]]);
@@ -30,7 +32,6 @@ const PriceSection = () => {
             max={10000}
             step={100}
             onValueChange={handlePriceChange}
-            
           />
           <div className="mb-3" />
           <div className="flex justify-between text-sm text-black/60 mt-2">
