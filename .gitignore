@@ -147,3 +147,14 @@ server/config/config.env
 *.env
 /*/*.env
 */*.env
+
+*.env
+/config/config.env
+
+server/config/config.env
+/config/config.env
+*.env
+/*/*.env
+*/*.env
+
+server/config/config.env
