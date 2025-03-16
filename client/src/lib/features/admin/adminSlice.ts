@@ -10,6 +10,12 @@ interface AdminState {
   editableProduct: Product | null;
   loading: boolean;
   error: string | null;
+  summary: Summary;
+}
+
+export interface Summary {
+  totalOrders: number;
+  totalAmount: number;
 }
 
 const initialState: AdminState = {
@@ -18,18 +24,46 @@ const initialState: AdminState = {
   editableProduct: null,
   loading: false,
   error: null,
+  summary: {
+    totalOrders: 0,
+    totalAmount: 0,
+  },
 };
 
 // Async function to fetch all products
+export const editProduct = createAsyncThunk<
+  Product,
+  { id: string; updates: Partial<Product> },
+  { rejectValue: string }
+>("admin/editProduct", async ({ id, updates }, { rejectWithValue }) => {
+  const token = Cookies.get("authToken");
+  try {
+    const response = await axios.put<{ data: Product }>(
+      `${process.env.NEXT_PUBLIC_ROOT_API}/product/${id}`,
+      updates,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.data;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to update product"
+    );
+  }
+});
+
 export const fetchAllProducts = createAsyncThunk<
   Product[],
-  Record<string, string> | void, // Accepts optional query parameters
+  Record<string, string> | void,
   { rejectValue: string }
 >("admin/fetchAllProducts", async (params = {}, { rejectWithValue }) => {
   try {
     const response = await axios.get<{ data: Product[] }>(
       `${process.env.NEXT_PUBLIC_ROOT_API}/product`,
-      { params } // Pass query parameters here
+      { params }
     );
     return response.data.data;
   } catch (error: any) {
@@ -39,7 +73,30 @@ export const fetchAllProducts = createAsyncThunk<
   }
 });
 
+// Corrected fetchSummary to return Summary type
+export const fetchSummary = createAsyncThunk<
+  Summary,
+  void,
+  { rejectValue: string }
+>("admin/fetchSummary", async (_, { rejectWithValue }) => {
+  const token = Cookies.get("authToken") as string | undefined;
 
+  try {
+    const response = await axios.get<{ data: Summary }>(
+      `${process.env.NEXT_PUBLIC_ROOT_API}/orders/summary`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.data;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to fetch summary"
+    );
+  }
+});
 
 export const fetchAllOrders = createAsyncThunk<
   OrderItem[],
@@ -47,7 +104,7 @@ export const fetchAllOrders = createAsyncThunk<
   { rejectValue: string }
 >("admin/fetchAllOrders", async (_, { rejectWithValue }) => {
   const token = Cookies.get("authToken") as string | undefined;
-  
+
   try {
     const response = await axios.get<{ data: OrderItem[] }>(
       `${process.env.NEXT_PUBLIC_ROOT_API}/orders`,
@@ -85,8 +142,8 @@ export const findProductById = createAsyncThunk<
 });
 
 export const deleteProductById = createAsyncThunk<
-  string, // Returns the deleted product's ID
-  string, // Takes the product ID as an argument
+  string,
+  string,
   { rejectValue: string }
 >("admin/deleteProductById", async (id: string, { rejectWithValue }) => {
   try {
@@ -96,7 +153,7 @@ export const deleteProductById = createAsyncThunk<
         Authorization: `Bearer ${token}`,
       },
     });
-    return id; // Returning the ID so it can be removed from the state
+    return id;
   } catch (error: any) {
     console.error("Error deleting product by ID:", error);
     return rejectWithValue(
@@ -104,6 +161,67 @@ export const deleteProductById = createAsyncThunk<
     );
   }
 });
+
+export const deleteVariant = createAsyncThunk<
+  { productId: string; variantId: string },
+  { productId: string; variantId: string },
+  { rejectValue: string }
+>(
+  "admin/deleteVariant",
+  async ({ productId, variantId }, { rejectWithValue, dispatch }) => {
+    const token = Cookies.get("authToken");
+    try {
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_ROOT_API}/product/${productId}/variants/${variantId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // After deletion, refetch the product to update the state
+      await dispatch(findProductById(productId));
+      return { productId, variantId };
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete variant"
+      );
+    }
+  }
+);
+
+export const editVariant = createAsyncThunk<
+  { productId: string; variantId: string },
+  {
+    productId: string;
+    variantId: string;
+    updates: { size: string[]; stock: number };
+  },
+  { rejectValue: string }
+>(
+  "admin/editVariant",
+  async ({ productId, variantId, updates }, { rejectWithValue, dispatch }) => {
+    const token = Cookies.get("authToken");
+    try {
+      await axios.put(
+        `${process.env.NEXT_PUBLIC_ROOT_API}/product/${productId}/variants/${variantId}`,
+        updates,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Refetch the product to update the state
+      await dispatch(findProductById(productId));
+      return { productId, variantId };
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update variant"
+      );
+    }
+  }
+);
 
 const adminSlice = createSlice({
   name: "admin",
@@ -127,13 +245,26 @@ const adminSlice = createSlice({
           state.products = action.payload;
         }
       )
+      .addCase(fetchAllProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Something went wrong";
+      })
+      // Fetch summary cases
+      .addCase(fetchSummary.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(
-        fetchAllProducts.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
+        fetchSummary.fulfilled,
+        (state, action: PayloadAction<Summary>) => {
           state.loading = false;
-          state.error = action.payload || "Something went wrong";
+          state.summary = action.payload;
         }
       )
+      .addCase(fetchSummary.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Something went wrong";
+      })
       // Fetch all orders cases
       .addCase(fetchAllOrders.pending, (state) => {
         state.loading = true;
@@ -146,13 +277,10 @@ const adminSlice = createSlice({
           state.orders = action.payload;
         }
       )
-      .addCase(
-        fetchAllOrders.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
-          state.loading = false;
-          state.error = action.payload || "Something went wrong";
-        }
-      )
+      .addCase(fetchAllOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Something went wrong";
+      })
       // Delete product cases
       .addCase(deleteProductById.pending, (state) => {
         state.loading = true;
@@ -167,13 +295,10 @@ const adminSlice = createSlice({
           );
         }
       )
-      .addCase(
-        deleteProductById.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
-          state.loading = false;
-          state.error = action.payload || "Something went wrong";
-        }
-      )
+      .addCase(deleteProductById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Something went wrong";
+      })
       // Find product by ID cases
       .addCase(findProductById.pending, (state) => {
         state.loading = true;
@@ -191,13 +316,64 @@ const adminSlice = createSlice({
           }
         }
       )
+      .addCase(findProductById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Failed to fetch product";
+      })
+
+      .addCase(editProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(
-        findProductById.rejected,
-        (state, action: PayloadAction<string | undefined>) => {
+        editProduct.fulfilled,
+        (state, action: PayloadAction<Product>) => {
           state.loading = false;
-          state.error = action.payload || "Failed to fetch product";
+          state.editableProduct = action.payload;
+          state.products = state.products.map((p) =>
+            p._id === action.payload._id ? action.payload : p
+          );
         }
-      );
+      )
+      .addCase(editProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Something went wrong";
+      })
+
+      .addCase(deleteVariant.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        deleteVariant.fulfilled,
+        (
+          state,
+          action: PayloadAction<{ productId: string; variantId: string }>
+        ) => {
+          state.loading = false;
+        }
+      )
+      .addCase(deleteVariant.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Failed to delete variant";
+      })
+      .addCase(editVariant.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        editVariant.fulfilled,
+        (
+          state,
+          action: PayloadAction<{ productId: string; variantId: string }>
+        ) => {
+          state.loading = false;
+        }
+      )
+      .addCase(editVariant.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Failed to update variant";
+      });
   },
 });
 

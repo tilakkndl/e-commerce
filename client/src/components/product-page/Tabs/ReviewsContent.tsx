@@ -1,7 +1,7 @@
 "use client"; // Assuming this is a client component
 
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -10,20 +10,54 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ReviewCard from "@/components/common/ReviewCard";
-import { reviewsData } from "@/app/page";
 import Link from "next/link";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useAppSelector } from "@/lib/hooks/redux";
 import { Loader2 } from "lucide-react";
+import { Review } from "@/types/review.types";
 
 const ReviewsContent = ({ productId }: { productId: string }) => {
   const [isWritingReview, setIsWritingReview] = useState(false);
   const [rating, setRating] = useState<number | null>(null);
   const [reviewText, setReviewText] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false); // Added loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const token = Cookies.get("authToken");
   const userId = useAppSelector((state) => state.user._id);
+
+  const resetForm = () => {
+    setRating(null);
+    setReviewText("");
+    setIsWritingReview(false);
+  };
+
+  // Fetch reviews for the product
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_ROOT_API}/reviews/product/${productId}`
+        );
+        if (response.data && Array.isArray(response.data.reviews)) {
+          setReviews(response.data.reviews);
+        } else {
+          setError("Invalid response format");
+        }
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+        setError("Failed to load reviews");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, [productId]);
 
   const handleButtonClick = () => {
     if (!isWritingReview) {
@@ -36,7 +70,7 @@ const ReviewsContent = ({ productId }: { productId: string }) => {
   const handleSubmitReview = async () => {
     if (!rating || !reviewText) return;
 
-    setIsSubmitting(true); // Start loading
+    setIsSubmitting(true);
 
     try {
       const reviewData = {
@@ -51,16 +85,28 @@ const ReviewsContent = ({ productId }: { productId: string }) => {
         reviewData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("Review submitted:", response.data); // Replaced alert with console.log
 
-      // Reset form and hide input after successful submission
-      setRating(null);
-      setReviewText("");
-      setIsWritingReview(false);
+      if (response.data && response.data.success && response.data.data) {
+        // Fetch the updated reviews to ensure we have the complete review object with user details
+        const updatedResponse = await axios.get(
+          `${process.env.NEXT_PUBLIC_ROOT_API}/reviews/product/${productId}`
+        );
+
+        if (
+          updatedResponse.data &&
+          Array.isArray(updatedResponse.data.reviews)
+        ) {
+          setReviews(updatedResponse.data.reviews);
+          // Reset form after successful submission
+          resetForm();
+        }
+      } else {
+        console.error("Invalid response format:", response.data);
+      }
     } catch (error) {
       console.error("Error submitting review:", error);
     } finally {
-      setIsSubmitting(false); // Stop loading regardless of success or failure
+      setIsSubmitting(false);
     }
   };
 
@@ -77,7 +123,7 @@ const ReviewsContent = ({ productId }: { productId: string }) => {
           className={`text-2xl ${
             rating && star <= rating ? "text-yellow-400" : "text-gray-300"
           }`}
-          disabled={isSubmitting} // Disable stars while submitting
+          disabled={isSubmitting}
         >
           ★
         </button>
@@ -92,7 +138,9 @@ const ReviewsContent = ({ productId }: { productId: string }) => {
           <h3 className="text-xl sm:text-2xl font-bold text-black mr-2">
             All Reviews
           </h3>
-          <span className="text-sm sm:text-base text-black/60">(451)</span>
+          <span className="text-sm sm:text-base text-black/60">
+            ({reviews.length})
+          </span>
         </div>
         <div className="flex items-center space-x-2.5">
           <Select defaultValue="latest">
@@ -139,24 +187,44 @@ const ReviewsContent = ({ productId }: { productId: string }) => {
             onChange={(e) => setReviewText(e.target.value)}
             placeholder="Write your review here..."
             className="w-full p-2 border rounded-md resize-none h-24"
-            disabled={isSubmitting} // Disable textarea while submitting
+            disabled={isSubmitting}
           />
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5 sm:mb-9">
-        {reviewsData.map((review) => (
-          <ReviewCard key={review.id} data={review} isAction isDate />
-        ))}
-      </div>
-      <div className="w-full px-4 sm:px-0 text-center">
-        <Link
-          href="#"
-          className="inline-block w-[230px] px-11 py-4 border rounded-full hover:bg-black hover:text-white text-black transition-all font-medium text-sm sm:text-base border-black/10"
-        >
-          Load More Reviews
-        </Link>
-      </div>
+      {isLoading ? (
+        <div className="flex justify-center items-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+        </div>
+      ) : error ? (
+        <div className="text-center text-red-500 py-8">{error}</div>
+      ) : reviews.length === 0 ? (
+        <div className="text-center text-gray-500 py-8">No reviews yet</div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5 sm:mb-9">
+          {reviews.map((review) =>
+            review && review._id ? (
+              <ReviewCard
+                key={review._id}
+                data={review}
+                isDate
+                className="h-full"
+              />
+            ) : null
+          )}
+        </div>
+      )}
+
+      {reviews.length > 0 && (
+        <div className="w-full px-4 sm:px-0 text-center">
+          <Link
+            href="#"
+            className="inline-block w-[230px] px-11 py-4 border rounded-full hover:bg-black hover:text-white text-black transition-all font-medium text-sm sm:text-base border-black/10"
+          >
+            Load More Reviews
+          </Link>
+        </div>
+      )}
     </section>
   );
 };

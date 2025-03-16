@@ -1,7 +1,12 @@
 export type Review = {
-  id: number;
-  user: string;
-  content: string;
+  _id: string;
+  user: {
+    _id: string;
+    name: string;
+  };
+  product: string;
   rating: number;
-  date: string;
+  review: string;
+  createdAt: string;
+  updatedAt: string;
 };

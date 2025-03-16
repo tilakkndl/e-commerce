@@ -95,7 +95,7 @@ const registerPage = () => {
         token?: string;
         data: UserState;
       }>(
-        "http://localhost:5000/api/v1/user/register",
+        `${process.env.NEXT_PUBLIC_ROOT_API}/user/register`,
         {
           name,
           phoneNumber: phNo,

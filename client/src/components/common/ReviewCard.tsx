@@ -21,6 +21,12 @@ const ReviewCard = ({
   data,
   className,
 }: ReviewCardProps) => {
+  const formattedDate = new Date(data.createdAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <div
       className={cn([
@@ -44,13 +50,13 @@ const ReviewCard = ({
         )}
       </div>
       <div className="flex items-center mb-2 sm:mb-3">
-        <strong className="text-black sm:text-xl mr-1">{data.user}</strong>
+        <strong className="text-black sm:text-xl mr-1">{data.user.name}</strong>
         <IoIosCheckmarkCircle className="text-[#01AB31] text-xl sm:text-2xl" />
       </div>
-      <p className="text-sm sm:text-base text-black/60">{data.content}</p>
+      <p className="text-sm sm:text-base text-black/60">{data.review}</p>
       {isDate && (
         <p className="text-black/60 text-sm font-medium mt-4 sm:mt-6">
-          Posted on {data.date}
+          Posted on {formattedDate}
         </p>
       )}
     </div>

@@ -30,12 +30,14 @@ const DressStyle = () => {
           <DressStyleCard
             title="Hemp Crossbody Round Bag"
             url="/shop#casual"
-            className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px] bg-[url('/images/sock6.jpeg')]"
+            imageUrl="/images/sock6.jpeg"
+            className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px]"
           />
           <DressStyleCard
             title="Hemp Ladies Purses"
             url="/shop#formal"
-            className="md:max-w-[684px] h-[190px] bg-[url('/images/sock4.jpeg')]"
+            imageUrl="/images/sock4.jpeg"
+            className="md:max-w-[684px] h-[190px]"
           />
         </motion.div>
         <motion.div
@@ -46,14 +48,16 @@ const DressStyle = () => {
           className="flex flex-col sm:flex-row md:h-[289px] space-y-5 sm:space-y-0 sm:space-x-5"
         >
           <DressStyleCard
-            title="Hemp Wallets "
+            title="Hemp Wallets"
             url="/shop#party"
-            className="md:max-w-[684px] h-[190px] bg-[url('/images/sock2.jpeg')]"
+            imageUrl="/images/sock2.jpeg"
+            className="md:max-w-[684px] h-[190px]"
           />
           <DressStyleCard
             title="Hemp Tote Bags"
             url="/shop#gym"
-            className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px] bg-[url('/images/sock4.jpeg')]"
+            imageUrl="/images/sock4.jpeg"
+            className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px]"
           />
         </motion.div>
         <motion.div
@@ -64,14 +68,16 @@ const DressStyle = () => {
           className="flex flex-col sm:flex-row md:h-[289px] space-y-4 sm:space-y-0 sm:space-x-5 mb-4 sm:mb-5"
         >
           <DressStyleCard
-            title="Hemp Socks "
+            title="Hemp Socks"
             url="/shop#casual"
-            className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px] bg-[url('/images/sock6.jpeg')]"
+            imageUrl="/images/sock6.jpeg"
+            className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px]"
           />
           <DressStyleCard
             title="Patch Jackets and Trousers"
             url="/shop#formal"
-            className="md:max-w-[684px] h-[190px] bg-[url('/images/sock4.jpeg')]"
+            imageUrl="/images/sock4.jpeg"
+            className="md:max-w-[684px] h-[190px]"
           />
         </motion.div>
       </section>

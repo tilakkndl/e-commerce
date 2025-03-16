@@ -43,7 +43,7 @@ export default function CheckoutPage() {
 
     try {
       const response: AxiosResponse<OrderResponse> = await axios.patch(
-        `http://localhost:5000/api/v1/orders/status/${orderId}`,
+        `${process.env.NEXT_PUBLIC_ROOT_API}/orders/status/${orderId}`,
         { status: "confirmed" },
         {
           headers: {

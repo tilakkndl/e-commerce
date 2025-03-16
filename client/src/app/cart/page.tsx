@@ -8,9 +8,9 @@ import { cn } from "@/lib/utils";
 import { integralCF } from "@/styles/fonts";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { TbBasketExclamation } from "react-icons/tb";
-import React from "react";
+import React, { useState } from "react";
 import { RootState } from "@/lib/store";
-import { useAppSelector } from "@/lib/hooks/redux";
+import { useAppSelector, useAppDispatch } from "@/lib/hooks/redux";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
 import { useRouter } from "next/navigation";
@@ -18,24 +18,25 @@ import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { CartItem, CartsState } from "@/lib/features/carts/cartsSlice";
 import { OrderRequest, OrderResponse } from "@/types/order.types";
+import { openModal, closeModal } from "@/lib/features/modal/modalSlice";
+import { Loader2 } from "lucide-react";
 
 export default function CartPage() {
-  // Type the Redux state correctly with fallback for undefined
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const { cart, totalPrice, adjustedTotalPrice }: CartsState = useAppSelector(
     (state: RootState) =>
       state.carts || { cart: null, totalPrice: 0, adjustedTotalPrice: 0 }
   );
 
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
-  // Type the user ID from Redux with fallback for undefined
   const userId = useAppSelector((state: RootState) => state.user?._id) as
     | string
     | number
     | undefined;
   const token = Cookies.get("authToken") as string | undefined;
 
-  // Construct the request object with proper typing and fallback
   const request: OrderRequest = {
     user: userId || "",
     orders:
@@ -47,17 +48,16 @@ export default function CartPage() {
       })) || [],
   };
 
-  const checkoutHandler = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleCheckoutConfirm = async () => {
     if (!token || !userId) {
       alert("Please log in to proceed with checkout.");
       return;
     }
 
+    setIsPlacingOrder(true);
     try {
       const response = await axios.post<OrderResponse>(
-        "http://localhost:5000/api/v1/orders",
+        `${process.env.NEXT_PUBLIC_ROOT_API}/orders`,
         request,
         {
           headers: {
@@ -65,13 +65,14 @@ export default function CartPage() {
           },
         }
       );
-      console.log("Response:", response.data);
+      dispatch(closeModal());
       if (response.data.success && response.data.data._id) {
         router.push(`/checkout?order=${response.data.data._id}`);
       } else {
         alert("Order placed, but no order ID received. Contact support.");
       }
     } catch (error) {
+      dispatch(closeModal());
       const axiosError = error as AxiosError<{ message?: string }>;
       console.error("Checkout error:", axiosError);
       if (axiosError.code === "ERR_NETWORK") {
@@ -83,10 +84,52 @@ export default function CartPage() {
       } else {
         alert("An error occurred during checkout. Please try again.");
       }
+    } finally {
+      setIsPlacingOrder(false);
     }
   };
 
-  console.log("Cart:", cart);
+  const handleCheckoutClick = () => {
+    dispatch(
+      openModal(
+        <div className="text-center">
+          <h2 className={`${integralCF.className} text-2xl font-bold mb-4`}>
+            Confirm Checkout
+          </h2>
+          <p className="mb-6 text-gray-600">
+            Are you sure you want to proceed to checkout?
+            <br />
+            <span className="font-semibold">
+              Total Amount: ${adjustedTotalPrice.toFixed(2)}
+            </span>
+          </p>
+          <div className="flex justify-end gap-4">
+            <button
+              onClick={() => dispatch(closeModal())}
+              className="px-6 py-2 rounded-full border border-black hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isPlacingOrder}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleCheckoutConfirm}
+              disabled={isPlacingOrder}
+              className="px-6 py-2 rounded-full bg-black text-white hover:bg-black/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[140px]"
+            >
+              {isPlacingOrder ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Processing...
+                </>
+              ) : (
+                "Proceed to Checkout"
+              )}
+            </button>
+          </div>
+        </div>
+      )
+    );
+  };
 
   return (
     <main className="pb-20">
@@ -182,11 +225,21 @@ export default function CartPage() {
                 </div>
                 <Button
                   type="button"
-                  className="text-sm md:text-base font-medium bg-black rounded-full w-full py-4 h-[54px] md:h-[60px] group"
-                  onClick={checkoutHandler}
+                  className="text-sm md:text-base font-medium bg-black rounded-full w-full py-4 h-[54px] md:h-[60px] group disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={handleCheckoutClick}
+                  disabled={isPlacingOrder}
                 >
-                  Go to Checkout{" "}
-                  <FaArrowRight className="text-xl ml-2 group-hover:translate-x-1 transition-all" />
+                  {isPlacingOrder ? (
+                    <div className="flex items-center justify-center">
+                      <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                      Processing...
+                    </div>
+                  ) : (
+                    <>
+                      Go to Checkout{" "}
+                      <FaArrowRight className="text-xl ml-2 group-hover:translate-x-1 transition-all" />
+                    </>
+                  )}
                 </Button>
               </div>
             </div>

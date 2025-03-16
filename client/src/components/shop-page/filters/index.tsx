@@ -14,7 +14,7 @@ const Filters = () => {
   const router = useRouter();
 
   const handleApplyFilter = () => {
-    const url = `/shop?price[gte]=${priceRange[0]}&price[lte]=${priceRange[1]}`;
+    const url = `/shop?status=active&price[gte]=${priceRange[0]}&price[lte]=${priceRange[1]}`;
     router.push(url);
   };
   return (
