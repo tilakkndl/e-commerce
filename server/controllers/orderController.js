@@ -223,67 +223,115 @@ export const getUserOrder = catchAsync(async (req, res, next) => {
   
   
 
-  //order summary
+  // //order summary
+  // export const orderSummary = catchAsync(async (req, res, next) => {
+  
+  //   const features = new APIFeatures(Order.find().populate("user", "name username address phoneNumber").lean(), req.query)
+  //   .filter()
+  //   .sort()
+  //   .limitFields()
+  //   .paginate();
+
+  // const orders = await features.query;
+
+  // if (orders.length === 0) {
+  //   return next(new AppError("No orders found", 404));
+  // }
+
+  // const formattedOrders = await formatOrders(orders);
+  
+  //   const totalOrders = formattedOrders.length;
+  //   const totalAmount = formattedOrders.reduce((acc, order) => acc + order.totalPrice, 0);
+  
+  //   res.status(200).json({
+  //     success: true,
+  //     message: "Order summary retrieved successfully",
+  //     data: {
+  //       totalOrders,
+  //       totalAmount,
+  //     },
+  //   });
+  // });
+
+  // //get total number of product with order quantity
+  // export const totalProductOrder = catchAsync(async (req, res, next) => {
+  //   const features = new APIFeatures(Order.find().populate("user", "name username address phoneNumber").lean(), req.query)
+  //   .filter()
+  //   .sort()
+  //   .limitFields()
+  //   .paginate();
+
+  // const orders = await features.query;
+
+  // if (orders.length === 0) {
+  //   return next(new AppError("No orders found", 404));
+  // }
+
+  // const formattedOrders = await formatOrders(orders);
+  
+  // const productOrders = formattedOrders.reduce((acc, order) => {
+  //   order.orders.forEach((orderItem) => {
+  //     const productName = orderItem.product.name; // Get product name as key
+  //     if (!acc[productName]) {
+  //       acc[productName] = 0;
+  //     }
+  //     acc[productName] += orderItem.quantity;
+  //   });
+  //   return acc;
+  // }, {});
+  
+  
+  //   res.status(200).json({
+  //     success: true,
+  //     message: "Total product orders retrieved successfully",
+  //     data: productOrders,
+  //   });
+  // });
+
+
   export const orderSummary = catchAsync(async (req, res, next) => {
+    // Fetch and process orders
+    const features = new APIFeatures(
+      Order.find().populate("user", "name username address phoneNumber").lean(),
+      req.query
+    )
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
   
-    const features = new APIFeatures(Order.find().populate("user", "name username address phoneNumber").lean(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  const orders = await features.query;
-
-  if (orders.length === 0) {
-    return next(new AppError("No orders found", 404));
-  }
-
-  const formattedOrders = await formatOrders(orders);
+    const orders = await features.query;
   
+    if (orders.length === 0) {
+      return next(new AppError("No orders found", 404));
+    }
+  
+    const formattedOrders = await formatOrders(orders);
+  
+    // Calculate total orders and total amount
     const totalOrders = formattedOrders.length;
     const totalAmount = formattedOrders.reduce((acc, order) => acc + order.totalPrice, 0);
   
+    // Calculate total product orders
+    const productOrders = formattedOrders.reduce((acc, order) => {
+      order.orders.forEach((orderItem) => {
+        const productName = orderItem.product.name; // Get product name as key
+        if (!acc[productName]) {
+          acc[productName] = 0;
+        }
+        acc[productName] += orderItem.quantity;
+      });
+      return acc;
+    }, {});
+  
+    // Send combined response
     res.status(200).json({
       success: true,
       message: "Order summary retrieved successfully",
       data: {
         totalOrders,
         totalAmount,
+        productOrders,
       },
-    });
-  });
-
-  //get total number of product with order quantity
-  export const totalProductOrder = catchAsync(async (req, res, next) => {
-    const features = new APIFeatures(Order.find().populate("user", "name username address phoneNumber").lean(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  const orders = await features.query;
-
-  if (orders.length === 0) {
-    return next(new AppError("No orders found", 404));
-  }
-
-  const formattedOrders = await formatOrders(orders);
-  
-  const productOrders = formattedOrders.reduce((acc, order) => {
-    order.orders.forEach((orderItem) => {
-      const productName = orderItem.product.name; // Get product name as key
-      if (!acc[productName]) {
-        acc[productName] = 0;
-      }
-      acc[productName] += orderItem.quantity;
-    });
-    return acc;
-  }, {});
-  
-  
-    res.status(200).json({
-      success: true,
-      message: "Total product orders retrieved successfully",
-      data: productOrders,
     });
   });
