@@ -7,59 +7,11 @@ import Reviews from "@/components/homepage/Reviews";
 import { fetchAllProducts } from "@/lib/features/admin/adminSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import Product from "@/types/product.types";
-import { Review } from "@/types/review.types";
 import { useEffect, useState } from "react";
 import { setRelatedProductData } from "@/lib/features/products/productsSlice";
 
 import About from "@/components/homepage/About/About";
-
-
-
-
-export const reviewsData: Review[] = [
-  {
-    id: 1,
-    user: "Alex K.",
-    content: "Absolutely love this bag! Perfect size and so durable!",
-    rating: 5,
-    date: "August 14, 2024",
-  },
-  {
-    id: 2,
-    user: "Sarah M.",
-    content: `Great quality, and I feel good knowing its eco-friendly.`,
-    rating: 5,
-    date: "September 15, 2024",
-  },
-  {
-    id: 3,
-    user: "Alex K.",
-    content: "Absolutely love this bag! Perfect size and so durable!",
-    rating: 5,
-    date: "August 14, 2024",
-  },
-  {
-    id: 4,
-    user: "Sarah M.",
-    content: `Great quality, and I feel good knowing its eco-friendly.`,
-    rating: 5,
-    date: "September 15, 2024",
-  },
-  {
-    id: 5,
-    user: "Alex K.",
-    content: "Absolutely love this bag! Perfect size and so durable!",
-    rating: 5,
-    date: "August 14, 2024",
-  },
-  {
-    id: 6,
-    user: "Sarah M.",
-    content: `Great quality, and I feel good knowing its eco-friendly.`,
-    rating: 5,
-    date: "September 15, 2024",
-  },
-];
+import { reviewsData } from "@/data/reviews";
 
 export default function Home() {
   const dispatch = useAppDispatch();
