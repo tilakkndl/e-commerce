@@ -10,12 +10,15 @@ interface AdminState {
   editableProduct: Product | null;
   loading: boolean;
   error: string | null;
-  summary: Summary;
+  summary: Summary | null;
 }
 
 export interface Summary {
   totalOrders: number;
   totalAmount: number;
+  productOrders: {
+    [key: string]: number;
+  };
 }
 
 const initialState: AdminState = {
@@ -27,6 +30,7 @@ const initialState: AdminState = {
   summary: {
     totalOrders: 0,
     totalAmount: 0,
+    productOrders: {},
   },
 };
 
@@ -90,6 +94,7 @@ export const fetchSummary = createAsyncThunk<
         },
       }
     );
+    console.log(response.data.data);
     return response.data.data;
   } catch (error: any) {
     return rejectWithValue(

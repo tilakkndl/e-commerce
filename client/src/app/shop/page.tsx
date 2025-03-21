@@ -25,8 +25,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useEffect, useState } from "react";
 import { fetchAllProducts } from "@/lib/features/admin/adminSlice";
-import Product from "@/types/product.types";
-import { setRelatedProductData } from "@/lib/features/products/productsSlice";
+
 import { useSearchParams } from "next/navigation";
 
 export default function ShopPage() {
@@ -61,7 +60,9 @@ export default function ShopPage() {
           <div className="flex flex-col w-full space-y-5">
             <div className="flex flex-col lg:flex-row lg:justify-between">
               <div className="flex items-center justify-between">
-                <h1 className="font-bold text-2xl md:text-[32px]">Casual</h1>
+                <h1 className="font-bold text-2xl md:text-[32px] capitalize">
+                  {searchParams.get('style') || 'All Products'}
+                </h1>
                 <MobileFilters />
               </div>
               <div className="flex flex-col sm:items-center sm:flex-row">
