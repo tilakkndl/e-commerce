@@ -21,37 +21,60 @@ const ReviewCard = ({
   data,
   className,
 }: ReviewCardProps) => {
+  const formattedDate = new Date(data.createdAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <div
       className={cn([
-        "relative bg-white flex flex-col items-start aspect-auto border border-black/10 rounded-[20px] p-6 sm:px-8 sm:py-7 overflow-hidden",
+        "relative bg-white flex flex-col items-start aspect-auto border border-black/10 rounded-[20px] p-5 sm:p-6 overflow-hidden min-h-[180px]",
         className,
       ])}
     >
       {blurChild && blurChild}
-      <div className="w-full flex items-center justify-between mb-3 sm:mb-4">
-        <Rating
-          initialValue={data.rating}
-          allowFraction
-          SVGclassName="inline-block"
-          size={23}
-          readonly
-        />
-        {isAction && (
-          <Button variant="ghost" size="icon">
-            <IoEllipsisHorizontal className="text-black/40 text-2xl" />
-          </Button>
-        )}
+      {/* Header Section with Name and Rating */}
+      <div className="w-full mb-5">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-1.5">
+            <strong className="text-black text-base sm:text-lg">
+              {data.user.name}
+            </strong>
+            <IoIosCheckmarkCircle className="text-[#01AB31] text-lg sm:text-xl" />
+          </div>
+          <div className="flex items-center gap-3">
+            <Rating
+              initialValue={data.rating}
+              allowFraction
+              SVGclassName="inline-block"
+              size={20}
+              readonly
+            />
+            {isAction && (
+              <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2">
+                <IoEllipsisHorizontal className="text-black/40 text-xl" />
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
-      <div className="flex items-center mb-2 sm:mb-3">
-        <strong className="text-black sm:text-xl mr-1">{data.user}</strong>
-        <IoIosCheckmarkCircle className="text-[#01AB31] text-xl sm:text-2xl" />
-      </div>
-      <p className="text-sm sm:text-base text-black/60">{data.content}</p>
-      {isDate && (
-        <p className="text-black/60 text-sm font-medium mt-4 sm:mt-6">
-          Posted on {data.date}
+
+      {/* Review Text */}
+      <div className="flex-grow w-full mb-4">
+        <p className="text-sm sm:text-base text-black/60 leading-relaxed">
+          {data.review}
         </p>
+      </div>
+
+      {/* Date at Bottom Right */}
+      {isDate && (
+        <div className="w-full flex justify-end">
+          <p className="text-black/40 text-xs font-medium">
+            Posted on {formattedDate}
+          </p>
+        </div>
       )}
     </div>
   );

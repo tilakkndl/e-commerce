@@ -120,7 +120,7 @@ const AddProduct = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/v1/product/",
+        `${process.env.NEXT_PUBLIC_ROOT_API}/product/`,
         formData,
         {
           headers: {
@@ -193,7 +193,7 @@ const AddProduct = () => {
               <input
                 type="number"
                 placeholder="Discount"
-                value={discount !== null ? discount : ''}
+                value={discount !== null ? discount : ""}
                 onChange={(e) =>
                   setDiscount(e.target.value ? parseFloat(e.target.value) : 0)
                 }
@@ -262,7 +262,7 @@ const AddProduct = () => {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Brands</SelectLabel>
-                      <SelectItem value="Nike">Nike</SelectItem>
+                      <SelectItem value="nephemp">Nephemp</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>

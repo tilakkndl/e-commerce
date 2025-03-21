@@ -40,7 +40,7 @@ const OrderCard = ({ order }: { order: OrderItem }) => {
             key={item._id}
             className="flex items-center mb-3 sm:mb-4 last:mb-0"
           >
-            {item.variant.gallery.length > 0 && (
+            {item.variant?.gallery.length > 0 && (
               <Image
                 src={item.variant.gallery[0].url}
                 alt={`${item.product.name} variant`}
@@ -56,10 +56,10 @@ const OrderCard = ({ order }: { order: OrderItem }) => {
               <div className="text-xs sm:text-sm text-gray-600 flex items-center space-x-2">
                 <span
                   className="w-4 h-4 rounded-full inline-block"
-                  style={{ backgroundColor: item.variant.hexColor }}
+                  style={{ backgroundColor: item.variant?.hexColor }}
                 ></span>
                 <span>
-                  Color: {item.variant.color} (Size: {item.size}, Qty:{" "}
+                  Color: {item.variant?.color} (Size: {item.size}, Qty:{" "}
                   {item.quantity})
                 </span>
               </div>

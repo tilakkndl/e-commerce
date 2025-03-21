@@ -12,6 +12,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useAppDispatch } from "@/lib/hooks/redux";
 import { findProductById } from "@/lib/features/admin/adminSlice";
+import { integralCF } from "@/styles/fonts";
 
 interface VariantFormData {
   color: string;
@@ -129,8 +130,13 @@ const AddVariant = ({ product }: { product: string }) => {
 
   return (
     <div className="p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-xl font-semibold mb-4 text-center">Add Variant</h2>
+      <h2 className={`text-xl font-semibold mb-4 text-center ${integralCF.className} `}>Add Variant</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
+        <ColorPicker
+          setColor={(hexColor) =>
+            setFormData((prev) => ({ ...prev, hexColor }))
+          }
+        />
         <input
           type="text"
           placeholder="Color"
@@ -140,11 +146,6 @@ const AddVariant = ({ product }: { product: string }) => {
           }
           className="w-full border p-2 rounded"
           required
-        />
-        <ColorPicker
-          setColor={(hexColor) =>
-            setFormData((prev) => ({ ...prev, hexColor }))
-          }
         />
         <input
           type="number"
@@ -162,7 +163,7 @@ const AddVariant = ({ product }: { product: string }) => {
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className="flex-grow-0 justify-between font-normal w-60 h-10"
+                className="flex-grow-0 justify-between font-normal w-full h-10"
               >
                 {selectedSizes.length > 0
                   ? selectedSizes.join(", ")
@@ -192,21 +193,27 @@ const AddVariant = ({ product }: { product: string }) => {
             </PopoverContent>
           </Popover>
         </div>
-        <label htmlFor="images">Select Images</label>
-        <input
-          type="file"
-          name="images"
-          multiple
-          onChange={handleFileChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-center"
-        >
-          {loading ? <Loader2 className="animate-spin" /> : "Submit"}
-        </button>
+        <div className="flex">
+          <label htmlFor="images" className="text-nowrap flex items-center ">
+            <div>Select Images :</div>
+          </label>
+          <input
+            type="file"
+            name="images"
+            multiple
+            onChange={handleFileChange}
+            className="w-full border p-2 rounded"
+            required
+          />
+        </div>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="px-4 py-2 bg-black/80 text-white rounded hover:bg-black/70 text-center"
+          >
+            {loading ? <Loader2 className="animate-spin" /> : "Submit"}
+          </button>
+        </div>
       </form>
     </div>
   );
