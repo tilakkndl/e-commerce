@@ -1,43 +1,32 @@
 {
-    "extends": [
-      "next/core-web-vitals",
-      "eslint:recommended",
-      "plugin:react/recommended",
-      "plugin:@typescript-eslint/recommended"
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "semi": ["error", "always"],
+    "quotes": ["error", "single"],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": "error",
+    "react/jsx-filename-extension": "warn",
+    "max-len": [
+      "warn",
+      {
+        "code": 250
+      }
     ],
-    "rules": {
-      "react/jsx-uses-react": "error",
-      "react/react-in-jsx-scope": "off",
-      "react/jsx-uses-vars": "error",
-      "semi": [
-        "error",
-        "always"
-      ],
-      "quotes": [
-        "error",
-        "single"
-      ],
-      "no-use-before-define": 1,
-      "@typescript-eslint/no-use-before-define": "error",
-      "react/jsx-filename-extension": [
-        "warn",
-        {
-          "extensions": [
-            ".tsx"
-          ]
-        }
-      ],
-      "max-len": [
-        "warn",
-        {
-          "code": 250
-        }
-      ],
-      "react/display-name": "off",
-      "enforceForLogicalOperands": 0,
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unused-vars": "off"
+    "react/display-name": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
     }
   }
+}
