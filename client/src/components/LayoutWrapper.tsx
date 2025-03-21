@@ -15,7 +15,7 @@ export default function LayoutWrapper({ children }: { children: ReactNode }) {
 
   return (
     <React.Fragment>
-      {!isAdminPage && !user.id && <TopBanner />}
+      {!isAdminPage && !user._id && <TopBanner />}
       {!isAdminPage && <TopNavbar />}
       {children}
       {!isAdminPage && <Footer />}
