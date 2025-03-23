@@ -116,7 +116,7 @@ const SignInPage = () => {
           </div>
         </section>
         <div className="h-[1px] bg-black/40 w-full my-5"></div>
-        <section className="flex flex-col space-y-3">
+        {/* <section className="flex flex-col space-y-3">
           {[...Array(3)].map((_, index) => (
             <div
               key={index}
@@ -131,7 +131,7 @@ const SignInPage = () => {
               <div>Continue with Google</div>
             </div>
           ))}
-        </section>
+        </section> */}
       </div>
     </main>
   );
