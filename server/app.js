@@ -18,11 +18,14 @@ app.use(express.json())
 app.use(morgan("dev"))
 app.use(urlencoded({extended: true}))
 app.use(
-    cors({
-      origin: "http://localhost:3000", // Allow frontend URL
-      credentials: true,
-    })
-  );
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://e-commerce-frontend-theta-ashy.vercel.app",
+    ],
+    credentials: true,
+  })
+);
 
 
 app.use("/api/v1/user", userRoute)
