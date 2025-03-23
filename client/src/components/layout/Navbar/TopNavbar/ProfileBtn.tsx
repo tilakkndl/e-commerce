@@ -139,11 +139,7 @@ export default function ProfileButton() {
                 </Button>
                 {user.role === "admin" && (
                   <Link
-                    href={
-                      user.role != "admin"
-                        ? "/"
-                        : `${process.env.NEXT_PUBLIC_ROOT_API}/admin`
-                    }
+                    href={user.role != "admin" ? "/" : `/admin`}
                     className="flex text-nowrap items-center justify-end py-1 w-fit"
                   >
                     <LayoutDashboard size={16} className="mr-2" />
@@ -152,7 +148,7 @@ export default function ProfileButton() {
                 )}
 
                 <Link
-                  href={`${process.env.NEXT_PUBLIC_ROOT_API}/myorders`}
+                  href={`/myorders`}
                   className="flex text-nowrap items-center justify-end py-1 w-fit"
                 >
                   <ListOrdered size={16} className="mr-2" />
