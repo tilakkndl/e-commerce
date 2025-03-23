@@ -19,10 +19,14 @@ export const userSlice = createSlice({
       state.username = action.payload.username;
       state.role = action.payload.role;
 
-      // Only store in localStorage if we're in the browser
+      // Only store in localStorage and cookies if we're in the browser
       if (typeof window !== "undefined") {
         localStorage.setItem("user", JSON.stringify(state));
-        Cookies.set("user", JSON.stringify(state), { expires: 1, path: "/" });
+        Cookies.set("user", JSON.stringify(state), {
+          expires: 1,
+          path: "/",
+          sameSite: "lax",
+        });
       }
     },
     removeUser: (state) => {
@@ -31,21 +35,50 @@ export const userSlice = createSlice({
       state.username = "";
       state.role = null;
 
-      // Only remove from localStorage if we're in the browser
+      // Only remove from localStorage and cookies if we're in the browser
       if (typeof window !== "undefined") {
         localStorage.removeItem("user");
-        Cookies.remove("user");
+        Cookies.remove("user", { path: "/" });
       }
     },
     initializeUserFromStorage: (state) => {
       if (typeof window !== "undefined") {
+        // First try to get from cookie
+        const userCookie = Cookies.get("user");
+        if (userCookie) {
+          try {
+            const parsedUser = JSON.parse(userCookie);
+            state._id = parsedUser._id;
+            state.name = parsedUser.name;
+            state.username = parsedUser.username;
+            state.role = parsedUser.role;
+            return;
+          } catch (error) {
+            // If cookie is invalid, remove it
+            Cookies.remove("user", { path: "/" });
+          }
+        }
+
+        // If no valid cookie, try localStorage
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
-          const parsedUser = JSON.parse(storedUser);
-          state._id = parsedUser._id;
-          state.name = parsedUser.name;
-          state.username = parsedUser.username;
-          state.role = parsedUser.role;
+          try {
+            const parsedUser = JSON.parse(storedUser);
+            state._id = parsedUser._id;
+            state.name = parsedUser.name;
+            state.username = parsedUser.username;
+            state.role = parsedUser.role;
+
+            // Sync with cookie
+            Cookies.set("user", storedUser, {
+              expires: 1,
+              path: "/",
+              sameSite: "lax",
+            });
+          } catch (error) {
+            // If localStorage data is invalid, remove it
+            localStorage.removeItem("user");
+          }
         }
       }
     },
