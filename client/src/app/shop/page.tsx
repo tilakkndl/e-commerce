@@ -26,23 +26,40 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useEffect, useState } from "react";
 import { fetchAllProducts } from "@/lib/features/admin/adminSlice";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ShopPage() {
-  
-
-
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.admin.products);
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const params = Object.fromEntries(searchParams.entries()); // Convert search params to object
+    const params = Object.fromEntries(searchParams.entries());
     setFilters(params);
-    dispatch(fetchAllProducts(params)); // Pass filters to API call
+    dispatch(fetchAllProducts(params));
   }, [searchParams, dispatch]);
 
+  const handleSort = (value: string) => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+
+    switch (value) {
+      case "low-price":
+        currentParams.set("sort", "price");
+        break;
+      case "high-price":
+        currentParams.set("sort", "-price");
+        break;
+      case "most-popular":
+        currentParams.delete("sort");
+        break;
+      default:
+        currentParams.delete("sort");
+    }
+
+    router.push(`/shop?${currentParams.toString()}`);
+  };
 
   return (
     <main className="pb-20">
@@ -61,7 +78,7 @@ export default function ShopPage() {
             <div className="flex flex-col lg:flex-row lg:justify-between">
               <div className="flex items-center justify-between">
                 <h1 className="font-bold text-2xl md:text-[32px] capitalize">
-                  {searchParams.get('style') || 'All Products'}
+                  {searchParams.get("style") || "All Products"}
                 </h1>
                 <MobileFilters />
               </div>
@@ -71,8 +88,18 @@ export default function ShopPage() {
                 </span>
                 <div className="flex items-center">
                   Sort by:{" "}
-                  <Select defaultValue="most-popular">
-                    <SelectTrigger className="font-medium text-sm px-1.5 sm:text-base w-fit text-black bg-transparent shadow-none border-none">
+                  <Select
+                    defaultValue="most-popular"
+                    onValueChange={handleSort}
+                    value={
+                      searchParams.get("sort") === "price"
+                        ? "low-price"
+                        : searchParams.get("sort") === "-price"
+                        ? "high-price"
+                        : "most-popular"
+                    }
+                  >
+                    <SelectTrigger className="font-medium text-sm px-1.5 sm:text-base w-fit text-black bg-transparent shadow-none border-none focus-visible:ring-transparent">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -146,7 +173,6 @@ export default function ShopPage() {
                   </PaginationLink>
                 </PaginationItem>
               </PaginationContent>
-
               <PaginationNext href="#" className="border border-black/10" />
             </Pagination>
           </div>
