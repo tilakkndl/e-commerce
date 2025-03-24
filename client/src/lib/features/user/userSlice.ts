@@ -1,5 +1,6 @@
 import { UserState } from "@/types/user.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 const initialState: UserState = {
   _id: null,
@@ -17,39 +18,29 @@ export const userSlice = createSlice({
       state.name = action.payload.name;
       state.username = action.payload.username;
       state.role = action.payload.role;
-
-      // Only store in localStorage if we're in the browser
-      if (typeof window !== "undefined") {
-        localStorage.setItem("user", JSON.stringify(state));
-      }
     },
     removeUser: (state) => {
       state._id = null;
       state.name = "";
       state.username = "";
       state.role = null;
-
-      // Only remove from localStorage if we're in the browser
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("user");
-      }
     },
     initializeUserFromStorage: (state) => {
       if (typeof window !== "undefined") {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
+        const userData = Cookies.get("userData");
+        if (userData) {
           try {
-            const parsedUser = JSON.parse(storedUser);
+            const parsedUser = JSON.parse(userData);
             if (parsedUser._id && parsedUser.role) {
               state._id = parsedUser._id;
               state.name = parsedUser.name;
               state.username = parsedUser.username;
               state.role = parsedUser.role;
             } else {
-              localStorage.removeItem("user");
+              Cookies.remove("userData");
             }
           } catch (error) {
-            localStorage.removeItem("user");
+            Cookies.remove("userData");
           }
         }
       }

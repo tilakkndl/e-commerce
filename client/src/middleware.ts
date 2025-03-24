@@ -9,27 +9,19 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Get the token from the Authorization header
-  const authHeader = req.headers.get("authorization");
+  // Get the user data from localStorage cookie
+  const userData = req.cookies.get("userData")?.value;
 
-  if (!authHeader) {
+  if (!userData) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
   try {
-    // Extract the token from the Authorization header
-    const token = authHeader.split(" ")[1];
-    if (!token) {
-      url.pathname = "/login";
-      return NextResponse.redirect(url);
-    }
-
-    // Decode the JWT token (it's base64 encoded)
-    const payload = JSON.parse(atob(token.split(".")[1]));
+    const user = JSON.parse(userData);
 
     // Check if user is admin
-    if (payload.role !== "admin") {
+    if (user.role !== "admin") {
       url.pathname = "/";
       return NextResponse.redirect(url);
     }

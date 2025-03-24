@@ -41,7 +41,6 @@ const SignInPage = () => {
     try {
       const response = await axios.post<{
         success: boolean;
-
         data: { user: UserState; token?: string };
       }>(
         `${process.env.NEXT_PUBLIC_ROOT_API}/user/login`,
@@ -50,20 +49,46 @@ const SignInPage = () => {
       );
 
       if (response.data.success) {
-        const token = response.data.data.token as string;
+        const { token, user } = response.data.data;
 
+        if (!token) {
+          throw new Error("No token received from server");
+        }
+
+        // Store token in cookie
         Cookies.set("authToken", token, {
           expires: 1,
           secure: process.env.NODE_ENV === "production",
-          sameSite: "Strict",
+          sameSite: "lax",
           path: "/",
         });
-        console.log("response", response);
 
-        const { _id, name, username, role } = response.data.data.user;
-        dispatch(setUser({ _id, name, username, role }));
-        console.log("siging in:", _id);
-        router.replace("/");
+        // Store user data in cookie for middleware
+        Cookies.set(
+          "userData",
+          JSON.stringify({
+            _id: user._id,
+            name: user.name,
+            username: user.username,
+            role: user.role,
+          }),
+          {
+            expires: 1,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+          }
+        );
+
+        // Update Redux state
+        dispatch(setUser(user));
+
+        // Redirect based on role
+        if (user.role === "admin") {
+          router.replace("/admin");
+        } else {
+          router.replace("/");
+        }
       }
     } catch (error) {
       console.error("Login failed:", error);
