@@ -13,7 +13,7 @@ export function middleware(req: NextRequest) {
   const userData = req.cookies.get("userData")?.value;
 
   if (!userData) {
-    url.pathname = "/login";
+    url.pathname = "/signin";
     return NextResponse.redirect(url);
   }
 
@@ -28,11 +28,11 @@ export function middleware(req: NextRequest) {
 
     return NextResponse.next();
   } catch (error) {
-    url.pathname = "/login";
+    url.pathname = "/signin";
     return NextResponse.redirect(url);
   }
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/admin"],
+  matcher: [],
 };
