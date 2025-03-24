@@ -1,11 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminTopbar from "@/components/admin/AdminTopbar";
-
 import DynamicBreadcrumb from "@/components/admin/DynamicBreadcrumb";
-import { useAppSelector } from "@/lib/hooks/redux";
-import { useRouter } from "next/navigation";
 
 export default function AdminLayout({
   children,
@@ -14,13 +11,6 @@ export default function AdminLayout({
   children: React.ReactNode;
   productName?: string; // Optional dynamic product name
 }) {
-  const user = useAppSelector((store) => store.user);
-  const router = useRouter();
-  useEffect(() => {
-    if (user.role != "admin") {
-      router.replace("/");
-    }
-  }, [user.role, router]);
   const [showSidebar, setShowSidebar] = useState(false);
 
   const toggleSidebar = () => {

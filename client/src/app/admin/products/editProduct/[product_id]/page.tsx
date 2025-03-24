@@ -17,9 +17,9 @@ import {
 import { openModal } from "@/lib/features/modal/modalSlice";
 import AddVariant from "@/components/admin/AddVariant";
 import { integralCF } from "@/styles/fonts";
-import Cookies from "js-cookie";
+import { withAdminAuth } from "@/lib/hooks/withAdminAuth";
 
-const EditProduct = () => {
+function EditProduct() {
   const router = useRouter();
   const { product_id } = useParams();
   const dispatch = useAppDispatch();
@@ -254,7 +254,7 @@ const EditProduct = () => {
           <div className="flex flex-col lg:flex-row lg:flex-wrap gap-2 lg:justify-start lg:items-center items-center justify-start">
             {editingProduct.variants?.map((variant: Variant) => (
               <VariantCard
-                key={variant._id} // Use variant._id as key
+                key={variant._id}
                 variant={variant}
                 productId={product_id.toString()}
               />
@@ -280,6 +280,6 @@ const EditProduct = () => {
       </div>
     </div>
   );
-};
+}
 
-export default EditProduct;
+export default withAdminAuth(EditProduct);

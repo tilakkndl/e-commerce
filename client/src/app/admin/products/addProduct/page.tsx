@@ -25,6 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils"; // For Tailwind class merging
+import { withAdminAuth } from "@/lib/hooks/withAdminAuth";
 
 interface Variant {
   size: string[];
@@ -33,7 +34,7 @@ interface Variant {
   stock: number | null;
 }
 
-const AddProduct = () => {
+function AddProduct() {
   const [variant, setVariant] = useState<Variant>({
     color: "",
     size: [],
@@ -362,6 +363,6 @@ const AddProduct = () => {
       </div>
     </div>
   );
-};
+}
 
-export default AddProduct;
+export default withAdminAuth(AddProduct);

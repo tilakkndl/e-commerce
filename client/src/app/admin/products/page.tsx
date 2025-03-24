@@ -11,8 +11,9 @@ import {
 } from "@/lib/features/admin/adminSlice";
 import { integralCF } from "@/styles/fonts";
 import { openModal, closeModal } from "@/lib/features/modal/modalSlice";
+import { withAdminAuth } from "@/lib/hooks/withAdminAuth";
 
-const AdminProductsPage = () => {
+function AdminProductsPage() {
   const [ellipsisToggle, setEllipsisToggle] = useState(false);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(
     null
@@ -170,6 +171,6 @@ const AdminProductsPage = () => {
       </div>
     </div>
   );
-};
+}
 
-export default AdminProductsPage;
+export default withAdminAuth(AdminProductsPage);

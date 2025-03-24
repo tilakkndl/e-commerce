@@ -7,8 +7,9 @@ import { Loader2 } from "lucide-react";
 import { FaBoxOpen } from "react-icons/fa";
 import { MdAttachMoney } from "react-icons/md";
 import { BsBox } from "react-icons/bs";
+import { withAdminAuth } from "@/lib/hooks/withAdminAuth";
 
-const AdminDashboard = () => {
+function AdminDashboard() {
   const dispatch = useAppDispatch();
   const { summary, loading, error } = useAppSelector((state) => state.admin);
 
@@ -123,6 +124,6 @@ const AdminDashboard = () => {
       </div>
     </div>
   );
-};
+}
 
-export default AdminDashboard;
+export default withAdminAuth(AdminDashboard);
