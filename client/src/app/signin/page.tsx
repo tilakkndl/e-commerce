@@ -80,15 +80,9 @@ const SignInPage = () => {
           }
         );
 
-        // Update Redux state
         dispatch(setUser(user));
 
-        // Redirect based on role
-        if (user.role === "admin") {
-          router.replace("/admin");
-        } else {
-          router.replace("/");
-        }
+        router.replace("/");
       }
     } catch (error) {
       console.error("Login failed:", error);

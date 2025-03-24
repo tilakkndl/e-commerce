@@ -2,12 +2,30 @@ import { UserState } from "@/types/user.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 
-const initialState: UserState = {
-  _id: null,
-  name: "",
-  username: "",
-  role: null,
+// Initialize user state from cookie if available
+const getUserFromCookie = (): UserState => {
+  if (typeof window !== "undefined") {
+    const userData = Cookies.get("userData");
+    if (userData) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        if (parsedUser._id && parsedUser.role) {
+          return parsedUser;
+        }
+      } catch (error) {
+        Cookies.remove("userData");
+      }
+    }
+  }
+  return {
+    _id: null,
+    name: "",
+    username: "",
+    role: null,
+  };
 };
+
+const initialState: UserState = getUserFromCookie();
 
 export const userSlice = createSlice({
   name: "user",
@@ -18,36 +36,27 @@ export const userSlice = createSlice({
       state.name = action.payload.name;
       state.username = action.payload.username;
       state.role = action.payload.role;
+
+      // Store user data in cookie
+      if (typeof window !== "undefined") {
+        const userData = JSON.stringify(action.payload);
+        Cookies.set("userData", userData);
+      }
     },
     removeUser: (state) => {
       state._id = null;
       state.name = "";
       state.username = "";
       state.role = null;
-    },
-    initializeUserFromStorage: (state) => {
+
+      // Remove both authToken and userData from cookies
       if (typeof window !== "undefined") {
-        const userData = Cookies.get("userData");
-        if (userData) {
-          try {
-            const parsedUser = JSON.parse(userData);
-            if (parsedUser._id && parsedUser.role) {
-              state._id = parsedUser._id;
-              state.name = parsedUser.name;
-              state.username = parsedUser.username;
-              state.role = parsedUser.role;
-            } else {
-              Cookies.remove("userData");
-            }
-          } catch (error) {
-            Cookies.remove("userData");
-          }
-        }
+        Cookies.remove("authToken");
+        Cookies.remove("userData");
       }
     },
   },
 });
 
-export const { setUser, removeUser, initializeUserFromStorage } =
-  userSlice.actions;
+export const { setUser, removeUser } = userSlice.actions;
 export default userSlice.reducer;
