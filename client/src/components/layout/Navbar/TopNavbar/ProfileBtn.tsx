@@ -4,12 +4,14 @@ import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { RootState } from "@/lib/store";
 import { satoshi } from "@/styles/fonts";
-import { removeUser } from "@/lib/features/user/userSlice";
+import { removeUser, setUser } from "@/lib/features/user/userSlice";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, ListOrdered, LogOut, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { openModal, closeModal } from "@/lib/features/modal/modalSlice";
+import Cookies from "js-cookie";
+import { UserState } from "@/types/user.types";
 
 export default function ProfileButton() {
   const [profileButtonToggle, setProfileButtonToggle] = useState(false);
@@ -19,11 +21,30 @@ export default function ProfileButton() {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
+  // Check for user data in cookies on mount
+  useEffect(() => {
+    const userData = Cookies.get("userData");
+    if (userData) {
+      try {
+        const parsedUser = JSON.parse(userData) as UserState;
+        if (parsedUser._id && parsedUser.role) {
+          dispatch(setUser(parsedUser));
+        } else {
+          // Invalid user data, clear cookies
+          Cookies.remove("authToken");
+          Cookies.remove("userData");
+        }
+      } catch (error) {
+        // Error parsing user data, clear cookies
+        Cookies.remove("authToken");
+        Cookies.remove("userData");
+      }
+    }
+  }, [dispatch]);
+
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      // Add any async logout operations here (e.g., API calls)
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated delay
       dispatch(removeUser());
       dispatch(closeModal());
       setProfileButtonToggle(false);

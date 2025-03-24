@@ -128,29 +128,14 @@ const SignInPage = () => {
             <Button
               type="button"
               onClick={submitHandler}
-              className="w-full mx-auto md:w-52 mb-5 md:mb-12 text-center bg-black hover:bg-black/80 transition-all text-white px-14 py-4 rounded-full hover:animate-pulse"
+              disabled={loading}
+              className="w-full mx-auto md:w-52 mb-5 md:mb-12 text-center bg-black hover:bg-black/80 transition-all text-white px-14 py-4 rounded-full hover:animate-pulse disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Signing In..." : "Sign In"}
             </Button>
           </div>
         </section>
         <div className="h-[1px] bg-black/40 w-full my-5"></div>
-        {/* <section className="flex flex-col space-y-3">
-          {[...Array(3)].map((_, index) => (
-            <div
-              key={index}
-              className="flex space-x-5 h-[40px] bg-white items-center rounded-full border-black/10 w-fit px-3 mx-auto"
-            >
-              <Image
-                src="/images/google_logo.webp"
-                alt="google_logo"
-                width={24}
-                height={24}
-              />
-              <div>Continue with Google</div>
-            </div>
-          ))}
-        </section> */}
       </div>
     </main>
   );
