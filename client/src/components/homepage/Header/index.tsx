@@ -22,8 +22,8 @@ const Header = () => {
               "text-4xl lg:text-[64px] lg:leading-[64px] mb-5 lg:mb-8",
             ])}
           >
-            Welcome to Mr. Nephemp <br />{" "}
-            <span className="text-2xl">For those who admire quality</span>
+            Welcome to Mr.<b className="text-[#a80706]">Nephemp </b> <br />{" "}
+            <span className="text-2xl text-[#0b3393]">For those who admire quality</span>
           </motion.h2>
           <motion.p
             initial={{ y: "100px", opacity: 0 }}
@@ -35,6 +35,13 @@ const Header = () => {
             Proudly made in Nepal, our products blend durability, comfort, and
             ethical responsibility, ensuring you wear your values with pride.
           </motion.p>
+          <motion.h4>
+            At Mr. Nephemp, every product is a celebration of heritage, sustainability, and the
+            promise of a greener future.
+          </motion.h4>
+          <motion.h4 className="mt-5 mb-5 text-2xl">
+            Switch to Hemp. Switch to Mr. Nephemp. Join us in making all day&#39;s a hemp day!
+          </motion.h4>
           <motion.div
             initial={{ y: "100px", opacity: 0 }}
             whileInView={{ y: "0", opacity: 1 }}
@@ -42,52 +49,13 @@ const Header = () => {
             transition={{ delay: 1, duration: 0.6 }}
           >
             <Link
-              href="/shop?status=active"
+              href="/shop"
               className="w-full md:w-52 mb-5 md:mb-12 inline-block text-center bg-black hover:bg-black/80 transition-all text-white px-14 py-4 rounded-full hover:animate-pulse"
             >
               Shop Now
             </Link>
           </motion.div>
-          <motion.div
-            initial={{ y: "100px", opacity: 0 }}
-            whileInView={{ y: "0", opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 1.5, duration: 0.6 }}
-            className="flex md:h-full md:max-h-11 lg:max-h-[52px] xl:max-h-[68px] items-center justify-center md:justify-start flex-wrap sm:flex-nowrap md:space-x-3 lg:space-x-6 xl:space-x-8 md:mb-[116px]"
-          >
-            <div className="flex flex-col">
-              <span className="font-bold text-2xl md:text-xl lg:text-3xl xl:text-[40px] xl:mb-2">
-                <AnimatedCounter from={0} to={20} />+
-              </span>
-              <span className="text-xs xl:text-base text-black/60 text-nowrap">
-                International Sales
-              </span>
-            </div>
-            <Separator
-              className="ml-6 md:ml-0 h-12 md:h-full bg-black/10"
-              orientation="vertical"
-            />
-            <div className="flex flex-col ml-6 md:ml-0">
-              <span className="font-bold text-2xl md:text-xl lg:text-3xl xl:text-[40px] xl:mb-2">
-                <AnimatedCounter from={0} to={200} />+
-              </span>
-              <span className="text-xs xl:text-base text-black/60 text-nowrap">
-                High-Quality Products
-              </span>
-            </div>
-            <Separator
-              className="hidden sm:block sm:h-12 md:h-full ml-6 md:ml-0 bg-black/10"
-              orientation="vertical"
-            />
-            <div className="flex flex-col w-full text-center sm:w-auto sm:text-left mt-3 sm:mt-0 sm:ml-6 md:ml-0">
-              <span className="font-bold text-2xl md:text-xl lg:text-3xl xl:text-[40px] xl:mb-2">
-                <AnimatedCounter from={0} to={300} />+
-              </span>
-              <span className="text-xs xl:text-base text-black/60 text-nowrap">
-                Happy Customers
-              </span>
-            </div>
-          </motion.div>
+
         </section>
         <motion.section
           initial={{ y: "100px", opacity: 0, rotate: 10 }}

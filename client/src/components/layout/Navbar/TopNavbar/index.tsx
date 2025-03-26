@@ -20,45 +20,46 @@ const data: NavMenu = [
   {
     id: 1,
     label: "Shop",
-    type: "MenuList",
+    type: "MenuItem",
+    // type: "MenuList",
     children: [
-      {
-        id: 11,
-        label: "Men's clothes",
-        url: "/shop?status=active&sex=male",
-        description: "In attractive and spectacular colors and designs",
-      },
-      {
-        id: 12,
-        label: "Women's clothes",
-        url: "/shop?status=active&sex=female",
-        description: "Ladies, your style and tastes are important to us",
-      },
-      {
-        id: 13,
-        label: "Kids clothes",
-        url: "/shop?status=active&age=kid",
-        description: "For all ages, with happy and beautiful colors",
-      },
-      {
-        id: 14,
-        label: "Bags",
-        url: "/shop?status=active&category=67bc8c6910042b46ed451b3d",
-        description: "Suitable for men, women and all tastes and styles",
-      },
+      // {
+      //   id: 11,
+      //   label: "Men's clothes",
+      //   url: "/shop?status=active&sex=male",
+      //   description: "In attractive and spectacular colors and designs",
+      // },
+      // {
+      //   id: 12,
+      //   label: "Women's clothes",
+      //   url: "/shop?status=active&sex=female",
+      //   description: "Ladies, your style and tastes are important to us",
+      // },
+      // {
+      //   id: 13,
+      //   label: "Kids clothes",
+      //   url: "/shop?status=active&age=kid",
+      //   description: "For all ages, with happy and beautiful colors",
+      // },
+      // {
+      //   id: 14,
+      //   label: "Bags",
+      //   url: "/shop?status=active&category=67bc8c6910042b46ed451b3d",
+      //   description: "Suitable for men, women and all tastes and styles",
+      // },
     ],
   },
   {
     id: 2,
     type: "MenuItem",
-    label: "On Sale",
-    url: "/shop#on-sale",
+    label: "About Us",
+    url: "/about",
     children: [],
   },
   {
     id: 3,
     type: "MenuItem",
-    label: "New Arrivals",
+    label: "Contact Us",
     url: "/shop#new-arrivals",
     children: [],
   },
@@ -86,7 +87,7 @@ const TopNavbar = () => {
               "text-2xl lg:text-[32px]  mr-3 lg:mr-10",
             ])}
           >
-            <Image src="/images/logo.jpg" height={200} width={200} alt="logo" />
+            <Image src="/images/logo.png" height={200} width={200} alt="logo" />
           </Link>
         </div>
         <NavigationMenu className="hidden md:flex mr-2 lg:mr-7">
