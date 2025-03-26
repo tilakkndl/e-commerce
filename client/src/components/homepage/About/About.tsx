@@ -63,12 +63,7 @@ const About: React.FC = () => {
           variants={containerVariants}
           className="text-center mb-20"
         >
-          {/* <motion.p
-            variants={itemVariants}
-            className="text-[#ad0502] font-medium tracking-wide uppercase mb-4"
-          >
-            Our Story
-          </motion.p> */}
+          
           <motion.h2
             variants={itemVariants}
             className={cn([
