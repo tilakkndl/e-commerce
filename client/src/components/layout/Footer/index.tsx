@@ -35,15 +35,7 @@ const paymentBadgesData: PaymentBadge[] = [
   {
     id: 3,
     srcUrl: "/icons/paypal.svg",
-  },
-  {
-    id: 4,
-    srcUrl: "/icons/applePay.svg",
-  },
-  {
-    id: 5,
-    srcUrl: "/icons/googlePay.svg",
-  },
+  }
 ];
 
 const Footer = () => {

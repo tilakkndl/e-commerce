@@ -21,6 +21,7 @@ const data: NavMenu = [
     id: 1,
     label: "Shop",
     type: "MenuItem",
+    url: "/shop#new-arrivals",
     // type: "MenuList",
     children: [
       // {
@@ -60,7 +61,7 @@ const data: NavMenu = [
     id: 3,
     type: "MenuItem",
     label: "Contact Us",
-    url: "/shop#new-arrivals",
+    url: "/contact",
     children: [],
   },
   // {

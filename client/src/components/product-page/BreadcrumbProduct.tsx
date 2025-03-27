@@ -21,7 +21,7 @@ const BreadcrumbProduct = ({ title }: { title: string }) => {
         <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link href="/shop">Shop</Link>
+            <Link href="/shop#new-arrivals">Shop</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />

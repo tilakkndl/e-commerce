@@ -28,15 +28,15 @@ const DressStyle = () => {
           className="flex flex-col sm:flex-row md:h-[289px] space-y-4 sm:space-y-0 sm:space-x-5 mb-4 sm:mb-5"
         >
           <DressStyleCard
-            title="Hemp Crossbody Round Bag"
-            url="/shop#casual"
-            imageUrl="/images/sock6.jpeg"
+            title="Hemp Bag"
+            url="/shop#new-arrivals"
+            imageUrl="/images/tote.jpeg"
             className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px]"
           />
           <DressStyleCard
             title="Hemp Ladies Purses"
-            url="/shop#formal"
-            imageUrl="/images/sock4.jpeg"
+            url="/shop#new-arrivals"
+            imageUrl="/images/lpurse.jpeg"
             className="md:max-w-[684px] h-[190px]"
           />
         </motion.div>
@@ -49,14 +49,14 @@ const DressStyle = () => {
         >
           <DressStyleCard
             title="Hemp Wallets"
-            url="/shop#party"
-            imageUrl="/images/sock2.jpeg"
+            url="/shop#new-arrivals"
+            imageUrl="/images/wallets.jpeg"
             className="md:max-w-[684px] h-[190px]"
           />
           <DressStyleCard
             title="Hemp Tote Bags"
-            url="/shop#gym"
-            imageUrl="/images/sock4.jpeg"
+            url="/shop#new-arrivals"
+            imageUrl="/images/htote.jpeg"
             className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px]"
           />
         </motion.div>
@@ -65,18 +65,18 @@ const DressStyle = () => {
           whileInView={{ y: "0", opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.6, duration: 0.6 }}
-          className="flex flex-col sm:flex-row md:h-[289px] space-y-4 sm:space-y-0 sm:space-x-5 mb-4 sm:mb-5"
+          className="flex flex-col sm:flex-row md:h-[289px] space-y-4 sm:space-y-0 sm:space-x-5 mb-4 mt-4 sm:mb-5"
         >
           <DressStyleCard
             title="Hemp Socks"
-            url="/shop#casual"
-            imageUrl="/images/sock6.jpeg"
+            url="/shop#new-arrivals"
+            imageUrl="/images/sock4.jpeg"
             className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px]"
           />
           <DressStyleCard
             title="Patch Jackets and Trousers"
-            url="/shop#formal"
-            imageUrl="/images/sock4.jpeg"
+            url="/shop#new-arrivals"
+            imageUrl="/images/trt.jpeg"
             className="md:max-w-[684px] h-[190px]"
           />
         </motion.div>

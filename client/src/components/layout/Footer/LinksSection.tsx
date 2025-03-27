@@ -65,8 +65,8 @@ const footerLinksData: FooterLinks[] = [
       },
       {
         id: 33,
-        label: "privacy policy",
-        url: "#",
+        label: "Delivery and Payment",
+        url: "deliveryandpayment",
       },
       {
         id: 34,
@@ -81,22 +81,22 @@ const footerLinksData: FooterLinks[] = [
     children: [
       {
         id: 41,
-        label: "Hoodies",
+        label: "Bags",
         url: "#",
       },
       {
         id: 42,
-        label: "Pants",
+        label: "Purse",
         url: "#",
       },
       {
         id: 43,
-        label: "Shirt",
+        label: "Jacket",
         url: "#",
       },
       {
         id: 44,
-        label: "Purse",
+        label: "Trousers",
         url: "#",
       },
     ],
