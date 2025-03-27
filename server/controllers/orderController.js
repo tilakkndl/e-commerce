@@ -8,36 +8,51 @@ import AppError from '../utils/appError.js';
 import APIFeatures from '../utils/apiFeatures.js';
 
 export const formatOrders = async (orders) => {
-    return Promise.all(
-      orders.map(async (order) => {
-        const orderObject = order instanceof mongoose.Document ? order.toObject() : order;
-  
-        return {
-          ...orderObject,
-          orders: await Promise.all(
-            orderObject.orders.map(async (orderItem) => {
-              const product = await Product.findById(orderItem.product).lean();
-              if (!product) {
-                return { ...orderItem, product: null, variant: null };
-              }
-  
-              const selectedVariant = product.variants.find(
-                (variant) => variant._id.toString() === orderItem.variant.toString()
-              );
-  
-              return {
-                ...orderItem,
-                product: {
-                  name: product.name,
-                },
-                variant: selectedVariant || null, 
-              };
-            })
-          ),
-        };
-      })
-    );
-  };
+  return Promise.all(
+    orders.map(async (order) => {
+      const orderObject = order instanceof mongoose.Document ? order.toObject() : order;
+
+      // Filter out orders where the product is deleted
+      const filteredOrders = await Promise.all(
+        orderObject.orders.map(async (orderItem) => {
+          const product = await Product.findById(orderItem.product).lean();
+          
+          // If the product is deleted or doesn't exist, exclude this orderItem
+          if (!product) {
+            return null; 
+          }
+          
+          let selectedVariant;
+          if (product) {
+            selectedVariant = product.variants.find(
+              (variant) => variant._id.toString() === orderItem.variant.toString()
+            );
+          }
+
+          return {
+            ...orderItem,
+            product: {
+              name: product.name,
+            },
+            variant: selectedVariant,
+          };
+        })
+      );
+
+      // Remove any null values from the filtered orders
+      const validOrders = filteredOrders.filter(orderItem => orderItem !== null);
+   if (validOrders.length === 0) {
+        return null;
+      }
+
+      return {
+        ...orderObject,
+        orders: validOrders,
+      };
+    })
+  ).then((formattedOrders) => formattedOrders.filter((order) => order !== null)
+  );
+};
 // Create a new order
 export const createOrder = catchAsync(async (req, res, next) => {
     const { user, orders } = req.body;
@@ -217,13 +232,17 @@ export const getUserOrder = catchAsync(async (req, res, next) => {
       .paginate();
   
     const orders = await features.query;
+    console.log(orders)
+    orders.forEach(order=>{
+      console.log(order.orders)
+    })
   
     if (orders.length === 0) {
       return next(new AppError("No orders found", 404));
     }
   
     const formattedOrders = await formatOrders(orders);
-  
+
     // Calculate total orders and total amount
     const totalOrders = formattedOrders.length;
     const totalAmount = formattedOrders.reduce((acc, order) => acc + order.totalPrice, 0);
@@ -240,7 +259,6 @@ export const getUserOrder = catchAsync(async (req, res, next) => {
       return acc;
     }, {});
   
-    // Send combined response
     res.status(200).json({
       success: true,
       message: "Order summary retrieved successfully",

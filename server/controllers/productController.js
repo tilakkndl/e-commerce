@@ -195,7 +195,7 @@ if (price)  updateFields.price = price;
 if (style)  updateFields.style = style;
 if (age)  updateFields.age = age;
 if (sex) updateFields.sex = sex;
-if (discount)  updateFields.discount = discount;
+if (discount || parseFloat(discount)==0)  updateFields.discount = discount;
 if (description)  updateFields.description = description;
 if (status)  updateFields.status = status;
 
