@@ -112,7 +112,7 @@ function AdminProductsPage() {
               <th className="p-3 text-center">Status</th>
               <th className="p-3 text-left">Image</th>
               <th className="p-3 text-left">Product</th>
-              {/* <th className="p-3 text-center">Brand</th> */}
+              <th className="p-3 text-center">Discount</th>
               <th className="p-3 text-center">Price</th>
               <th className="p-3 text-center">Stock</th>
               <th className="p-3 text-center">Actions</th>
@@ -140,7 +140,9 @@ function AdminProductsPage() {
                   )}
                 </td>
                 <td className="py-3 px-4 text-left">{product.name}</td>
-                {/* <td className="py-3 px-4 text-center">{product.brand.brand}</td> */}
+                <td className="py-3 px-4 text-center">
+                  {product.discount ? `${product.discount}%` : "No Discount"}
+                </td>
                 <td className="py-3 px-4 text-center">Rs. {product.price}</td>
                 <td className="py-3 px-4 text-center">
                   {product.variants[0]?.stock || 0}

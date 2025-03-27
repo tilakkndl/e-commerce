@@ -74,7 +74,7 @@ function EditProduct() {
       alert("Failed to update product. Please try again.");
     }
   };
-
+  console.log("dkfjak", editingProduct.discount);
   // Handle status toggle
   const handleStatusToggle = (status: "active" | "inactive") => {
     setEditingProduct((prev) => (prev ? { ...prev, status } : null));
@@ -132,7 +132,7 @@ function EditProduct() {
             type="number"
             min="0"
             max="100"
-            value={editingProduct.discount || 0}
+            value={editingProduct.discount}
             onChange={(e) =>
               setEditingProduct((prev) =>
                 prev ? { ...prev, discount: parseFloat(e.target.value) } : null
