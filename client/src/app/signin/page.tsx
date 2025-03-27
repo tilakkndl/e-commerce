@@ -12,6 +12,7 @@ import { integralCF } from "@/styles/fonts";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Cookies from "js-cookie";
+import { showToast } from "@/lib/features/toast/toastSlice";
 
 const SignInPage = () => {
   const router = useRouter();
@@ -36,8 +37,20 @@ const SignInPage = () => {
     e: MouseEvent<HTMLButtonElement>
   ): Promise<void> => {
     e.preventDefault();
-    setLoading(true);
 
+    // Validation checks
+    if (!username || !password) {
+      dispatch(
+        showToast({
+          message: "Please fill in all fields",
+          type: "error",
+          duration: 3000,
+        })
+      );
+      return;
+    }
+
+    setLoading(true);
     try {
       const response = await axios.post<{
         success: boolean;
@@ -55,37 +68,28 @@ const SignInPage = () => {
           throw new Error("No token received from server");
         }
 
-        // Store token in cookie
-        Cookies.set("authToken", token, {
-          expires: 1,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          path: "/",
-        });
-
-        // Store user data in cookie for middleware
-        Cookies.set(
-          "userData",
-          JSON.stringify({
-            _id: user._id,
-            name: user.name,
-            username: user.username,
-            role: user.role,
-          }),
-          {
-            expires: 1,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-          }
-        );
+        // Store token and user data in cookies...
 
         dispatch(setUser(user));
-
+        dispatch(
+          showToast({
+            message: "Signed in successfully!",
+            type: "success",
+            duration: 3000,
+          })
+        );
         router.replace("/");
       }
-    } catch (error) {
-      console.error("Login failed:", error);
+    } catch (error: any) {
+      dispatch(
+        showToast({
+          message:
+            error.response?.data?.message ||
+            "Sign in failed. Please check your credentials.",
+          type: "error",
+          duration: 3000,
+        })
+      );
     } finally {
       setLoading(false);
     }

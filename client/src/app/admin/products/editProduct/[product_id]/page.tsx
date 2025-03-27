@@ -18,6 +18,8 @@ import { openModal } from "@/lib/features/modal/modalSlice";
 import AddVariant from "@/components/admin/AddVariant";
 import { integralCF } from "@/styles/fonts";
 import { withAdminAuth } from "@/lib/hooks/withAdminAuth";
+import { showToast } from "@/lib/features/toast/toastSlice";
+import { RootState } from "@/lib/store";
 
 function EditProduct() {
   const router = useRouter();
@@ -67,14 +69,31 @@ function EditProduct() {
         })
       ).unwrap();
 
-      console.log("Product updated successfully:", editingProduct);
-      router.push("/admin/products");
+      // Show success toast
+      dispatch(
+        showToast({
+          message: "Product updated successfully!",
+          type: "success",
+          duration: 3000,
+        })
+      );
+
+      // Redirect to products page after a short delay
+      setTimeout(() => {
+        router.push("/admin/products");
+      }, 1000);
     } catch (err) {
-      console.error("Failed to update product:", err);
-      alert("Failed to update product. Please try again.");
+      // Show error toast
+      dispatch(
+        showToast({
+          message: "Failed to update product. Please try again.",
+          type: "error",
+          duration: 3000,
+        })
+      );
     }
   };
-  console.log("dkfjak", editingProduct.discount);
+
   // Handle status toggle
   const handleStatusToggle = (status: "active" | "inactive") => {
     setEditingProduct((prev) => (prev ? { ...prev, status } : null));

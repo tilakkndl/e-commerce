@@ -26,6 +26,8 @@ import { Button } from "@/components/ui/button";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils"; // For Tailwind class merging
 import { withAdminAuth } from "@/lib/hooks/withAdminAuth";
+import { useDispatch } from "react-redux";
+import { showToast } from "@/lib/features/toast/toastSlice";
 
 interface Variant {
   size: string[];
@@ -55,6 +57,7 @@ function AddProduct() {
   const router = useRouter();
   const sizes = ["XS", "SM", "MD", "LG", "XL", "2XL", "3XL"];
   const [selectedSizes, setSelectedSizes] = useState<string[]>(variant.size);
+  const dispatch = useDispatch();
 
   const handleSizeChange = (size: string) => {
     setVariant((prevVariant) => {
@@ -79,12 +82,24 @@ function AddProduct() {
 
     if (price === null || price <= 0) {
       setLoading(false);
-      alert("Price must be a positive number.");
+      dispatch(
+        showToast({
+          message: "Price must be a positive number.",
+          type: "error",
+          duration: 3000,
+        })
+      );
       return;
     }
     if (variant.stock === null || variant.stock <= 0) {
       setLoading(false);
-      alert("Stock must be a positive integer.");
+      dispatch(
+        showToast({
+          message: "Stock must be a positive integer.",
+          type: "error",
+          duration: 3000,
+        })
+      );
       return;
     }
     if (discount === null || discount < 0) {
@@ -94,7 +109,13 @@ function AddProduct() {
     }
     if (!name || !description) {
       setLoading(false);
-      alert("Please fill out all required fields.");
+      dispatch(
+        showToast({
+          message: "Please fill out all required fields.",
+          type: "error",
+          duration: 3000,
+        })
+      );
       return;
     }
 
@@ -133,15 +154,26 @@ function AddProduct() {
 
       if (response.status >= 200 && response.status < 300) {
         setLoading(false);
+        dispatch(
+          showToast({
+            message: "Product created successfully!",
+            type: "success",
+            duration: 3000,
+          })
+        );
         router.back();
-        alert("Product created successfully!");
       } else {
-        setLoading(false);
         throw new Error("Failed to create product");
       }
     } catch (error) {
       setLoading(false);
-      alert("Failed to create product. Please try again.");
+      dispatch(
+        showToast({
+          message: "Failed to create product. Please try again.",
+          type: "error",
+          duration: 3000,
+        })
+      );
     }
   };
 
@@ -291,7 +323,7 @@ function AddProduct() {
               <div className="flex-1">
                 <Select name="sex" onValueChange={(value) => setSex(value)}>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Your Sex" />
+                    <SelectValue placeholder="For which sex" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>

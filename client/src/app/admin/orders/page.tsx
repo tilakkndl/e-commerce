@@ -5,18 +5,16 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import React, { useEffect } from "react";
 import { integralCF } from "@/styles/fonts";
 import OrderCard from "@/components/admin/OrderCard";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { ShoppingBag } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const AdminOrdersPage = () => {
   const dispatch = useAppDispatch();
   const orders = useAppSelector((state) => state.admin.orders);
-  const router = useRouter();
+  const loading = useAppSelector((state) => state.admin.loading);
 
   useEffect(() => {
     dispatch(fetchAllOrders());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white p-4 sm:p-6 lg:p-8">
@@ -26,16 +24,14 @@ const AdminOrdersPage = () => {
         Admin Orders
       </h1>
       <div className="space-y-6 w-fit mx-auto">
-        {orders?.length === 0 ? (
-          <div className="flex flex-col items-center justify-center space-y-4 py-12">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-black" />
+            <p className="mt-4 text-gray-600">Loading orders...</p>
+          </div>
+        ) : orders?.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12">
             <p className="text-lg text-gray-600">No orders found</p>
-            <Button
-              onClick={() => router.push("/shop")}
-              className="flex items-center space-x-2 bg-black hover:bg-black/80"
-            >
-              <ShoppingBag className="w-4 h-4" />
-              <span>Go to Shop</span>
-            </Button>
           </div>
         ) : (
           orders?.map((order) => <OrderCard order={order} key={order._id} />)

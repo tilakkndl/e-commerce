@@ -12,6 +12,7 @@ import {
 import { integralCF } from "@/styles/fonts";
 import { openModal, closeModal } from "@/lib/features/modal/modalSlice";
 import { withAdminAuth } from "@/lib/hooks/withAdminAuth";
+import { showToast } from "@/lib/features/toast/toastSlice";
 
 function AdminProductsPage() {
   const [ellipsisToggle, setEllipsisToggle] = useState(false);
@@ -30,9 +31,21 @@ function AdminProductsPage() {
     try {
       await dispatch(deleteProductById(productId)).unwrap();
       dispatch(closeModal());
+      dispatch(
+        showToast({
+          message: "Product deleted successfully!",
+          type: "success",
+          duration: 3000,
+        })
+      );
     } catch (error) {
-      console.error("Failed to delete product:", error);
-      alert("Failed to delete product. Please try again.");
+      dispatch(
+        showToast({
+          message: "Failed to delete product. Please try again.",
+          type: "error",
+          duration: 3000,
+        })
+      );
     } finally {
       setDeletingProductId(null);
     }

@@ -11,6 +11,8 @@ import { UserState } from "@/types/user.types";
 import { integralCF } from "@/styles/fonts";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Cookies from "js-cookie";
+import { showToast } from "@/lib/features/toast/toastSlice";
 
 const registerPage = () => {
   const router = useRouter();
@@ -88,7 +90,20 @@ const registerPage = () => {
   ): Promise<void> => {
     e.preventDefault();
 
+    // Validation check
+    if (!name || !phNo || !email || !address || !password || !confirmPassword) {
+      dispatch(
+        showToast({
+          message: "Please fill in all fields",
+          type: "error",
+          duration: 3000,
+        })
+      );
+      return;
+    }
+
     setLoading(true);
+
     try {
       const response = await axios.post<{
         success: boolean;
@@ -106,15 +121,62 @@ const registerPage = () => {
         },
         { withCredentials: true }
       );
-      console.log(response.data);
+
       if (response.data.success) {
-        console.log("registered successfully");
-        router.replace("/signin");
-        setLoading(false);
+        const { token, data } = response.data;
+
+        if (!token) {
+          throw new Error("No token received from server");
+        }
+
+        // Store token in cookie
+        Cookies.set("authToken", token, {
+          expires: 1,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+        });
+
+        // Store user data in cookie for middleware
+        Cookies.set(
+          "userData",
+          JSON.stringify({
+            _id: data._id,
+            name: data.name,
+            username: data.username,
+            role: data.role,
+          }),
+          {
+            expires: 1,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+          }
+        );
+
+        dispatch(setUser(data));
+        dispatch(
+          showToast({
+            message: "Registered successfully!",
+            type: "success",
+            duration: 3000,
+          })
+        );
+
+        router.replace("/");
       }
-    } catch (error) {
+    } catch (error: any) {
+      dispatch(
+        showToast({
+          message:
+            error.response?.data?.message ||
+            "Registration failed. Please try again.",
+          type: "error",
+          duration: 3000,
+        })
+      );
+    } finally {
       setLoading(false);
-      console.error("Register failed:", error);
     }
   };
   return (

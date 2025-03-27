@@ -5,10 +5,11 @@ import HolyLoader from "holy-loader";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import Providers from "@/app/providers";
 import Modal from "@/components/Modal";
+import Toast from "@/components/ui/Toast";
 
 export const metadata: Metadata = {
-  title: "Mr. Nephemp",
-  description: "For those who admire quality!",
+  title: "Nephemp",
+  description: "Nephemp - Your One-Stop Shop for Everything",
 };
 
 export const viewport: Viewport = {
@@ -27,6 +28,7 @@ export default function RootLayout({
         <Providers>
           <LayoutWrapper>{children}</LayoutWrapper>
           <Modal />
+          <Toast />
         </Providers>
       </body>
     </html>

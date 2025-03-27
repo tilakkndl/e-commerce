@@ -9,6 +9,7 @@ import { useAppDispatch } from "@/lib/hooks/redux";
 import { removeUser } from "@/lib/features/user/userSlice";
 import { useRouter } from "next/navigation";
 import { openModal, closeModal } from "@/lib/features/modal/modalSlice";
+import { showToast } from "@/lib/features/toast/toastSlice";
 
 const AdminTopbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   const dispatch = useAppDispatch();
@@ -21,7 +22,22 @@ const AdminTopbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
       await new Promise((resolve) => setTimeout(resolve, 500)); // Small delay for UX
       dispatch(removeUser());
       dispatch(closeModal());
+      dispatch(
+        showToast({
+          message: "Logged out successfully!",
+          type: "success",
+          duration: 3000,
+        })
+      );
       router.push("/");
+    } catch (error) {
+      dispatch(
+        showToast({
+          message: "Failed to logout. Please try again.",
+          type: "error",
+          duration: 3000,
+        })
+      );
     } finally {
       setIsLoggingOut(false);
     }

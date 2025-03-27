@@ -6,6 +6,7 @@ import cartsReducer from "./features/carts/cartsSlice";
 import userReducer from "./features/user/userSlice";
 import adminReducer from "./features/admin/adminSlice";
 import modalReducer from "./features/modal/modalSlice";
+import toastReducer from "./features/toast/toastSlice";
 
 const persistConfig = {
   key: "root",
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   admin: adminReducer,
   modal: modalReducer,
+  toast: toastReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -4,31 +4,54 @@ import React from "react";
 const formatText = (text: string) => {
   return text
     .replace(/&amp;/g, "&") // Decode HTML entities
-    .split("\r\n\r\n") // Split paragraphs
+    .split(/\r?\n\r?\n/) // Split paragraphs, handle both \r\n and \n
     .map((paragraph, index) => {
-      // Check for bullet points using a more flexible match
-      if (paragraph.match(/^[•●▪️‣⁃-]/) || paragraph.includes(" ")) {
+      // Trim the paragraph to remove extra whitespace
+      const trimmedParagraph = paragraph.trim();
+
+      // Check if paragraph contains bullet points
+      const bulletPoints = trimmedParagraph
+        .split(/\r?\n/) // Split by newlines
+        .map((line) => line.trim()) // Trim each line
+        .filter((line) => line.length > 0); // Remove empty lines
+
+      // Check if any line starts with a bullet point character
+      const hasBulletPoints = bulletPoints.some(
+        (line) =>
+          line.startsWith("•") || line.startsWith("-") || line.startsWith("*")
+      );
+
+      if (hasBulletPoints) {
         return (
-          <ul key={index} className="list-disc list-inside ml-4">
-            {paragraph
-              .split(/\r\n[•●▪️‣⁃-]? ?| /) // Handle different bullet characters
-              .filter((point) => point.trim() !== "") // Remove empty elements
-              .map((point, i) => (
-                <li key={i}>{point}</li>
-              ))}
+          <ul key={index} className="list-disc list-inside space-y-2 mb-3">
+            {bulletPoints.map((point, i) => {
+              // Remove bullet point characters and trim
+              const cleanPoint = point.replace(/^[•\-*]\s*/, "").trim();
+
+              // Only render non-empty points
+              return cleanPoint ? (
+                <li key={i} className="ml-2">
+                  {cleanPoint}
+                </li>
+              ) : null;
+            })}
           </ul>
         );
       }
 
-      return (
+      // Return regular paragraph if no bullet points
+      return trimmedParagraph ? (
         <p key={index} className="mb-3">
-          {paragraph}
+          {trimmedParagraph}
         </p>
-      );
-    });
+      ) : null;
+    })
+    .filter(Boolean); // Remove null elements
 };
 
 const RichText = ({ text }: { text: string }) => {
+  if (!text) return null;
+
   return (
     <div className="text-sm sm:text-base text-black/60 mb-5">
       {formatText(text)}
