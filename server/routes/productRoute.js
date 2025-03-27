@@ -10,7 +10,8 @@ import {
   deleteVariant,
   variantImageUpload,
   getAllVariants,
-  getVariantById
+  getVariantById,
+  searchProducts
 } from "../controllers/productController.js";
 
 import upload  from "../middleware/upload.js";  
@@ -21,6 +22,8 @@ const router = express.Router();
 router.route("/")
   .post(protect, restrictTo("admin"), upload.array("gallery", 5), createProduct)
   .get(getAllProducts);
+
+router.get("/search", searchProducts);
 
 router.route("/:id")
   .get(getProductById)
@@ -39,5 +42,7 @@ router.route("/:id/variants/:variantId")
   .put(protect, restrictTo("admin"),upload.array("gallery", 5), updateVariant)
   .get(protect, restrictTo("admin"),upload.array("gallery", 5), getVariantById)
   .delete(protect, restrictTo("admin"), deleteVariant);
+
+
 
 export default router;

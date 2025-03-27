@@ -9,6 +9,7 @@ import brandRoute from './routes/brandRoute.js'
 import productRoute from './routes/productRoute.js'
 import orderRoute from "./routes/orderRoute.js"
 import ReviewRoute from './routes/reviewRoute.js';
+import subscriberRoute from './routes/subscriberRoute.js';
 
 
 const app = express();
@@ -34,6 +35,7 @@ app.use("/api/v1/brand", brandRoute)
 app.use("/api/v1/product", productRoute)
 app.use("/api/v1/orders", orderRoute)
 app.use("/api/v1/reviews", ReviewRoute)
+app.use("/api/v1/subscriber", subscriberRoute)
 
 
 

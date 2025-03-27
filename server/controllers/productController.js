@@ -432,3 +432,29 @@ export const deleteVariant = catchAsync(async (req, res, next) => {
   });
 });
 
+
+
+export const searchProducts = catchAsync(async (req, res, next) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return next(new AppError("Search query is required", 400));
+  }
+
+  const products = await Product.find({
+    $or: [
+      { name: { $regex: query, $options: "i" } }, 
+      { description: { $regex: query, $options: "i" } }
+    ]
+  });
+
+  if (products.length === 0) {
+    return next(new AppError("No products found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    results: products.length,
+    data: products,
+  });
+});
