@@ -8,6 +8,7 @@ import ColorSelection from "./ColorSelection";
 import SizeSelection from "./SizeSelection";
 import AddToCardSection from "./AddToCardSection";
 import { Color } from "@/lib/features/products/productsSlice";
+import RichText from "@/components/ui/RichText";
 
 const Header = ({ data }: { data: Product }) => {
   const [selectedVariant, setSelectedVariant] = useState<Variant>(
@@ -92,9 +93,8 @@ const Header = ({ data }: { data: Product }) => {
               )
             )}
           </div>
-          <p className="text-sm sm:text-base text-black/60 mb-5">
-            {data.description}
-          </p>
+          <RichText text={data.description} />
+
           <hr className="h-[1px] border-t-black/10 mb-5" />
           <ColorSelection
             variants={data.variants}

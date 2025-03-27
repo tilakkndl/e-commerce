@@ -42,8 +42,8 @@ const OrderCard = ({ order }: { order: OrderItem }) => {
           >
             {item.variant?.gallery.length > 0 && (
               <Image
-                src={item.variant.gallery[0].url}
-                alt={`${item.product.name} variant`}
+                src={item?.variant?.gallery[0]?.url}
+                alt={`${item?.product?.name} variant`}
                 width={60}
                 height={60}
                 className="rounded-lg object-cover mr-4 sm:mr-6 aspect-square"
@@ -51,7 +51,7 @@ const OrderCard = ({ order }: { order: OrderItem }) => {
             )}
             <div className="flex-1">
               <p className="text-sm sm:text-base font-medium text-gray-900">
-                {item.product.name}
+                {item?.product?.name}
               </p>
               <div className="text-xs sm:text-sm text-gray-600 flex items-center space-x-2">
                 <span
@@ -59,8 +59,8 @@ const OrderCard = ({ order }: { order: OrderItem }) => {
                   style={{ backgroundColor: item.variant?.hexColor }}
                 ></span>
                 <span>
-                  Color: {item.variant?.color} (Size: {item.size}, Qty:{" "}
-                  {item.quantity})
+                  Color: {item?.variant?.color} (Size: {item?.size}, Qty:{" "}
+                  {item?.quantity})
                 </span>
               </div>
             </div>

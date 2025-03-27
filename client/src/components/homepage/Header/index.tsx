@@ -23,7 +23,9 @@ const Header = () => {
             ])}
           >
             Welcome to Mr.<b className="text-[#a80706]">Nephemp </b> <br />{" "}
-            <span className="text-2xl text-[#0b3393]">For those who admire quality</span>
+            <span className="text-2xl text-[#0b3393]">
+              For those who admire quality
+            </span>
           </motion.h2>
           <motion.p
             initial={{ y: "100px", opacity: 0 }}
@@ -36,11 +38,12 @@ const Header = () => {
             ethical responsibility, ensuring you wear your values with pride.
           </motion.p>
           <motion.h4>
-            At Mr. Nephemp, every product is a celebration of heritage, sustainability, and the
-            promise of a greener future.
+            At Mr. Nephemp, every product is a celebration of heritage,
+            sustainability, and the promise of a greener future.
           </motion.h4>
           <motion.h4 className="mt-5 mb-5 text-2xl">
-            Switch to Hemp. Switch to Mr. Nephemp. Join us in making all day&#39;s a hemp day!
+            Switch to Hemp. Switch to Mr. Nephemp. Join us in making all
+            day&#39;s a hemp day!
           </motion.h4>
           <motion.div
             initial={{ y: "100px", opacity: 0 }}
@@ -55,14 +58,13 @@ const Header = () => {
               Shop Now
             </Link>
           </motion.div>
-
         </section>
         <motion.section
           initial={{ y: "100px", opacity: 0, rotate: 10 }}
           whileInView={{ y: "0", opacity: 1, rotate: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 2.3, duration: 0.8 }}
-          className="relative md:px-4 min-h-[448px] md:min-h-[428px] bg-cover bg-top xl:bg-[center_top_-1.6rem] bg-no-repeat bg-[url('/images/banner.jpg')] md:bg-[url('/images/banner.jpg')]"
+          className="relative md:px-4 min-h-[448px] md:min-h-[428px] bg-cover bg-top xl:bg-[center_top_-1.6rem] bg-no-repeat bg-[url('/images/banner.png')] md:bg-[url('/images/banner.png')]"
         >
           <Image
             priority
