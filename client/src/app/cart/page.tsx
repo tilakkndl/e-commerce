@@ -249,7 +249,7 @@ export default function CartPage() {
             <TbBasketExclamation strokeWidth={1} className="text-6xl" />
             <span className="block mb-4">Your shopping cart is empty.</span>
             <Button className="rounded-full w-24" asChild>
-              <Link href="/shop">Shop</Link>
+              <Link href="/shop#new-arrivals">Shop</Link>
             </Button>
           </div>
         )}
