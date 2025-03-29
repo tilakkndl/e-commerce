@@ -11,7 +11,6 @@ import { UserState } from "@/types/user.types";
 import { integralCF } from "@/styles/fonts";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Cookies from "js-cookie";
 import { showToast } from "@/lib/features/toast/toastSlice";
 
 const SignInPage = () => {
@@ -69,7 +68,6 @@ const SignInPage = () => {
         }
 
         
-
         dispatch(setUser({ ...user, token }));
         dispatch(
           showToast({

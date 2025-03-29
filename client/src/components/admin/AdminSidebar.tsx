@@ -1,6 +1,12 @@
 "use client";
 import Link from "next/link";
-import { LayoutDashboard, Package, Users, Tag } from "lucide-react";
+import {
+  LayoutDashboard,
+  Package,
+  Users,
+  Tag,
+  UserRoundCheck,
+} from "lucide-react";
 import { Separator } from "../ui/separator";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +17,7 @@ const AdminSidebar = ({ showSidebar }: { showSidebar: boolean }) => {
         "shadow-md flex flex-col sticky top-0 left-0 transition-all duration-300 pt-2",
         showSidebar ? "w-20 md:w-40 lg:w-64 min-w-20" : "w-0 md:w-40 lg:w-64",
         showSidebar ? "opacity-100" : "opacity-0 md:opacity-100",
-        "h-screen" 
+        "h-screen"
       )}
     >
       <nav className="space-y-2 px-4 ">
@@ -34,6 +40,13 @@ const AdminSidebar = ({ showSidebar }: { showSidebar: boolean }) => {
           className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded"
         >
           <Tag size={20} /> <span className="hidden md:inline">Orders</span>
+        </Link>
+        <Link
+          href="/admin/subscribers"
+          className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded"
+        >
+          <UserRoundCheck size={20} />{" "}
+          <span className="hidden md:inline">Subscribers</span>
         </Link>
         <Link
           href="/admin/users"
