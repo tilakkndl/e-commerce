@@ -3,4 +3,5 @@ export interface UserState {
   name: string;
   username: string;
   role: "admin" | "customer" | null;
+  token?: string | null;
 }
