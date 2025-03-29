@@ -78,14 +78,14 @@ const productSchema = new mongoose.Schema(
           },
           size: {
             type: [String], // Ensures size is an array
-            required: true,
-            validate: {
-              validator: function (value) {
-                return Array.isArray(value) && value.length > 0;
-              },
-              message: "Size must contain at least one element.",
-            },
-            enum: ["XS", "SM", "MD", "LG", "XL", "2XL", "3XL"]
+            // required: true,
+            // validate: {
+            //   validator: function (value) {
+            //     return Array.isArray(value) && value.length > 0;
+            //   },
+            //   message: "Size must contain at least one element.",
+            // },
+            enum: ["XS", "SM", "MD", "LG", "XL", "2XL", "3XL", "4XL", "5XL", "free"],
           },
           gallery: {
             type: [
