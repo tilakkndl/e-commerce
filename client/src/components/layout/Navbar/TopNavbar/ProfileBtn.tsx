@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { openModal, closeModal } from "@/lib/features/modal/modalSlice";
 import Cookies from "js-cookie";
 import { UserState } from "@/types/user.types";
+import { showToast } from "@/lib/features/toast/toastSlice";
 
 export default function ProfileButton() {
   const [profileButtonToggle, setProfileButtonToggle] = useState(false);
@@ -45,9 +46,26 @@ export default function ProfileButton() {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Small delay for UX
       dispatch(removeUser());
       dispatch(closeModal());
+      dispatch(
+        showToast({
+          message: "Logged out successfully!",
+          type: "success",
+          duration: 3000,
+        })
+      );
       setProfileButtonToggle(false);
+      router.push("/");
+    } catch (error) {
+      dispatch(
+        showToast({
+          message: "Failed to logout. Please try again.",
+          type: "error",
+          duration: 3000,
+        })
+      );
     } finally {
       setIsLoggingOut(false);
     }

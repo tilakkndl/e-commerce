@@ -1,61 +1,70 @@
 import React from "react";
 
-// Utility function to format text
+// Utility function to format rich text
 const formatText = (text: string) => {
   return text
     .replace(/&amp;/g, "&") // Decode HTML entities
-    .split(/\r?\n\r?\n/) // Split paragraphs, handle both \r\n and \n
-    .map((paragraph, index) => {
-      // Trim the paragraph to remove extra whitespace
-      const trimmedParagraph = paragraph.trim();
+    .split("\n\n") // Split by double newlines (paragraphs)
+    .map((section, index) => {
+      const trimmedSection = section.trim();
 
-      // Check if paragraph contains bullet points
-      const bulletPoints = trimmedParagraph
-        .split(/\r?\n/) // Split by newlines
-        .map((line) => line.trim()) // Trim each line
-        .filter((line) => line.length > 0); // Remove empty lines
-
-      // Check if any line starts with a bullet point character
-      const hasBulletPoints = bulletPoints.some(
-        (line) =>
-          line.startsWith("•") || line.startsWith("-") || line.startsWith("*")
-      );
-
-      if (hasBulletPoints) {
+      // Check for headings (lines starting with "###", "##", "#")
+      if (trimmedSection.match(/^#{1,3}\s+/)) {
+        const headingLevel = trimmedSection.split(" ")[0].length; // Count number of '#' for heading level
         return (
-          <ul key={index} className="list-disc list-inside space-y-2 mb-3">
-            {bulletPoints.map((point, i) => {
-              // Remove bullet point characters and trim
-              const cleanPoint = point.replace(/^[•\-*]\s*/, "").trim();
+          <div key={index}>
+            {headingLevel === 1 ? (
+              <h1 className="font-semibold text-2xl mb-2">
+                {trimmedSection.slice(1).trim()}
+              </h1>
+            ) : headingLevel === 2 ? (
+              <h2 className="font-semibold text-xl mb-2">
+                {trimmedSection.slice(1).trim()}
+              </h2>
+            ) : (
+              <h3 className="font-semibold text-lg mb-2">
+                {trimmedSection.slice(1).trim()}
+              </h3>
+            )}
+          </div>
+        );
+      }
 
-              // Only render non-empty points
-              return cleanPoint ? (
-                <li key={i} className="ml-2">
-                  {cleanPoint}
-                </li>
-              ) : null;
-            })}
+      // Check for bullet points (lines starting with "*" or "-")
+      if (trimmedSection.match(/^(\*|\-)\s+/)) {
+        const points = trimmedSection
+          .split(/\n/g)
+          .map((point) => point.trim())
+          .filter((point) => point.length > 0);
+        return (
+          <ul key={index} className="list-disc list-inside mb-4">
+            {points.map((point, i) => (
+              <li key={i} className="ml-4">
+                {point}
+              </li>
+            ))}
           </ul>
         );
       }
 
-      // Return regular paragraph if no bullet points
-      return trimmedParagraph ? (
-        <p key={index} className="mb-3">
-          {trimmedParagraph}
+      // Regular paragraph
+      return trimmedSection ? (
+        <p key={index} className="text-black/60 mb-4">
+          {trimmedSection}
         </p>
       ) : null;
-    })
-    .filter(Boolean); // Remove null elements
+    });
 };
 
-const RichText = ({ text }: { text: string }) => {
+interface RichTextProps {
+  text: string;
+}
+
+const RichText: React.FC<RichTextProps> = ({ text }) => {
   if (!text) return null;
 
   return (
-    <div className="text-sm sm:text-base text-black/60 mb-5">
-      {formatText(text)}
-    </div>
+    <div className="text-sm sm:text-base space-y-2">{formatText(text)}</div>
   );
 };
 
