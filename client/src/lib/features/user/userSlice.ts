@@ -31,16 +31,37 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<UserState>) => {
+    setUser: (state, action: PayloadAction<UserState,string>) => {
       state._id = action.payload._id;
       state.name = action.payload.name;
       state.username = action.payload.username;
       state.role = action.payload.role;
-
-      // Store user data in cookie
+    
+      // Store user data and token in cookies
       if (typeof window !== "undefined") {
-        const userData = JSON.stringify(action.payload);
-        Cookies.set("userData", userData);
+        const userData = JSON.stringify({
+          _id: action.payload._id,
+          name: action.payload.name,
+          username: action.payload.username,
+          role: action.payload.role
+        });
+        
+        // Set both cookies with same options
+        Cookies.set("userData", userData, {
+          expires: 1,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/"
+        });
+    
+        if (action.payload.token) {
+          Cookies.set("authToken", action.payload.token, {
+            expires: 1,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/"
+          });
+        }
       }
     },
     removeUser: (state) => {

@@ -11,7 +11,6 @@ import { UserState } from "@/types/user.types";
 import { integralCF } from "@/styles/fonts";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Cookies from "js-cookie";
 import { showToast } from "@/lib/features/toast/toastSlice";
 
 const SignInPage = () => {
@@ -68,9 +67,8 @@ const SignInPage = () => {
           throw new Error("No token received from server");
         }
 
-        // Store token and user data in cookies...
-
-        dispatch(setUser(user));
+        
+        dispatch(setUser({ ...user, token }));
         dispatch(
           showToast({
             message: "Signed in successfully!",
