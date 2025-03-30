@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Accordion,
   AccordionContent,
@@ -10,8 +10,31 @@ import {
 import { IoMdCheckmark } from "react-icons/io";
 import { cn } from "@/lib/utils";
 
-const ColorsSection = () => {
-  const [selected, setSelected] = useState<string>("bg-green-600");
+interface ColorsSectionProps {
+  selectedColor: string;
+  setSelectedColor: (color: string) => void;
+}
+
+const ColorsSection = ({
+  selectedColor,
+  setSelectedColor,
+}: ColorsSectionProps) => {
+  const colors = [
+    { name: "green", class: "bg-green-600" },
+    { name: "red", class: "bg-red-600" },
+    { name: "yellow", class: "bg-yellow-300" },
+    { name: "orange", class: "bg-orange-600" },
+    { name: "grey", class: "bg-grey-400" },
+    { name: "blue", class: "bg-blue-600" },
+    { name: "purple", class: "bg-purple-600" },
+    { name: "pink", class: "bg-pink-600" },
+    { name: "white", class: "bg-white" },
+    { name: "black", class: "bg-black" },
+  ];
+
+  const handleColorClick = (colorName: string) => {
+    setSelectedColor(selectedColor === colorName ? "" : colorName);
+  };
 
   return (
     <Accordion type="single" collapsible defaultValue="filter-colors">
@@ -21,29 +44,29 @@ const ColorsSection = () => {
         </AccordionTrigger>
         <AccordionContent className="pt-4 pb-0">
           <div className="flex space-2.5 flex-wrap md:grid grid-cols-5 gap-2.5">
-            {[
-              "bg-green-600",
-              "bg-red-600",
-              "bg-yellow-300",
-              "bg-orange-600",
-              "bg-cyan-400",
-              "bg-blue-600",
-              "bg-purple-600",
-              "bg-pink-600",
-              "bg-white",
-              "bg-black",
-            ].map((color, index) => (
+            {colors.map((color) => (
               <button
-                key={index}
+                key={color.name}
                 type="button"
                 className={cn([
-                  color,
-                  "rounded-full w-9 sm:w-10 h-9 sm:h-10 flex items-center justify-center border border-black/20",
+                  color.class,
+                  "rounded-full w-9 sm:w-10 h-9 sm:h-10 flex items-center justify-center border",
+                  selectedColor === color.name
+                    ? "ring-2 ring-black"
+                    : "border-black/20",
+                  color.name === "white" && "border-gray-200",
                 ])}
-                onClick={() => setSelected(color)}
+                onClick={() => handleColorClick(color.name)}
               >
-                {selected === color && (
-                  <IoMdCheckmark className="text-base text-white" />
+                {selectedColor === color.name && (
+                  <IoMdCheckmark
+                    className={cn(
+                      "text-base",
+                      color.name === "white" || color.name === "yellow"
+                        ? "text-black"
+                        : "text-white"
+                    )}
+                  />
                 )}
               </button>
             ))}

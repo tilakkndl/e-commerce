@@ -13,6 +13,8 @@ import Cookies from "js-cookie";
 import { useAppDispatch } from "@/lib/hooks/redux";
 import { findProductById } from "@/lib/features/admin/adminSlice";
 import { integralCF } from "@/styles/fonts";
+import { showToast } from "@/lib/features/toast/toastSlice";
+import { closeModal } from "@/lib/features/modal/modalSlice";
 
 interface VariantFormData {
   color: string;
@@ -33,7 +35,7 @@ const AddVariant = ({ product }: { product: string }) => {
   });
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const sizes = ["XS", "SM", "MD", "LG", "XL", "2XL", "3XL"] as const;
+  const sizes = ["XS", "SM", "MD", "LG", "XL", "2XL", "3XL", "FREE"] as const;
   type SizeType = (typeof sizes)[number];
 
   const handleSizeChange = (size: SizeType) => {
@@ -64,12 +66,24 @@ const AddVariant = ({ product }: { product: string }) => {
 
     if (!color || !hexColor || !stock || size.length === 0) {
       setLoading(false);
-      alert("Please fill all fields and select at least one size.");
+      dispatch(
+        showToast({
+          message: "Please fill all fields and select at least one size.",
+          type: "error",
+          duration: 3000,
+        })
+      );
       return;
     }
     if (gallery && gallery.length === 0) {
       setLoading(false);
-      alert("Please upload at least one image.");
+      dispatch(
+        showToast({
+          message: "Please upload at least one image.",
+          type: "error",
+          duration: 3000,
+        })
+      );
       return;
     }
 
@@ -102,7 +116,13 @@ const AddVariant = ({ product }: { product: string }) => {
         throw new Error(response.data.message || "Failed to add variant");
       }
 
-      alert(response.data.message || "Variant added successfully!");
+      dispatch(
+        showToast({
+          message: response.data.message || "Variant added successfully!",
+          type: "success",
+          duration: 3000,
+        })
+      );
 
       // Reset form
       setFormData({
@@ -113,24 +133,47 @@ const AddVariant = ({ product }: { product: string }) => {
         gallery: null,
       });
       setSelectedSizes([]);
-      setLoading(false);
 
       // Re-fetch the product to get the updated variants
       dispatch(findProductById(product));
     } catch (error) {
       console.error("Error uploading variant:", error);
-      setLoading(false);
-      alert(
-        error instanceof Error
-          ? error.message
-          : "An error occurred while adding the variant"
+      dispatch(
+        showToast({
+          message:
+            error instanceof Error
+              ? error.message
+              : "An error occurred while adding the variant",
+          type: "error",
+          duration: 3000,
+        })
       );
+    } finally {
+      setLoading(false);
+      dispatch(closeModal());
     }
+  };
+
+  // Add this function to check if all fields are filled
+  const isFormValid = () => {
+    const { color, hexColor, stock, size, gallery } = formData;
+    return (
+      color.trim() !== "" &&
+      hexColor !== "" &&
+      stock !== "" &&
+      size.length > 0 &&
+      gallery !== null &&
+      gallery.length > 0
+    );
   };
 
   return (
     <div className="p-6 bg-white shadow-lg rounded-lg">
-      <h2 className={`text-xl font-semibold mb-4 text-center ${integralCF.className} `}>Add Variant</h2>
+      <h2
+        className={`text-xl font-semibold mb-4 text-center ${integralCF.className} `}
+      >
+        Add Variant
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <ColorPicker
           setColor={(hexColor) =>
@@ -209,9 +252,17 @@ const AddVariant = ({ product }: { product: string }) => {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="px-4 py-2 bg-black/80 text-white rounded hover:bg-black/70 text-center"
+            disabled={loading || !isFormValid()}
+            className="px-4 py-2 bg-black/80 text-white rounded hover:bg-black/70 text-center disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 min-w-[100px] justify-center"
           >
-            {loading ? <Loader2 className="animate-spin" /> : "Submit"}
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Adding...</span>
+              </>
+            ) : (
+              "Submit"
+            )}
           </button>
         </div>
       </form>

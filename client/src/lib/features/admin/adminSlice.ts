@@ -65,9 +65,23 @@ export const fetchAllProducts = createAsyncThunk<
   { rejectValue: string }
 >("admin/fetchAllProducts", async (params = {}, { rejectWithValue }) => {
   try {
+    // Ensure params is treated as Record<string, string>
+    const searchParams = params as Record<string, string>;
+
+    // If there's a search parameter, use the search endpoint
+    if (searchParams?.search) {
+      const response = await axios.get<{ data: Product[] }>(
+        `${
+          process.env.NEXT_PUBLIC_ROOT_API
+        }/product/search?query=${encodeURIComponent(searchParams.search)}`
+      );
+      return response.data.data;
+    }
+
+    // Otherwise, use the regular products endpoint
     const response = await axios.get<{ data: Product[] }>(
       `${process.env.NEXT_PUBLIC_ROOT_API}/product`,
-      { params }
+      { params: searchParams }
     );
     return response.data.data;
   } catch (error: any) {

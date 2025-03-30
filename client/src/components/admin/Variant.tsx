@@ -13,18 +13,23 @@ import { Trash2, Pencil, Loader2 } from "lucide-react";
 import { useAppDispatch } from "@/lib/hooks/redux";
 import { deleteVariant, editVariant } from "@/lib/features/admin/adminSlice";
 import { openModal, closeModal } from "@/lib/features/modal/modalSlice";
+import { showToast } from "@/lib/features/toast/toastSlice";
 
 type VariantCardProps = {
   variant: Variant;
   productId: string;
+  totalVariants: number;
 };
 
-const VariantCard: React.FC<VariantCardProps> = ({ variant, productId }) => {
+const VariantCard: React.FC<VariantCardProps> = ({
+  variant,
+  productId,
+  totalVariants,
+}) => {
   const dispatch = useAppDispatch();
   const [selectedSizes, setSelectedSizes] = useState<string[]>(variant.size);
   const [stock, setStock] = useState<number>(variant.stock);
   const [isModified, setIsModified] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   // Sync local state with variant prop when it changes
   useEffect(() => {
@@ -59,26 +64,40 @@ const VariantCard: React.FC<VariantCardProps> = ({ variant, productId }) => {
   };
 
   const handleDeleteConfirm = async () => {
-    setIsDeleting(true);
     try {
+      dispatch(closeModal());
       await dispatch(
         deleteVariant({
           productId,
           variantId: variant._id,
         })
       ).unwrap();
-      dispatch(closeModal());
+
+      dispatch(
+        showToast({
+          message: "Variant deleted successfully",
+          type: "success",
+          duration: 3000,
+        })
+      );
     } catch (error) {
-      console.error("Failed to delete variant:", error);
-      alert("Failed to delete variant. Please try again.");
-    } finally {
-      setIsDeleting(false);
+      dispatch(
+        showToast({
+          message: "Failed to delete variant. Please try again.",
+          type: "error",
+          duration: 3000,
+        })
+      );
     }
   };
 
   const handleDeleteClick = () => {
-    dispatch(
-      openModal(
+    const DeleteConfirmationModal = () => {
+      const onConfirm = async () => {
+        await handleDeleteConfirm();
+      };
+
+      return (
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Delete Variant</h2>
           <p className="mb-6 text-gray-600">
@@ -92,28 +111,21 @@ const VariantCard: React.FC<VariantCardProps> = ({ variant, productId }) => {
             <button
               onClick={() => dispatch(closeModal())}
               className="px-6 py-2 rounded-full border border-black hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={isDeleting}
             >
               Cancel
             </button>
             <button
-              onClick={handleDeleteConfirm}
-              disabled={isDeleting}
-              className="px-6 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[140px]"
+              onClick={onConfirm}
+              className="px-6 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[140px] gap-2"
             >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Deleting...
-                </>
-              ) : (
-                "Delete Variant"
-              )}
+              Delete Variant
             </button>
           </div>
         </div>
-      )
-    );
+      );
+    };
+
+    dispatch(openModal(<DeleteConfirmationModal />));
   };
 
   const handleEditVariant = async () => {
@@ -128,11 +140,22 @@ const VariantCard: React.FC<VariantCardProps> = ({ variant, productId }) => {
           },
         })
       ).unwrap();
-      alert("Variant updated successfully");
+      dispatch(
+        showToast({
+          message: "Variant updated successfully",
+          type: "success",
+          duration: 3000,
+        })
+      );
       setIsModified(false);
     } catch (error) {
-      console.error("Failed to update variant:", error);
-      alert("Failed to update variant. Please try again.");
+      dispatch(
+        showToast({
+          message: "Failed to update variant. Please try again.",
+          type: "error",
+          duration: 3000,
+        })
+      );
     }
   };
 
@@ -149,18 +172,11 @@ const VariantCard: React.FC<VariantCardProps> = ({ variant, productId }) => {
             <Pencil className="h-4 w-4" />
           </Button>
         )}
-        <Button
-          variant="destructive"
-          size="icon"
-          onClick={handleDeleteClick}
-          disabled={isDeleting}
-        >
-          {isDeleting ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
+        {totalVariants > 1 && (
+          <Button variant="destructive" size="icon" onClick={handleDeleteClick}>
             <Trash2 className="h-4 w-4" />
-          )}
-        </Button>
+          </Button>
+        )}
       </div>
 
       <div className="flex space-x-2">
@@ -210,19 +226,21 @@ const VariantCard: React.FC<VariantCardProps> = ({ variant, productId }) => {
             <div className="font-semibold mr-3">Sizes:</div>
 
             <div className="flex items-center justify-start space-x-3 max-h-[100px] flex-wrap">
-              {["XS", "SM", "MD", "LG", "XL", "2XL", "3XL"].map((size) => (
-                <div key={size} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={size}
-                    value={size}
-                    checked={selectedSizes.includes(size)}
-                    onChange={() => handleSizeChange(size)}
-                    className="mr-2"
-                  />
-                  <label htmlFor={size}>{size}</label>
-                </div>
-              ))}
+              {["XS", "SM", "MD", "LG", "XL", "2XL", "3XL", "FREE"].map(
+                (size) => (
+                  <div key={size} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={size}
+                      value={size}
+                      checked={selectedSizes.includes(size)}
+                      onChange={() => handleSizeChange(size)}
+                      className="mr-2"
+                    />
+                    <label htmlFor={size}>{size}</label>
+                  </div>
+                )
+              )}
             </div>
           </div>
 

@@ -15,13 +15,14 @@ import InputGroup from "@/components/ui/input-group";
 import ResTopNavbar from "./ResTopNavbar";
 import CartBtn from "./CartBtn";
 import ProfileButton from "./ProfileBtn";
+import { useRouter } from "next/navigation";
 
 const data: NavMenu = [
   {
     id: 1,
     label: "Shop",
-    type: "MenuItem",
-    url: "/shop#new-arrivals",
+    type: "MenuItem", 
+    url: "/shop?status=active",
     // type: "MenuList",
     children: [
       // {
@@ -64,16 +65,35 @@ const data: NavMenu = [
     url: "/contact",
     children: [],
   },
-  // {
-  //   id: 4,
-  //   type: "MenuItem",
-  //   label: "Brands",
-  //   url: "/shop#brands",
-  //   children: [],
-  // },
 ];
 
 const TopNavbar = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    // If search is cleared (empty), redirect to shop with active status
+    if (!value) {
+      router.push("/shop?status=active");
+    }
+  };
+
+  const handleMobileSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   return (
     <nav className="sticky top-0 bg-white z-20">
       <div className="flex relative max-w-frame mx-auto items-center justify-between md:justify-start py-5 md:py-6 px-4 xl:px-0">
@@ -88,7 +108,13 @@ const TopNavbar = () => {
               "text-2xl lg:text-[32px]  mr-3 lg:mr-10",
             ])}
           >
-            <Image src="/images/logo.png" height={200} width={200} alt="logo" />
+            <Image
+              src="/images/logo.png"
+              height={150}
+              width={150}
+              alt="logo"
+              className="w-20 h-15 md:w-40 md:h-20"
+            />
           </Link>
         </div>
         <NavigationMenu className="hidden md:flex mr-2 lg:mr-7">
@@ -98,33 +124,43 @@ const TopNavbar = () => {
                 {item.type === "MenuItem" && (
                   <MenuItem label={item.label} url={item.url} />
                 )}
-                {item.type === "MenuList" && (
+                {/* {item.type === "MenuList" && (
                   <MenuList data={item.children} label={item.label} />
-                )}
+                )} */}
               </React.Fragment>
             ))}
           </NavigationMenuList>
         </NavigationMenu>
-        <InputGroup className="hidden md:flex bg-[#F0F0F0] mr-3 lg:mr-10">
-          <InputGroup.Text>
-            <Image
-              priority
-              src="/icons/search.svg"
-              height={20}
-              width={20}
-              alt="search"
-              className="min-w-5 min-h-5"
+        <form
+          onSubmit={handleSearch}
+          className="hidden md:block flex-1 max-w-md mr-3 lg:mr-10"
+        >
+          <InputGroup className="hidden md:flex bg-[#F0F0F0]">
+            <InputGroup.Text>
+              <Image
+                priority
+                src="/icons/search.svg"
+                height={20}
+                width={20}
+                alt="search"
+                className="min-w-5 min-h-5"
+              />
+            </InputGroup.Text>
+            <InputGroup.Input
+              type="search"
+              name="search"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search for products..."
+              className="bg-transparent placeholder:text-black/40"
             />
-          </InputGroup.Text>
-          <InputGroup.Input
-            type="search"
-            name="search"
-            placeholder="Search for products..."
-            className="bg-transparent placeholder:text-black/40"
-          />
-        </InputGroup>
+          </InputGroup>
+        </form>
         <div className="flex items-center">
-          <Link href="/search" className="block md:hidden mr-[14px] p-1">
+          <button
+            onClick={handleMobileSearch}
+            className="block md:hidden mr-[14px] p-1"
+          >
             <Image
               priority
               src="/icons/search-black.svg"
@@ -133,7 +169,7 @@ const TopNavbar = () => {
               alt="search"
               className="max-w-[22px] max-h-[22px]"
             />
-          </Link>
+          </button>
           <CartBtn />
           <ProfileButton />
         </div>
