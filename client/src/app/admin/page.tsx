@@ -19,8 +19,9 @@ function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-[400px] flex items-center justify-center">
+      <div className="min-h-[400px] flex flex-col space-y-4 items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
+        <p className="text-black/60 font-normal mb-1">Loading Dashboard...</p>
       </div>
     );
   }

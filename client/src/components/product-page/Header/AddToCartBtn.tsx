@@ -6,6 +6,7 @@ import { openModal, closeModal } from "@/lib/features/modal/modalSlice";
 import Product, { Variant } from "@/types/product.types";
 import React from "react";
 import { integralCF } from "@/styles/fonts";
+import { showToast } from "@/lib/features/toast/toastSlice";
 
 interface AddToCartBtnProps {
   data: Product;
@@ -50,6 +51,13 @@ const AddToCartBtn = ({
                   })
                 );
                 dispatch(closeModal());
+                dispatch(
+                  showToast({
+                    message: "Product added to cart successfully!",
+                    type: "success",
+                    duration: 3000,
+                  })
+                );
               }}
               className="px-6 py-2 rounded-full bg-black text-white hover:bg-black/80 transition-colors"
             >

@@ -34,10 +34,17 @@ export default function ShopPage() {
   const products = useAppSelector((state) => state.admin.products);
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<Record<string, string>>({});
+  const loading = useAppSelector((state) => state.admin.loading);
 
   useEffect(() => {
     const params = Object.fromEntries(searchParams.entries());
     setFilters(params);
+
+    // If there's a search parameter, make sure it's included
+    if (searchParams.get("search")) {
+      params.search = searchParams.get("search")!;
+    }
+
     dispatch(fetchAllProducts(params));
   }, [searchParams, dispatch]);
 
@@ -111,10 +118,24 @@ export default function ShopPage() {
                 </div>
               </div>
             </div>
-            <div className="w-full grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5 ">
-              {products.map((product) => (
-                <ProductCard key={product._id} data={product} />
-              ))}
+            <div className="w-full grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
+              {loading ? (
+                <div className="col-span-full text-center py-8">
+                  Loading products...
+                </div>
+              ) : products.length === 0 ? (
+                <div className="col-span-full text-center py-8">
+                  {searchParams.get("search")
+                    ? `No products found matching "${searchParams.get(
+                        "search"
+                      )}"`
+                    : "No products found"}
+                </div>
+              ) : (
+                products.map((product) => (
+                  <ProductCard key={product._id} data={product} />
+                ))
+              )}
             </div>
             <hr className="border-t-black/10" />
             <Pagination className="justify-between">

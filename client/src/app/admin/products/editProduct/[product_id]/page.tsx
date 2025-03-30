@@ -20,6 +20,7 @@ import { integralCF } from "@/styles/fonts";
 import { withAdminAuth } from "@/lib/hooks/withAdminAuth";
 import { showToast } from "@/lib/features/toast/toastSlice";
 import { RootState } from "@/lib/store";
+import { Loader2 } from "lucide-react";
 
 function EditProduct() {
   const router = useRouter();
@@ -44,7 +45,13 @@ function EditProduct() {
   }, [product_id, dispatch, editableProduct, loading]);
 
   // Handle loading and error states
-  if (loading) return <p>Loading product...</p>;
+  if (loading)
+    return (
+      <div className="flex flex-col items-center justify-center gap-2 p-4">
+        <Loader2 className="h-6 w-6 animate-spin" />
+        <span>Loading...</span>
+      </div>
+    );
   if (error) return <p>Error: {error}</p>;
   if (!editingProduct) return <p>Product not found</p>;
 
@@ -78,10 +85,8 @@ function EditProduct() {
         })
       );
 
-      // Redirect to products page after a short delay
-      setTimeout(() => {
-        router.push("/admin/products");
-      }, 1000);
+      // Redirect immediately without setTimeout
+      router.push("/admin/products");
     } catch (err) {
       // Show error toast
       dispatch(
@@ -276,26 +281,35 @@ function EditProduct() {
                 key={variant._id}
                 variant={variant}
                 productId={product_id.toString()}
+                totalVariants={editingProduct.variants?.length || 0}
               />
             ))}
           </div>
         </section>
-
-        {/* Buttons */}
-        <Button
-          onClick={handleUpdateProduct}
-          className="w-full bg-black/80 text-white p-2 rounded-md"
-          disabled={loading}
-        >
-          {loading ? "Updating..." : "Update Product"}
-        </Button>
-        <Button
-          onClick={() => router.push("/admin/products")}
-          className="w-full bg-red-500 text-white p-2 rounded-md mt-2"
-          disabled={loading}
-        >
-          Cancel
-        </Button>
+        <div className="flex flex-col lg:flex-row items-center justify-center  gap-2">
+          {/* Buttons */}
+          <Button
+            onClick={handleUpdateProduct}
+            className="w-full bg-black/80 text-white p-2 rounded-md"
+            disabled={loading}
+          >
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Updating...</span>
+              </div>
+            ) : (
+              "Update Product"
+            )}
+          </Button>
+          <Button
+            onClick={() => router.push("/admin/products")}
+            className="w-full bg-red-500 text-white p-2 rounded-md "
+            disabled={loading}
+          >
+            Cancel
+          </Button>
+        </div>
       </div>
     </div>
   );

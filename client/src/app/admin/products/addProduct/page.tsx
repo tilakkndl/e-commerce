@@ -55,7 +55,7 @@ function AddProduct() {
   const [style, setStyle] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
-  const sizes = ["XS", "SM", "MD", "LG", "XL", "2XL", "3XL"];
+  const sizes = ["XS", "SM", "MD", "LG", "XL", "2XL", "3XL", "FREE"];
   const [selectedSizes, setSelectedSizes] = useState<string[]>(variant.size);
   const dispatch = useDispatch();
 
@@ -283,6 +283,13 @@ function AddProduct() {
                     <SelectGroup>
                       <SelectLabel>Categories</SelectLabel>
                       <SelectItem value="bag">Bag</SelectItem>
+                      <SelectItem value="socks">Socks</SelectItem>
+                      <SelectItem value="purse">Purse</SelectItem>
+                      <SelectItem value="trouser">Trouser</SelectItem>
+                      <SelectItem value="jacket">Jacket</SelectItem>
+                      <SelectItem value="shirt">Shirt</SelectItem>
+                      <SelectItem value="shoes">Shoes</SelectItem>
+                      <SelectItem value="accessories">Accessories</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
