@@ -19,7 +19,6 @@ const SignInPage = () => {
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const user = useAppSelector((state: RootState) => state.user);
   const dispatch = useAppDispatch();
 
   // Handle input changes
@@ -67,7 +66,6 @@ const SignInPage = () => {
           throw new Error("No token received from server");
         }
 
-        
         dispatch(setUser({ ...user, token }));
         dispatch(
           showToast({

@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 const Filters = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([10, 10000]);
-  const [selected, setSelected] = useState<string>("Large");
+  const [selected, setSelected] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
 
   const router = useRouter();
@@ -41,7 +41,7 @@ const Filters = () => {
   const handleClearFilters = () => {
     // Reset all states to default values
     setPriceRange([10, 10000]);
-    setSelected("Large");
+    setSelected("");
     setSelectedColor("");
 
     // Redirect to shop with only active status
