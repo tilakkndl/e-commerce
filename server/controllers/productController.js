@@ -4,8 +4,9 @@ import AppError from "../utils/appError.js";
 import Category from '../models/categorySchema.js'
 import Brand from '../models/brandSchema.js'
 import cloudinary from '../config/cloudinary.js'
-import Review from "../models/reviewSchema.js";
 import APIFeatures from "../utils/apiFeatures.js";
+import Review from "../models/reviewSchema.js";
+import chroma from "chroma-js";
 
 const cloudinaryUpload = async (files, name) => {
     try {
@@ -146,16 +147,56 @@ export const createProduct = catchAsync(async (req, res, next) => {
 });
 
 
+
 export const getAllProducts = catchAsync(async (req, res, next) => {
-  // const products = await Product.find().populate("brand category");
-  const apiFeatures = new APIFeatures(Product.find().populate("brand category"), req.query)
+  let filter = {};
+  const variantFilters = {};
+  const allowedVariantFields = ["color", "hexColor", "size"];
+
+  if (req.query.color) {
+    console.log("color xa hai")
+    const inputColor = req.query.color.toLowerCase();
+    const inputHex = chroma(inputColor).hex(); 
+
+    const allProducts = await Product.find({}, { "variants.hexColor": 1 });
+
+    const similarHexColors = allProducts
+      .flatMap((product) => product.variants.map((variant) => variant.hexColor))
+      .filter((hex) => chroma.distance(inputHex, hex) < 30); 
+
+      console.log(similarHexColors);
+
+    if (similarHexColors.length > 0) {
+      variantFilters["hexColor"] = { $in: similarHexColors };
+    }
+
+    delete req.query.color; 
+  }
+
+  Object.keys(req.query).forEach((key) => {
+    if (allowedVariantFields.includes(key)) {
+      if (key === "size") {
+        variantFilters[key] = { $in: req.query[key].split(",") };
+      } else {
+        variantFilters[key] = req.query[key];
+      }
+      delete req.query[key];
+    }
+  });
+
+  if (Object.keys(variantFilters).length > 0) {
+    filter["variants"] = { $elemMatch: variantFilters };
+  }
+
+  console.log(filter);
+
+  const features = new APIFeatures(Product.find(filter), req.query)
     .filter()
     .sort()
     .limitFields()
     .paginate();
 
-  const products = await apiFeatures.query;
-  
+  const products = await features.query;
 
   res.status(200).json({
     success: true,
@@ -163,6 +204,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     data: products,
   });
 });
+
 
 export const getProductById = catchAsync(async (req, res, next) => {
   const product = await Product.findById(req.params.id).populate("brand category");
@@ -209,7 +251,6 @@ if (status)  updateFields.status = status;
  }
 
 
- // Ensure category exists
  if(category){
   const categoryExists = await Category.findOne({category});
   if (!categoryExists) {
@@ -242,9 +283,7 @@ export const deleteProduct = catchAsync(async (req, res, next) => {
   }
 
   const publicIds = getPublicIdsFromProduct(product);
-  // console.log(publicIds);
   const deleteResults = await cloudinaryDelete(publicIds);
-  // console.log(deleteResults);
 
   await Product.findByIdAndDelete(req.params.id);
  
@@ -278,7 +317,6 @@ export const variantImageUpload = catchAsync(async (req, res, next) => {
       return next(new AppError("No existing variants found. Add a variant first before uploading images.", 400));
   }
 
-  // Find the last variant (or modify logic to select a specific one)
   const lastVariant = product.variants[product.variants.length - 1];
 
   // Append the new images to the existing gallery
