@@ -79,7 +79,7 @@ const productSchema = new mongoose.Schema(
             //   },
             //   message: "Size must contain at least one element.",
             // },
-            enum: ["XS", "SM", "MD", "LG", "XL", "2XL", "3XL", "4XL", "5XL", "free"],
+            enum: ["XS", "SM", "MD", "LG", "XL", "2XL", "3XL", "4XL", "5XL", "FREE"],
           },
           gallery: {
             type: [
