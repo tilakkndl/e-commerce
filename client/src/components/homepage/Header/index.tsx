@@ -37,14 +37,22 @@ const Header = () => {
             Proudly made in Nepal, our products blend durability, comfort, and
             ethical responsibility, ensuring you wear your values with pride.
           </motion.p>
-          <motion.h4>
-            At Mr. Nephemp, every product is a celebration of heritage,
-            sustainability, and the promise of a greener future.
+          <motion.h4 className="mb-5">
+            At Mr. Nephemp, we believe that true fashion goes beyond style—it&#39;s about
+            making a difference. Step into a world where style meets sustainability with Mr.
+            Nephemp. Unlike ordinary clothing, our hemp products are designed to elevate your
+            wardrobe while healing the planet. Ethically handcrafted in Nepal, every piece blends
+            traditional artistry with modern design, offering durability, breathability, and unmatched
+            comfort for every season. With hemp’s eco-friendly nature—requiring less water, no
+            synthetic pesticides, and leaving no harmful traces behind—you’re not just wearing a
+            product, you’re making a statement. Look good, feel better, and join the movement
+            toward sustainable fashion with Mr. Nephemp—because the planet deserves better,
+            and so do you.
           </motion.h4>
-          <motion.h4 className="mt-5 mb-5 text-2xl">
+          {/* <motion.h4 className="mt-5 mb-5 text-2xl">
             Switch to Hemp. Switch to Mr. Nephemp. Join us in making all
             day&#39;s a hemp day!
-          </motion.h4>
+          </motion.h4> */}
           <motion.div
             initial={{ y: "100px", opacity: 0 }}
             whileInView={{ y: "0", opacity: 1 }}

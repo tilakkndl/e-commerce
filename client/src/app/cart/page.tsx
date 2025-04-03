@@ -50,7 +50,9 @@ export default function CartPage() {
 
   const handleCheckoutConfirm = async () => {
     if (!token || !userId) {
-      alert("Please log in to proceed with checkout.");
+      if (window.confirm("Please log in to proceed with checkout. Do you want to sign in now?")) {
+        router.push("/signin");
+      }
       return;
     }
 
@@ -180,9 +182,9 @@ export default function CartPage() {
                       Discount (
                       {totalPrice > 0
                         ? Math.round(
-                            ((totalPrice - adjustedTotalPrice) / totalPrice) *
-                              100
-                          )
+                          ((totalPrice - adjustedTotalPrice) / totalPrice) *
+                          100
+                        )
                         : 0}
                       %)
                     </span>

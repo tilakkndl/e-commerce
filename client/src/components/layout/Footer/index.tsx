@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { integralCF } from "@/styles/fonts";
 import React from "react";
 import { PaymentBadge, SocialNetworks } from "./footer.types";
-import { FaFacebookF, FaGithub, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaFacebookF, FaGithub, FaInstagram, FaTiktok, FaTwitter } from "react-icons/fa";
 import Link from "next/link";
 import LinksSection from "./LinksSection";
 import Image from "next/image";
@@ -14,12 +14,17 @@ const socialsData: SocialNetworks[] = [
   {
     id: 2,
     icon: <FaFacebookF />,
-    url: "https://facebook.com",
+    url: "https://facebook.com/profile.php?id=61567076211788",
   },
   {
     id: 3,
     icon: <FaInstagram />,
-    url: "https://instagram.com",
+    url: "https://instagram.com/mr.nephemp_vancouver?igsh=MWg1bG53anZxajM4bA==",
+  },
+  {
+    id: 4,
+    icon: <FaTiktok />,
+    url:"https://tiktok.com/@mr.nephemp_vancou?_t=ZM-8v6a5XyCoRq&_r=1"
   }
 ];
 
@@ -60,14 +65,14 @@ const Footer = () => {
                Mr. Nephemp
               </h1>
               <p className="text-black/60 text-sm mb-9">
-                We have clothes that suits your style and which you’re proud to
-                wear. From women to men.
+              Switch to Hemp - Switch to Mr. Nephemp!
               </p>
               <div className="flex items-center">
                 {socialsData.map((social) => (
                   <Link
                     href={social.url}
                     key={social.id}
+                    target="_blank"
                     className="bg-white hover:bg-[#023993] hover:text-white transition-all mr-3 w-10 h-10 rounded-full border border-black/20 flex items-center justify-center p-1"
                   >
                     {social.icon}

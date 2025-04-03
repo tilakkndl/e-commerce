@@ -11,22 +11,18 @@ const footerLinksData: FooterLinks[] = [
       {
         id: 11,
         label: "about",
-        url: "#",
+        url: "/about",
       },
       {
         id: 12,
         label: "shop",
-        url: "#",
+        url: "/shop",
       },
-      {
-        id: 13,
-        label: "reviews",
-        url: "#",
-      },
+     
       {
         id: 14,
         label: "contact",
-        url: "#",
+        url: "/contact",
       },
     ],
   },
@@ -37,19 +33,15 @@ const footerLinksData: FooterLinks[] = [
      
       {
         id: 22,
-        label: "My Account",
-        url: "#",
+        label: "Login",
+        url: "/signin",
       },
       {
         id: 23,
-        label: "Wish list",
-        url: "#",
+        label: "Sign Up",
+        url: "/register",
       },
-      {
-        id: 24,
-        label: "Cart",
-        url: "#",
-      },
+      
 
     ],
   },
@@ -61,17 +53,17 @@ const footerLinksData: FooterLinks[] = [
       {
         id: 32,
         label: "FAQ",
-        url: "#",
+        url: "/faq",
       },
       {
         id: 33,
         label: "Delivery and Payment",
-        url: "deliveryandpayment",
+        url: "/deliveryandpayment",
       },
       {
         id: 34,
         label: "terms & conditions",
-        url: "#",
+        url: "/terms-and-conditions",
       },
     ],
   },

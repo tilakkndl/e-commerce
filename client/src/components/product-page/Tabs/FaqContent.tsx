@@ -13,34 +13,20 @@ type FaqItem = {
 
 const faqsData: FaqItem[] = [
   {
-    question: "What is the material of the t-shirt?",
-    answer:
-      "Provide details about the fabric type (e.g., cotton, polyester, blend), weight, and any specific features.",
+    question: "Why is hemp sustainable?",
+    answer: "Hemp requires minimal water, pesticides, and fertilizers, making it an eco-friendly alternative to other fabrics.",
   },
   {
-    question: "What are the care instructions for the t-shirt?",
-    answer:
-      "Outline recommended washing, drying, and ironing methods to maintain quality and longevity.",
+    question: "Where are your products made?",
+    answer: "All our products are carefully crafted in Nepal, ensuring ethical practices and supporting local artisans.",
   },
   {
-    question: "What is the design or print on the t-shirt made of?",
-    answer:
-      "Explain the material used for the design (e.g., vinyl, screen print, embroidery) and its durability.",
+    question: "How should I care for my hemp products?",
+    answer: "To keep your hemp items in the best condition, hand wash with cold water and air dry.",
   },
   {
-    question: "Is the t-shirt unisex or designed for specific genders?",
-    answer:
-      "Indicate whether the shirt is suitable for both men and women or targeted towards a particular gender.",
-  },
-  {
-    question: "What are the shipping options and costs?",
-    answer:
-      "Provide information about shipping methods, estimated delivery times, and associated fees.",
-  },
-  {
-    question: "What is the return policy for the t-shirt?",
-    answer:
-      "Outline the return window, conditions, and refund or exchange procedures.",
+    question: "Are the products unisex or designed for specific genders?",
+    answer: "Most of the products are Unisex whereas some are designed for specific genders which is mentioned in each product page.",
   },
 ];
 
