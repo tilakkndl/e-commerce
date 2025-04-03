@@ -8,19 +8,19 @@ export type SpecItem = {
 const specsData: SpecItem[] = [
   {
     label: " Material composition",
-    value: "100% Cotton",
+    value: "100% hemp",
   },
   {
     label: "Care instructions",
-    value: "Machine wash warm, tumble dry",
+    value: "Handwash/Machine wash with cold water, Air dry, Avoid bleach or harsh detergents",
   },
   {
     label: "Fit type",
-    value: "Classic Fit",
+    value: "Casual Fit",
   },
   {
     label: "Pattern",
-    value: "Solid",
+    value: "Standard",
   },
 ];
 

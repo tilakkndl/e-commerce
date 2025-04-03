@@ -25,7 +25,7 @@ const DeliveryPaymentPage: React.FC = () => {
 
             <h2 className="text-2xl font-semibold mt-6">Payment Options</h2>
             <ul className="list-disc list-inside mb-4">
-                <li>Accepts major credit/debit cards, Visa, Mastercard, PayPal, and e-Transfers.</li>
+                <li>Accepts  e-Transfers.</li>
             </ul>
         </div>
     );
