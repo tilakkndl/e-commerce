@@ -25,11 +25,12 @@ export default function ProfileButton() {
   // Check for user data in cookies on mount
   useEffect(() => {
     const userData = Cookies.get("userData");
-    if (userData) {
+    const authToken = Cookies.get("authToken");
+    if (userData && authToken) {
       try {
         const parsedUser = JSON.parse(userData) as UserState;
         if (parsedUser._id && parsedUser.role) {
-          dispatch(setUser(parsedUser));
+          dispatch(setUser({ ...parsedUser, token: authToken }));
         } else {
           // Invalid user data, clear cookies
           Cookies.remove("authToken");
@@ -46,7 +47,6 @@ export default function ProfileButton() {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Small delay for UX
       dispatch(removeUser());
       dispatch(closeModal());
       dispatch(
