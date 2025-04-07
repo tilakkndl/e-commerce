@@ -1,21 +1,46 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminTopbar from "@/components/admin/AdminTopbar";
 import DynamicBreadcrumb from "@/components/admin/DynamicBreadcrumb";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function AdminLayout({
   children,
-  productName, // Dynamic product name for breadcrumbs
 }: {
   children: React.ReactNode;
-  productName?: string; // Optional dynamic product name
 }) {
   const [showSidebar, setShowSidebar] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const userData = Cookies.get("userData");
+    if (!userData) {
+      router.replace("/signin");
+      return;
+    }
+
+    try {
+      const parsedUser = JSON.parse(userData);
+      if (parsedUser.role !== "admin") {
+        router.replace("/");
+        return;
+      }
+      setIsAuthorized(true);
+    } catch (error) {
+      router.replace("/signin");
+    }
+  }, [router]);
 
   const toggleSidebar = () => {
     setShowSidebar((prev) => !prev); // Toggle sidebar visibility
   };
+
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col h-screen lg:px-[10vw] px-0">
