@@ -1,31 +1,31 @@
 import mongoose from "mongoose";
 
-const connectDatabase = () => {
- 
-  if (mongoose.connection.readyState === 1) {
-    console.log("Database already connected");
+let isConnected = false;
+
+const connectDatabase = async () => {
+  if (isConnected) {
     return;
   }
 
-  const DBUrl = process.env.DB_URL.replace(
-    "<password>",
-    process.env.DB_PASSWORD
-  );
+  if (mongoose.connection.readyState === 1) {
+    isConnected = true;
+    return;
+  }
 
-  mongoose
-    .connect(DBUrl, {
-      maxPoolSize: 10, 
-      serverSelectionTimeoutMS: 5000, 
+  const DBUrl = process.env.DB_URL.replace("<password>", process.env.DB_PASSWORD);
+
+  try {
+    const db = await mongoose.connect(DBUrl, {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
-    })
-    .then((data) => {
-      console.log(`Database connected at server ${data.connection.host}`);
-    })
-    .catch((err) => {
-      console.error("Database connection error:", err);
     });
+    isConnected = true;
+    console.log(`✅ Database connected at host: ${db.connection.host}`);
+  } catch (err) {
+    console.error("❌ Database connection error:", err);
+    throw err;
+  }
 };
 
 export default connectDatabase;
-
-
