@@ -201,6 +201,7 @@ export const getUserOrder = catchAsync(async (req, res, next) => {
         return next(new AppError("You are not allowed to view orders of another user", 403));
     }
     const orders = await Order.find({ user: req.user._id })
+      .sort({ createdAt: -1 }) 
       .populate("user", "name username address phoneNumber")
       .lean();
   
