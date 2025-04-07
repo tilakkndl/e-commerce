@@ -13,6 +13,10 @@ const signToken = (id) => {
 };
 
 export const signup = catchAsync(async (req, res, next) => {
+  const user = await User.findOne({ username: req.body.username });
+  if (user) {
+    return next(new AppError("Username already exists", 400));
+  }
   const newUser = await User.create({
     name: req.body.name,
     username: req.body.username,
