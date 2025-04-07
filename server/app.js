@@ -23,7 +23,8 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://e-commerce-frontend-theta-ashy.vercel.app",
-      "https://e-commerce-frontend-tilak-kandels-projects.vercel.app"
+      "https://e-commerce-frontend-tilak-kandels-projects.vercel.app",
+      "https://e-commerce-frontend-git-main-tilak-kandels-projects.vercel.app",
     ],
     credentials: true,
   })
