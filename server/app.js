@@ -14,21 +14,35 @@ import subscriberRoute from './routes/subscriberRoute.js';
 
 const app = express();
 
+//cors 
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "https://e-commerce-frontend-theta-ashy.vercel.app",
+      "https://e-commerce-frontend-tilak-kandels-projects.vercel.app",
+      "https://e-commerce-frontend-git-main-tilak-kandels-projects.vercel.app"
+    ];
+    if (
+      !origin || // allow non-browser tools like Postman
+      allowedOrigins.includes(origin) ||
+      /^https:\/\/e-commerce-frontend-git-[\w-]+-tilak-kandels-projects\.vercel\.app$/.test(origin)
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
+
+// handling preflight requests
+app.options("*", cors());
+
 //built in middleware
 app.use(express.json())
 app.use(morgan("dev"))
 app.use(urlencoded({extended: true}))
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://e-commerce-frontend-theta-ashy.vercel.app",
-      "https://e-commerce-frontend-tilak-kandels-projects.vercel.app",
-      "https://e-commerce-frontend-git-main-tilak-kandels-projects.vercel.app",
-    ],
-    credentials: true,
-  })
-);
 
 
 app.use("/api/v1/user", userRoute)
