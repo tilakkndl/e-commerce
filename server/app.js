@@ -26,9 +26,9 @@ app.use(
       ];
 
       if (
-        origin &&
-        (allowedOrigins.includes(origin) ||
-          origin.endsWith(".vercel.app"))
+        !origin ||
+        allowedOrigins.includes(origin) ||
+          origin.endsWith(".vercel.app")
       ) {
         callback(null, true);
       } else {
