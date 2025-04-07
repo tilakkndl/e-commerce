@@ -13,9 +13,10 @@ import ReviewCard from "@/components/common/ReviewCard";
 import Link from "next/link";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useAppSelector } from "@/lib/hooks/redux";
+import { useAppSelector, useAppDispatch } from "@/lib/hooks/redux";
 import { Loader2 } from "lucide-react";
 import { Review } from "@/types/review.types";
+import { showToast } from "@/lib/features/toast/toastSlice";
 
 const ReviewsContent = ({ productId }: { productId: string }) => {
   const [isWritingReview, setIsWritingReview] = useState(false);
@@ -27,6 +28,7 @@ const ReviewsContent = ({ productId }: { productId: string }) => {
   const [error, setError] = useState<string | null>(null);
   const token = Cookies.get("authToken");
   const userId = useAppSelector((state) => state.user._id);
+  const dispatch = useAppDispatch();
 
   const resetForm = () => {
     setRating(null);
@@ -99,12 +101,34 @@ const ReviewsContent = ({ productId }: { productId: string }) => {
           setReviews(updatedResponse.data.reviews);
           // Reset form after successful submission
           resetForm();
+          // Show success toast
+          dispatch(
+            showToast({
+              message: "Review submitted successfully!",
+              type: "success",
+              duration: 3000,
+            })
+          );
         }
       } else {
         console.error("Invalid response format:", response.data);
+        dispatch(
+          showToast({
+            message: "Failed to submit review. Please try again.",
+            type: "error",
+            duration: 3000,
+          })
+        );
       }
     } catch (error) {
       console.error("Error submitting review:", error);
+      dispatch(
+        showToast({
+          message: "An error occurred while submitting your review.",
+          type: "error",
+          duration: 3000,
+        })
+      );
     } finally {
       setIsSubmitting(false);
     }

@@ -13,16 +13,18 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { showToast } from "@/lib/features/toast/toastSlice";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const registerPage = () => {
   const router = useRouter();
   const [name, setName] = useState<string>("");
   const [address, setAddress] = useState<string>("");
-  const [phNo, setPhNo] = useState<number | "" | undefined>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [phone, setPhone] = useState<string>("");
 
   const dispatch = useAppDispatch();
 
@@ -32,12 +34,6 @@ const registerPage = () => {
       name: "name",
       type: "text",
       placeholder: "Fullname",
-    },
-    {
-      value: phNo,
-      name: "phoneNumber",
-      type: "number",
-      placeholder: "Phone Number",
     },
     {
       value: email,
@@ -68,12 +64,10 @@ const registerPage = () => {
   // Handle input changes
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
-    console.log(phNo);
+    console.log(phone);
 
     if (name === "name") {
       setName(value);
-    } else if (name === "phoneNumber") {
-      setPhNo(value ? Number(value) : "");
     } else if (name === "email") {
       setEmail(value);
     } else if (name === "address") {
@@ -91,7 +85,14 @@ const registerPage = () => {
     e.preventDefault();
 
     // Validation check
-    if (!name || !phNo || !email || !address || !password || !confirmPassword) {
+    if (
+      !name ||
+      !phone ||
+      !email ||
+      !address ||
+      !password ||
+      !confirmPassword
+    ) {
       dispatch(
         showToast({
           message: "Please fill in all fields",
@@ -113,13 +114,13 @@ const registerPage = () => {
         `${process.env.NEXT_PUBLIC_ROOT_API}/user/register`,
         {
           name,
-          phoneNumber: phNo,
+          phoneNumber: phone,
           username: email,
           address,
           password,
           passwordConfirm: confirmPassword,
         },
-        { withCredentials: true }
+       
       );
 
       if (response.data.success) {
@@ -154,7 +155,7 @@ const registerPage = () => {
           }
         );
 
-        dispatch(setUser(data));
+        dispatch(setUser({ ...data, token }));
         dispatch(
           showToast({
             message: "Registered successfully!",
@@ -197,6 +198,23 @@ const registerPage = () => {
             </div>
           </div>
           <div className="py-3 mx-auto mt-3 flex flex-col space-y-5 max-w-[400px]">
+            <div className="relative">
+              <PhoneInput
+                country={"np"}
+                value={phone}
+                onChange={(value) => setPhone(value)}
+                containerClass="!w-full"
+                inputClass="!w-full !h-10 !py-2 !px-12 !text-base !border-black !rounded-md focus:!border-black focus:!ring-1 focus:!ring-black"
+                buttonClass="!border-black !h-10 !bg-transparent hover:!bg-gray-50 !transition-colors"
+                dropdownClass="!bg-white !shadow-lg !border !border-gray-200"
+                searchClass="!bg-white !border !border-gray-200 !p-2"
+                buttonStyle={{
+                  borderRadius: "0.375rem 0 0 0.375rem",
+                  borderRight: "none",
+                }}
+              />
+            </div>
+
             {inputFields.map((field, index) => {
               return (
                 <Input
@@ -215,6 +233,7 @@ const registerPage = () => {
               type="button"
               onClick={submitHandler}
               className="w-full mx-auto md:w-52 mb-5 md:mb-12 text-center bg-black hover:bg-black/80 transition-all text-white px-14 py-4 rounded-full hover:animate-pulse"
+              disabled={loading}
             >
               {loading ? "Registering..." : "Register"}
             </Button>

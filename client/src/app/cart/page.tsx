@@ -21,6 +21,8 @@ import { OrderRequest, OrderResponse } from "@/types/order.types";
 import { openModal, closeModal } from "@/lib/features/modal/modalSlice";
 import { Loader2 } from "lucide-react";
 
+import { showToast } from "@/lib/features/toast/toastSlice";
+
 export default function CartPage() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const { cart, totalPrice, adjustedTotalPrice }: CartsState = useAppSelector(
@@ -50,13 +52,35 @@ export default function CartPage() {
 
   const handleCheckoutConfirm = async () => {
     if (!token || !userId) {
-      if (window.confirm("Please log in to proceed with checkout. Do you want to sign in now?")) {
-        router.push("/signin");
-      }
+      dispatch(
+        showToast({
+          message: "Please log in to proceed with checkout.",
+          type: "error",
+          duration: 3000,
+        })
+      );
+      dispatch(closeModal());
       return;
     }
 
     setIsPlacingOrder(true);
+
+    dispatch(
+      openModal(
+        <div className="text-center">
+          <h2 className={`${integralCF.className} text-2xl font-bold mb-4`}>
+            Processing Order
+          </h2>
+          <p className="mb-6 text-gray-600">
+            Please wait while we process your order...
+          </p>
+          <div className="flex justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-black" />
+          </div>
+        </div>
+      )
+    );
+
     try {
       const response = await axios.post<OrderResponse>(
         `${process.env.NEXT_PUBLIC_ROOT_API}/orders`,
@@ -182,9 +206,9 @@ export default function CartPage() {
                       Discount (
                       {totalPrice > 0
                         ? Math.round(
-                          ((totalPrice - adjustedTotalPrice) / totalPrice) *
-                          100
-                        )
+                            ((totalPrice - adjustedTotalPrice) / totalPrice) *
+                              100
+                          )
                         : 0}
                       %)
                     </span>

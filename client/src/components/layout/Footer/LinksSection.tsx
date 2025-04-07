@@ -18,7 +18,7 @@ const footerLinksData: FooterLinks[] = [
         label: "shop",
         url: "/shop",
       },
-     
+
       {
         id: 14,
         label: "contact",
@@ -30,7 +30,6 @@ const footerLinksData: FooterLinks[] = [
     id: 2,
     title: "User",
     children: [
-     
       {
         id: 22,
         label: "Login",
@@ -41,15 +40,12 @@ const footerLinksData: FooterLinks[] = [
         label: "Sign Up",
         url: "/register",
       },
-      
-
     ],
   },
   {
     id: 3,
     title: "Information",
     children: [
-     
       {
         id: 32,
         label: "FAQ",
@@ -74,22 +70,22 @@ const footerLinksData: FooterLinks[] = [
       {
         id: 41,
         label: "Bags",
-        url: "#",
+        url: "/shop?category=67bc8c6910042b46ed451b3d",
       },
       {
         id: 42,
         label: "Purse",
-        url: "#",
+        url: "/shop?category=67e945a1f90aa9015caf1d7a",
       },
       {
         id: 43,
         label: "Jacket",
-        url: "#",
+        url: "/shop?category=67e945acf90aa9015caf1d80",
       },
       {
         id: 44,
         label: "Trousers",
-        url: "#",
+        url: "/shop?category=67e945a7f90aa9015caf1d7d",
       },
     ],
   },

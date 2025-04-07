@@ -26,23 +26,29 @@ export default function ProfileButton() {
   useEffect(() => {
     const userData = Cookies.get("userData");
     const authToken = Cookies.get("authToken");
-    if (userData && authToken) {
+  
+    if (!userData || !authToken) {
+      Cookies.remove("userData", { path: "/" });
+      Cookies.remove("authToken", { path: "/" });
+      dispatch(removeUser()); 
+    } else {
       try {
         const parsedUser = JSON.parse(userData) as UserState;
         if (parsedUser._id && parsedUser.role) {
           dispatch(setUser({ ...parsedUser, token: authToken }));
         } else {
-          // Invalid user data, clear cookies
-          Cookies.remove("authToken");
-          Cookies.remove("userData");
+          Cookies.remove("userData", { path: "/" });
+          Cookies.remove("authToken", { path: "/" });
+          dispatch(removeUser());
         }
       } catch (error) {
-        // Error parsing user data, clear cookies
-        Cookies.remove("authToken");
-        Cookies.remove("userData");
+        Cookies.remove("userData", { path: "/" });
+        Cookies.remove("authToken", { path: "/" });
+        dispatch(removeUser());
       }
     }
   }, [dispatch]);
+  
 
   const handleLogout = async () => {
     setIsLoggingOut(true);

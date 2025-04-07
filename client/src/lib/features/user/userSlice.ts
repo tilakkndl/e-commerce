@@ -2,39 +2,29 @@ import { UserState } from "@/types/user.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 
-// Initialize user state from cookie if available
 const getUserFromCookie = (): UserState & { token?: string } => {
-  if (typeof window !== "undefined") {
+  if (typeof window === "undefined")
+    return { _id: null, name: "", username: "", role: null };
+
+  try {
     const userData = Cookies.get("userData");
     const authToken = Cookies.get("authToken");
 
-    // Check if both cookies exist
-    if (userData && authToken) {
-      try {
-        const parsedUser = JSON.parse(userData);
-        if (parsedUser._id && parsedUser.role) {
-          return {
-            ...parsedUser,
-            token: authToken,
-          };
-        }
-      } catch (error) {
-        // If parsing fails, remove both cookies
-        Cookies.remove("userData");
-        Cookies.remove("authToken");
-      }
-    } else {
-      // If either cookie is missing, remove both
-      Cookies.remove("userData");
-      Cookies.remove("authToken");
+    if (!userData || !authToken) {
+      Cookies.remove("userData", { path: "/" });
+      Cookies.remove("authToken", { path: "/" });
+      return { _id: null, name: "", username: "", role: null };
     }
+
+    const parsedUser = JSON.parse(userData);
+    return parsedUser._id && parsedUser.role
+      ? { ...parsedUser, token: authToken }
+      : { _id: null, name: "", username: "", role: null };
+  } catch {
+    Cookies.remove("userData", { path: "/" });
+    Cookies.remove("authToken", { path: "/" });
+    return { _id: null, name: "", username: "", role: null };
   }
-  return {
-    _id: null,
-    name: "",
-    username: "",
-    role: null,
-  };
 };
 
 const initialState: UserState = getUserFromCookie();
@@ -44,40 +34,30 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<UserState & { token?: string }>) => {
-      state._id = action.payload._id;
-      state.name = action.payload.name;
-      state.username = action.payload.username;
-      state.role = action.payload.role;
+      const { _id, name, username, role, token } = action.payload;
+      Object.assign(state, { _id, name, username, role });
 
-      // Store user data and token in cookies
       if (typeof window !== "undefined") {
-        // Only set cookies if both user data and token are present
-        if (action.payload._id && action.payload.token) {
-          const userData = JSON.stringify({
-            _id: action.payload._id,
-            name: action.payload.name,
-            username: action.payload.username,
-            role: action.payload.role,
-          });
-
-          // Set both cookies with same options
-          Cookies.set("userData", userData, {
+        if (_id && token) {
+          Cookies.set(
+            "userData",
+            JSON.stringify({ _id, name, username, role }),
+            {
+              expires: 1,
+              secure: process.env.NODE_ENV === "production",
+              sameSite: "Lax",
+              path: "/",
+            }
+          );
+          Cookies.set("authToken", token, {
             expires: 1,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-          });
-
-          Cookies.set("authToken", action.payload.token, {
-            expires: 1,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            sameSite: "Lax",
             path: "/",
           });
         } else {
-          // If either user data or token is missing, remove both cookies
-          Cookies.remove("userData");
-          Cookies.remove("authToken");
+          Cookies.remove("userData", { path: "/" });
+          Cookies.remove("authToken", { path: "/" });
         }
       }
     },
@@ -87,10 +67,16 @@ export const userSlice = createSlice({
       state.username = "";
       state.role = null;
 
-      // Remove both authToken and userData from cookies
       if (typeof window !== "undefined") {
-        Cookies.remove("authToken");
-        Cookies.remove("userData");
+        Cookies.remove("authToken", { path: "/" });
+        Cookies.remove("userData", { path: "/" });
+
+        document.cookie =
+          "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "userData=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+        localStorage.removeItem("user");
       }
     },
   },

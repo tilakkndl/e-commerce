@@ -13,10 +13,10 @@ type TabBtn = {
 };
 
 const tabBtnData: TabBtn[] = [
-  {
-    id: 1,
-    label: "Product Details",
-  },
+  // {
+  //   id: 1,
+  //   label: "Product Details",
+  // },
   {
     id: 2,
     label: "Rating & Reviews",
@@ -28,7 +28,7 @@ const tabBtnData: TabBtn[] = [
 ];
 
 const Tabs = ({ productId }: { productId: string }) => {
-  const [active, setActive] = useState<number>(1);
+  const [active, setActive] = useState<number>(2);
 
   return (
     <div>
@@ -51,7 +51,7 @@ const Tabs = ({ productId }: { productId: string }) => {
         ))}
       </div>
       <div className="mb-12 sm:mb-16">
-        {active === 1 && <ProductDetailsContent />}
+        {/* {active === 1 && <ProductDetailsContent />} */}
         {active === 2 && <ReviewsContent productId={productId} />}
         {active === 3 && <FaqContent />}
       </div>
