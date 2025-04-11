@@ -110,52 +110,48 @@ const registerPage = () => {
         success: boolean;
         token?: string;
         data: UserState;
-      }>(
-        `${process.env.NEXT_PUBLIC_ROOT_API}/user/register`,
-        {
-          name,
-          phoneNumber: phone,
-          username: email,
-          address,
-          password,
-          passwordConfirm: confirmPassword,
-        },
-       
-      );
+      }>(`${process.env.NEXT_PUBLIC_ROOT_API}/user/register`, {
+        name,
+        phoneNumber: phone,
+        username: email,
+        address,
+        password,
+        passwordConfirm: confirmPassword,
+      });
 
       if (response.data.success) {
-        const { token, data } = response.data;
+        // const { token, data } = response.data;
 
-        if (!token) {
-          throw new Error("No token received from server");
-        }
+        // if (!token) {
+        //   throw new Error("No token received from server");
+        // }
 
-        // Store token in cookie
-        Cookies.set("authToken", token, {
-          expires: 1,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          path: "/",
-        });
+        // // Store token in cookie
+        // Cookies.set("authToken", token, {
+        //   expires: 1,
+        //   secure: process.env.NODE_ENV === "production",
+        //   sameSite: "lax",
+        //   path: "/",
+        // });
 
-        // Store user data in cookie for middleware
-        Cookies.set(
-          "userData",
-          JSON.stringify({
-            _id: data._id,
-            name: data.name,
-            username: data.username,
-            role: data.role,
-          }),
-          {
-            expires: 1,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-          }
-        );
+        // // Store user data in cookie for middleware
+        // Cookies.set(
+        //   "userData",
+        //   JSON.stringify({
+        //     _id: data._id,
+        //     name: data.name,
+        //     username: data.username,
+        //     role: data.role,
+        //   }),
+        //   {
+        //     expires: 1,
+        //     secure: process.env.NODE_ENV === "production",
+        //     sameSite: "lax",
+        //     path: "/",
+        //   }
+        // );
 
-        dispatch(setUser({ ...data, token }));
+        // dispatch(setUser({ ...data, token }));
         dispatch(
           showToast({
             message: "Registered successfully!",
@@ -164,7 +160,7 @@ const registerPage = () => {
           })
         );
 
-        router.replace("/");
+        router.replace("/signin");
       }
     } catch (error: any) {
       dispatch(
