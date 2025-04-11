@@ -7,6 +7,7 @@ import axios from "axios";
 import { useAppSelector } from "@/lib/hooks/redux";
 import Cookies from "js-cookie";
 import OrderCard from "@/components/common/orderCard";
+import Link from "next/link";
 
 const Page = () => {
   const [orders, setOrders] = useState<OrderItem[]>([]);
@@ -20,6 +21,7 @@ const Page = () => {
       try {
         setLoading(true);
         setError(null);
+
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_ROOT_API}/orders/user/${userId}`,
           {
@@ -29,15 +31,17 @@ const Page = () => {
           }
         );
 
-        if (response.data.success) {
-          console.log("response", response.data);
-          setOrders(response.data.data); // Assuming the orders are in response.data.data based on typical API structure
+        if (response.status === 200 && response.data.success) {
+          setOrders(response.data.data);
         } else {
           setError("Failed to fetch orders.");
         }
-      } catch (error) {
-        console.error("Error fetching user orders:", error);
-        setError("Error fetching your orders. Please try again later.");
+      } catch (error: any) {
+        if (error.response && error.response.status === 404) {
+          setError("No orders found");
+        } else {
+          setError("Error fetching your orders. Please try again later.");
+        }
       } finally {
         setLoading(false);
       }
@@ -64,7 +68,22 @@ const Page = () => {
       {loading && (
         <div className="text-center text-gray-600">Loading your orders...</div>
       )}
-      {error && <div className="text-center text-red-500">{error}</div>}
+      {error && (
+        <div className="text-center text-red-500">
+          {error === "No orders found" ? (
+            <div>
+              <p>No orders found.</p>
+              <Link href="/shop">
+                <div className="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition duration-300">
+                  Go to Shop
+                </div>
+              </Link>
+            </div>
+          ) : (
+            error
+          )}
+        </div>
+      )}
       {!loading && !error && orders.length === 0 && (
         <div className="text-center text-gray-600">No orders found.</div>
       )}
