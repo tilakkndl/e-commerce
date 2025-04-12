@@ -197,7 +197,7 @@ export const getOrder = catchAsync(async (req, res, next) => {
   });
 
 export const getUserOrder = catchAsync(async (req, res, next) => {
-    if(req.user._id.toString() !== req.params.id){
+    if(req.user.id.toString() !== req.params.id){
         return next(new AppError("You are not allowed to view orders of another user", 403));
     }
     const orders = await Order.find({ user: req.user._id })
