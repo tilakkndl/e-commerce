@@ -218,20 +218,15 @@ export const getOrder = catchAsync(async (req, res, next) => {
 });
 
 export const getUserOrder = catchAsync(async (req, res, next) => {
-  console.log("yeha", req.user);
-  console.log("yeha", req.params.id);
-  if (req.user._id.toString() !== req.params.id) {
-    return next(
-      new AppError("You are not allowed to view orders of another user", 403)
-    );
-  }
-  const orders = await Order.find({ user: req.user._id })
-    .sort({ createdAt: -1 })
-    .populate("user", "name username address phoneNumber")
-    .lean();
-  console.log(orders);
-  if (orders.length === 0) {
-    console.log("yeha", orders.length);
+    if(req.user.id.toString() !== req.params.id){
+        return next(new AppError("You are not allowed to view orders of another user", 403));
+    }
+    const orders = await Order.find({ user: req.user._id })
+      .sort({ createdAt: -1 }) 
+      .populate("user", "name username address phoneNumber")
+      .lean();
+  
+    if (orders.length === 0) {
     return next(new AppError("No orders found", 404));
   }
 
