@@ -9,7 +9,6 @@ type ProductCardProps = {
 };
 
 const ProductCard = ({ data }: ProductCardProps) => {
-  console.log("product Card", data);
   return (
     <Link
       href={`/shop/product/${data._id}/${data.name.split(" ").join("-")}`}
