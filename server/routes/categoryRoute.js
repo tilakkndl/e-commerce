@@ -12,6 +12,8 @@ const router = express.Router();
 
 router.route("/")
   .post(protect, restrictTo("admin"),createCategory)  
+  
+  router.route("/")
   .get(protect,getAllCategories); 
 
 router.route("/:id")
