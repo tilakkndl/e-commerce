@@ -21,6 +21,7 @@ const Page = () => {
       try {
         setLoading(true);
         setError(null);
+        
 
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_ROOT_API}/orders/user/${userId}`,
@@ -28,6 +29,7 @@ const Page = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
+            withCredentials: true,
           }
         );
 
