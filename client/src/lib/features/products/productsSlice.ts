@@ -63,7 +63,6 @@ export const productsSlice = createSlice({
       state.sizeSelection = action.payload;
     },
     setRelatedProductData: (state, action: PayloadAction<Product[]>) => {
-      console.log(action.payload);
       state.relatedProductData = action.payload;
     },
   },

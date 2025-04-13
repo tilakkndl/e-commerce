@@ -108,7 +108,7 @@ export const fetchSummary = createAsyncThunk<
         },
       }
     );
-    console.log(response.data.data);
+
     return response.data.data;
   } catch (error: any) {
     return rejectWithValue(

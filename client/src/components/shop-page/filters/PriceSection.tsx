@@ -16,7 +16,6 @@ const PriceSection = ({ priceRange, setPriceRange }: PriceSectionProps) => {
     if (value.length === 2) {
       setPriceRange([value[0], value[1]]);
     }
-    console.log(priceRange);
   };
 
   return (
