@@ -25,6 +25,6 @@ router.route("/:id").get(protect, restrictTo("admin"), getOrder);
 
 router
   .route("/status/:id")
-  .patch(protect, restrictTo("admin"), updateOrderStatus);
+  .patch(protect, updateOrderStatus);
 
 export default router;
