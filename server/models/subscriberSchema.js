@@ -9,7 +9,7 @@ const subscriberSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
     validate: {
-      validator: validator.isEmail, // Using validator.js to validate email
+      validator: validator.isEmail, 
       message: "Please enter a valid email address",
     },
   },
