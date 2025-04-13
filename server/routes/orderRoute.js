@@ -12,7 +12,7 @@ import { protect, restrictTo } from "../controllers/authController.js";
 
 const router = express.Router();
 
-router.route("/summary").get(protect, restrictTo("admin"), orderSummary);
+router.route("/summary").get(protect, orderSummary);
 
 router
   .route("/")
