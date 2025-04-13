@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import { integralCF } from "@/styles/fonts";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavMenu } from "../navbar.types";
 import { MenuList } from "./MenuList";
 import {
@@ -21,7 +21,7 @@ const data: NavMenu = [
   {
     id: 1,
     label: "Shop",
-    type: "MenuItem", 
+    type: "MenuItem",
     url: "/shop?status=active",
     // type: "MenuList",
     children: [
@@ -69,7 +69,25 @@ const data: NavMenu = [
 
 const TopNavbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
   const router = useRouter();
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setSearchDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -157,19 +175,47 @@ const TopNavbar = () => {
           </InputGroup>
         </form>
         <div className="flex items-center">
-          <button
-            onClick={handleMobileSearch}
-            className="block md:hidden mr-[14px] p-1"
-          >
-            <Image
-              priority
-              src="/icons/search-black.svg"
-              height={100}
-              width={100}
-              alt="search"
-              className="max-w-[22px] max-h-[22px]"
-            />
-          </button>
+          <div ref={dropdownRef} className="relative block md:hidden mr-[14px]">
+            <button
+              onClick={() => setSearchDropdownOpen(!searchDropdownOpen)}
+              className="p-1"
+            >
+              <Image
+                priority
+                src="/icons/search-black.svg"
+                height={100}
+                width={100}
+                alt="search"
+                className="max-w-[22px] max-h-[22px]"
+              />
+            </button>
+            {searchDropdownOpen && (
+              <div className="absolute top-full -left-32 mt-2 bg-white shadow-lg rounded-md p-4 w-64">
+                <form onSubmit={handleSearch}>
+                  <InputGroup className="bg-[#F0F0F0]">
+                    <InputGroup.Text>
+                      <Image
+                        priority
+                        src="/icons/search.svg"
+                        height={20}
+                        width={20}
+                        alt="search"
+                        className="min-w-5 min-h-5"
+                      />
+                    </InputGroup.Text>
+                    <InputGroup.Input
+                      type="search"
+                      name="search"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                      placeholder="Search for products..."
+                      className="bg-transparent placeholder:text-black/40"
+                    />
+                  </InputGroup>
+                </form>
+              </div>
+            )}
+          </div>
           <CartBtn />
           <ProfileButton />
         </div>

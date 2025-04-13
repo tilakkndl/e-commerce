@@ -33,18 +33,18 @@ const Page = () => {
           }
         );
 
-        if (response.status === 200 && response.data.success) {
-          setOrders(response.data.data);
-        } else {
-          setError("Failed to fetch orders.");
-        }
-      } catch (error: any) {
-        if (error.response && error.response.status === 404) {
-          setError("No orders found");
-        } else {
-          setError("Error fetching your orders. Please try again later.");
-        }
-      } finally {
+if (response.status === 200 && response.data.success) {
+                  setOrders(response.data.data);
+                } else {
+                  setError("Failed to fetch orders.");
+                }
+              } catch (error: any) {
+                if (error.response && error.response.status === 404) {
+                  setError("No orders found");
+                } else {
+                  setError("Error fetching your orders. Please try again later.");
+                }
+                    } finally {
         setLoading(false);
       }
     };
@@ -71,20 +71,20 @@ const Page = () => {
         <div className="text-center text-gray-600">Loading your orders...</div>
       )}
       {error && (
-        <div className="text-center text-red-500">
-          {error === "No orders found" ? (
+<div className="text-center text-red-500">
+{error === "No orders found" ? (
             <div>
               <p>No orders found.</p>
               <Link href="/shop">
                 <div className="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition duration-300">
-                  Go to Shop
-                </div>
+                Go to Shop
+              </div>
               </Link>
             </div>
           ) : (
             error
           )}
-        </div>
+</div>
       )}
       {!loading && !error && orders.length === 0 && (
         <div className="text-center text-gray-600">No orders found.</div>
@@ -95,6 +95,7 @@ const Page = () => {
             <OrderCard key={order._id} order={order} />
           ))}
         </div>
+
       )}
     </div>
   );
