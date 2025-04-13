@@ -35,7 +35,6 @@ const cloudinaryUpload = async (files, name) => {
 
         return galleryUrls;
     } catch (error) {
-        console.error("Cloudinary upload error:", error);
         throw new AppError("Failed to upload images to Cloudinary", 500);
     }
 };
@@ -115,14 +114,9 @@ export const createProduct = catchAsync(async (req, res, next) => {
             // Parse variants JSON string into an array
             let formattedVariants = JSON.parse(variants);
 
-            // formattedVariants = {...formattedVariants, gallery};
             formattedVariants = formattedVariants.map((variant) => {
                 return { ...variant, gallery };
             });
-            // console.log(files);
-            console.log(formattedVariants);
-            // console.log(gallery);
-            // console.log(price, discount);
    
 
     // Create product with structured data
@@ -154,7 +148,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
   const allowedVariantFields = ["color", "hexColor", "size"];
 
   if (req.query.color) {
-    console.log("color xa hai")
     const inputColor = req.query.color.toLowerCase();
     const inputHex = chroma(inputColor).hex(); 
 
@@ -163,8 +156,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     const similarHexColors = allProducts
       .flatMap((product) => product.variants.map((variant) => variant.hexColor))
       .filter((hex) => chroma.distance(inputHex, hex) < 30); 
-
-      console.log(similarHexColors);
 
     if (similarHexColors.length > 0) {
       variantFilters["hexColor"] = { $in: similarHexColors };
@@ -187,8 +178,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
   if (Object.keys(variantFilters).length > 0) {
     filter["variants"] = { $elemMatch: variantFilters };
   }
-
-  console.log(filter);
 
   const features = new APIFeatures(Product.find(filter), req.query)
     .filter()

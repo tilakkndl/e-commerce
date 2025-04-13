@@ -65,7 +65,6 @@ export const deleteReview = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const review = await Review.findById(id);
   if (!review) return next(new AppError("Review not found", 404));
-  console.log(review);
   if(review.user.toString() !== req.user._id.toString()){
     return next(new AppError("You are not allowed to delete this review", 403));
   }

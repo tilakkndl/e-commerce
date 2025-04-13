@@ -32,16 +32,6 @@ const reviewSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// // Auto-update the product's avgRating when a new review is added
-// reviewSchema.post("save", async function () {
-//   const product = await mongoose.model("Product").findById(this.product);
-//   if (product) {
-//     const reviews = await mongoose.model("Review").find({ product: product._id });
-//     const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
-//     product.avgRating = totalRating / reviews.length;
-//     await product.save();
-//   }
-// });
 
 const Review = mongoose.model("Review", reviewSchema);
 export default Review;

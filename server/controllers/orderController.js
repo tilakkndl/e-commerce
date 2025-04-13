@@ -252,9 +252,7 @@ export const orderSummary = catchAsync(async (req, res, next) => {
     .paginate();
 
   const orders = await features.query;
-  console.log(orders);
   orders.forEach((order) => {
-    console.log(order.orders);
   });
 
   if (orders.length === 0) {

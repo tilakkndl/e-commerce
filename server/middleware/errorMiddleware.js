@@ -26,7 +26,6 @@ const handleValidationErrorDb = (err) => {
 };
 
 const sendErrorDev = (err, res) => {
-  console.log("yeha ni aayo", err);
   res.status(err.statusCode).json({
     status: false,
     status: err.status,
@@ -46,8 +45,6 @@ const sendErrorProd = (err, res) => {
     });
     //programming or other unkown error
   } else {
-    console.log("ERROR ✨✨✨✨");
-
     res.status(500).json({
       status: "error",
       success: false,
@@ -63,7 +60,6 @@ export default (err, req, res, next) => {
   if (process.env.NODE_ENV === "development") {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
-    // console.log(err);
     let error = { ...err };
 
     if (err.name === "CastError") {
